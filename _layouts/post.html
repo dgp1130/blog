@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <title>{{ page.title }}</title>
+        <meta charset="UTF-8" />
+        <meta name="description" content="{{ page.description }}" />
+    </head>
+    <body>
+        {% include header.html %}
+        <main>
+            {{ content }}
+        </main>
+        {% include footer.html %}
+    </body>
+</html>
