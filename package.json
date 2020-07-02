@@ -1,0 +1,23 @@
+{
+  "name": "dgp1130-blog",
+  "version": "0.0.0",
+  "description": "Personal blog for https://github.com/dgp1130.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dgp1130/blog.git"
+  },
+  "keywords": [
+    "blog",
+    "11ty"
+  ],
+  "author": "Doug Parker",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dgp1130/blog/issues"
+  },
+  "homepage": "https://github.com/dgp1130/blog#readme"
+}
