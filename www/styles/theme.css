@@ -1,0 +1,6 @@
+/** @fileoverview Constant values for theming the application. */
+
+:root {
+    --dwac-color-primary: lightblue;
+    --dwac-color-secondary: white;
+}

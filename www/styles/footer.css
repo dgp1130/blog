@@ -1,0 +1,11 @@
+/** @fileoverview Styles for the page footer. */
+
+footer {
+    background-color: var(--dwac-color-primary);
+    color: var(--dwac-color-secondary);
+    padding: 0.75rem;
+}
+
+footer p {
+    margin: 0.75rem 0;
+}

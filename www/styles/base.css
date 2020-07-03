@@ -1,0 +1,26 @@
+/** @fileoverview Base styles for every page of the blog.  */
+
+/* No implicit padding on the page. */
+body {
+    margin: 0;
+    padding: 0;
+}
+
+/*
+ * The first and last paragraph in a sequence should not extend margins past
+ * their container.
+ */
+p:first-child {
+    margin-top: 0;
+}
+p:last-child {
+    margin-bottom: 0;
+}
+
+/* Remove default list formatting because it is almost never used this way. */
+ul, ol {
+    list-style: none;
+    margin-block-start: 0;
+    margin-block-end: 0;
+    padding-inline-start: 0;
+}

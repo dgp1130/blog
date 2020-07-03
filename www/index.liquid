@@ -2,16 +2,20 @@
 <html lang="en">
     <head>
         <title>Devel without a Cause</title>
+
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="Personal blog about software, web
         tech, programming langauges, game design, and whatever else I feel
         unqualified to discuss.">
+
+        <link rel="stylesheet" href="/index.css" type="text/css" />
     </head>
     <body>
-        <header>
-            <h1>Devel without a Cause</h1>
+        {% assign header_class = "header" %}
+        {% include fragments/header %}
 
-            <summary>
+        <main>
+            <section>
                 <p>
                     This is my personal blog, where I rant, rave, complain, and
                     exclaim about everything that no one asked my opinion of.
@@ -29,50 +33,34 @@
                     Send your thoughts, feedback, praise, and (well-reasoned)
                     rants to <a href="{{ author.twit }}">develwoutacause@</a>.
                 </p>
-            </summary>
-        </header>
+            </section>
 
-        <main>
-            <h2>Posts</h2>
+            <section>
+                <!-- List of posts most-recent first. -->
+                <h2>Posts</h2>
+                <ol class="posts">
+                    {% assign sorted_posts = collections.posts | reverse %}
 
-            <!-- List of posts most-recent first. -->
-            <ol>
-                {%
-                    assign sorted_posts = collections.posts
-                        | sort: (post) => post.date
-                        | reverse
-                %}
-
-                {% for post in sorted_posts %}
-                    <li>
-                        <h3>
-                            <a href="{{ post.url }}">{{ post.data.title }}</a>
-                        </h3>
-                        <p>
-                            <time>{{ post.date | date: "%b %e %Y" }}</time>
-                            - {{ post.data.excerpt }}
-                        </p>
-                    </li>
-                {% endfor %}
-            </ol>
+                    {% for post in sorted_posts %}
+                        <li class="card">
+                            <h3 class="card-title">
+                                <a href="{{ post.url }}">
+                                    {{ post.data.title }}
+                                </a>
+                            </h3>
+                            <p class="card-content">
+                                <time class="post-timestamp">
+                                    {{- post.date | date: "%b %e %Y" -}}
+                                </time>
+                                - {{ post.data.excerpt }}
+                            </p>
+                        </li>
+                    {% endfor %}
+                </ol>
+            </section>
         </main>
 
-        <footer>
-            <p>Failed to scare you away? Try one of these links:</p>
-            <p>
-                Follow me on Twitter:
-                <a href="{{ author.twit }}">develwoutacause@</a>
-            </p>
-            <p>
-                Check out my GitHub profile:
-                <a href="{{ author.github }}">dgp1130</a>
-            </p>
-            <p>
-                Fix a typo or help me write more gooder:
-                <a href="{{ author.blog_source }}/www/index.liquid">
-                    dgp1130/blog
-                </a>
-            </p>
-        </footer>
+        {% assign footer_class = "footer" %}
+        {% include fragments/footer %}
     </body>
 </html>

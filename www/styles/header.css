@@ -1,0 +1,13 @@
+/** @fileoverview Styles for the page header. */
+
+header {
+    text-align: center;
+    background-color: var(--dwac-color-primary);
+    padding: 0.5rem;
+}
+
+header h1 {
+    color: var(--dwac-color-secondary);
+    margin: 0;
+    padding: 0;
+}
