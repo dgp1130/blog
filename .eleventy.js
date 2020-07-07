@@ -4,13 +4,11 @@
  */
 
 module.exports = function (config) {
-    // Process markdown and liquid templates.
+    // Process markdown and Nunjucks templates.
     // Pass through *.css files to the output directory.
-    config.setTemplateFormats(['md', 'liquid', 'njk', 'css']);
-    config.setLiquidOptions({
-        strict_filters: true,
-        strict_variables: true,
-    });
+    config.setTemplateFormats(['md', 'njk', 'css']);
+
+    // Add filters.
     config.addFilter('date', (date, options) => {
         return new Date(date).toLocaleDateString('en', options);
     });
