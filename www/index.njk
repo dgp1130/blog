@@ -1,6 +1,16 @@
 {% import "fragments/footer.njk" as footer %}
 {% import "fragments/header.njk" as header %}
 
+{# Aggregate dependencies into a single set of styles for the page. #}
+{% set css %}
+    {% include "./styles/base.css" %}
+    {% include "./styles/theme.css" %}
+    {{- footer.styles() | safe -}}
+    {{- header.styles() | safe -}}
+    {% include "./styles/card.css" %}
+    {% include "./index.css" %}
+{% endset %}
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -11,7 +21,7 @@
         tech, programming langauges, game design, and whatever else I feel
         unqualified to discuss.">
 
-        <link rel="stylesheet" href="/index.css" type="text/css" />
+        <style>{{ css | safe }}</style>
     </head>
     <body>
         {{ header.header(class="header") }}
