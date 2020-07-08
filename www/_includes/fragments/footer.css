@@ -1,11 +1,25 @@
 /** @fileoverview Styles for the page footer. */
 
-footer {
+.frag-footer {
     background-color: var(--dwac-color-primary);
     color: var(--dwac-color-secondary);
     padding: 0.75rem;
 }
 
-footer p {
+.frag-footer p:not(:first-child):not(:last-child) {
     margin: 0.75rem 0;
+}
+
+.frag-footer p:first-child {
+    /* Leave margin-top to be the default. */
+    margin-left: 0;
+    margin-right: 0;
+    margin-bottom: 0.75rem;
+}
+
+.frag-footer p:last-child {
+    /* Leave margin-bottom to be the default. */
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0.75rem;
 }
