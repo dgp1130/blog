@@ -4,7 +4,7 @@
   "description": "Personal blog for https://github.com/dgp1130.",
   "main": "index.js",
   "scripts": {
-    "start": "eleventy --serve",
+    "start": "rm -rf _site/ && eleventy --serve",
     "test": "eleventy --dryrun"
   },
   "repository": {
