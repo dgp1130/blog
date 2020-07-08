@@ -1,3 +1,4 @@
+{% import "fragments/card.njk" as card %}
 {% import "fragments/footer.njk" as footer %}
 {% import "fragments/header.njk" as header %}
 
@@ -5,9 +6,9 @@
 {% set css %}
     {% include "./styles/base.css" %}
     {% include "./styles/theme.css" %}
+    {{- card.styles() | safe -}}
     {{- footer.styles() | safe -}}
     {{- header.styles() | safe -}}
-    {% include "./styles/card.css" %}
     {% include "./index.css" %}
 {% endset %}
 
@@ -55,22 +56,24 @@
                         | sort(attr="date")
                         | reverse
                     %}
-                        <li class="card">
-                            <h3 class="card-title">
-                                <a href="{{ post.url }}">
-                                    {{- post.data.title -}}
-                                </a>
-                            </h3>
-                            <p class="card-content">
-                                <time class="post-timestamp">
-                                    {{- post.date | date({
-                                        day: 'numeric',
-                                        month: 'short',
-                                        year: 'numeric'
-                                    }) -}}
-                                </time>
-                                - {{ post.data.excerpt }}
-                            </p>
+                        <li>
+                            {% call card.card() %}
+                                <h3 class="card-title">
+                                    <a href="{{ post.url }}">
+                                        {{- post.data.title -}}
+                                    </a>
+                                </h3>
+                                <p class="card-content">
+                                    <time class="post-timestamp">
+                                        {{- post.date | date({
+                                            day: 'numeric',
+                                            month: 'short',
+                                            year: 'numeric'
+                                        }) -}}
+                                    </time>
+                                    - {{ post.data.excerpt }}
+                                </p>
+                            {% endcall %}
                         </li>
                     {% endfor %}
                 </ol>

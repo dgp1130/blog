@@ -1,0 +1,9 @@
+{% macro card() %}
+    <div class="frag-card">
+        {{ caller() }}
+    </div>
+{% endmacro %}
+
+{% macro styles() %}
+    {% include "fragments/card.css" %}
+{% endmacro %}

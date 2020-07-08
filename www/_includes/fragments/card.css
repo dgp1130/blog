@@ -1,6 +1,6 @@
 /** @fileoverview Styles for a simple card UI. */
 
-.card {
+.frag-card {
     border: 3px solid var(--dwac-color-primary);
     border-radius: 10px;
     box-shadow: 6px 6px 6px 0px rgba(0, 0, 0, 0.5);
@@ -8,10 +8,10 @@
     padding: 0.75rem;
 }
 
-.card .card-title {
+.frag-card .card-title {
     margin: 0;
 }
 
-.card .card-content {
+.frag-card .card-content {
     margin-top: 0.5rem;
 }
