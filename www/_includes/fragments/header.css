@@ -8,6 +8,7 @@
 
 .frag-header h1 {
     color: var(--dwac-color-secondary);
+    font-size: var(--dwac-font-size-title);
     margin: 0;
     padding: 0;
 }

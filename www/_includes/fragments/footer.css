@@ -1,6 +1,9 @@
 /** @fileoverview Styles for the page footer. */
 
 .frag-footer {
+    --dwac-link-color: var(--dwac-theme-link-alt-color);
+    --dwac-link-color-visited: var(--dwac-theme-link-alt-color-visited);
+
     background-color: var(--dwac-color-primary);
     color: var(--dwac-color-secondary);
     padding: 0.75rem;
@@ -8,6 +11,10 @@
 
 .frag-footer p:not(:first-child):not(:last-child) {
     margin: 0.75rem 0;
+}
+
+.frag-footer p:not(:first-child) {
+    font-size: var(--dwac-font-size-small);
 }
 
 .frag-footer p:first-child {

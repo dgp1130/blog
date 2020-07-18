@@ -1,6 +1,38 @@
-/** @fileoverview Constant values for theming the application. */
+/**
+ * @fileoverview Theming values for the application.
+ *
+ * All variables should start with `--dwac-*` (Devel without a Cause) as a
+ * namespace.
+ * 
+ * Any variables prefixed with `--dwac-theme-*` are intended to be
+ * constants for the base theme. Any variables which do not include the
+ * `--dwac-theme-*` prefix, can be changed as necessary via CSS. For example,
+ * a component might use a `--dwac-my-bg-color`, which can be set on particular
+ * elements as desired. While `--dwac-theme-bg-color` is the base themed
+ * background color and should not be mutated anywhere in the document.
+ */
 
 :root {
-    --dwac-color-primary: lightblue;
+    /* Core theme colors. */
+    --dwac-color-primary: #0d47a1;
+    --dwac-color-bg: #e1e2e1;
     --dwac-color-secondary: white;
+    
+    /* Fonts. */
+    --dwac-font-primary: "Lora", "Verdana", sans-serif;
+
+    /* Font sizes. */
+    --dwac-font-size-small: 12px;
+    --dwac-font-size-medium: 16px;
+    --dwac-font-size-title: 32px;
+
+    /* Link theme colors. Should not be changed on any elements. */
+    --dwac-theme-link-color: var(--dwac-color-primary);
+    --dwac-theme-link-color-visited: purple;
+    --dwac-theme-link-alt-color: var(--dwac-color-secondary);
+    --dwac-theme-link-alt-color-visited: #ffa6df;
+
+    /* Used link colors, can be changed on elements to alter the link color. */
+    --dwac-link-color: var(--dwac-theme-link-color);
+    --dwac-link-color-visited: var(--dwac-theme-link-color-visited);
 }

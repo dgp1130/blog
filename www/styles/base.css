@@ -4,6 +4,8 @@
 body {
     margin: 0;
     padding: 0;
+    font-family: var(--dwac-font-primary);
+    font-size: var(--dwac-font-size-medium);
 }
 
 /*
@@ -23,4 +25,20 @@ ul, ol {
     margin-block-start: 0;
     margin-block-end: 0;
     padding-inline-start: 0;
+}
+
+a {
+    /*
+     * Override this color by setting --dwac-link-color to the desired value for
+     * a particular element.
+     */
+    color: var(--dwac-link-color);
+}
+
+a:visited {
+    /*
+     * Override this color by setting --dwac-link-color-visited to the desired
+     * value for a particular element.
+     */
+    color: var(--dwac-link-color-visited);
 }
