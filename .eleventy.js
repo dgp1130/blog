@@ -3,6 +3,8 @@
  * @see https://www.11ty.dev/docs/config/
  */
 
+const { aggregateStyles } = require('./filters/styles.js');
+
 module.exports = function (config) {
     // Process markdown and Nunjucks templates.
     // Pass through *.css files to the output directory.
@@ -20,6 +22,11 @@ module.exports = function (config) {
         console.log(data);
         return data;
     });
+
+    // Aggregate a list of CSS file references into a de-duplicated and
+    // concatenated string of their content. Useful to pipe into `safe` and
+    // place into a `<style />` tag to apply all the styles.
+    config.addNunjucksAsyncFilter('aggregateStyles', aggregateStyles);
 
     return {
         dir: {
