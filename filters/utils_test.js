@@ -1,15 +1,7 @@
 // @ts-check
 
+const { execFilter } = require('../testing/filters.js');
 const { asyncFilter } = require('./utils.js');
-
-function execFilter(filter, ...args) {
-    return new Promise((resolve, reject) => {
-        filter(...args, (err, result) => {
-            if (err) reject(err);
-            resolve(result);
-        });
-    });
-}
 
 describe('utils', () => {
     describe('asyncFilter()', () => {
