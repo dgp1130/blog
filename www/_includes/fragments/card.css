@@ -1,6 +1,12 @@
 /** @fileoverview Styles for a simple card UI. */
 
 .frag-card {
+    /* Disable link styling on the card itself. */
+    --dwac-link-color: /**/;
+    --dwac-link-color-visited: /**/;
+    text-decoration: none;
+
+    display: block;
     border: 3px solid var(--dwac-color-primary);
     border-radius: 10px;
     box-shadow: 6px 6px 6px 0px rgba(0, 0, 0, 0.5);
@@ -8,8 +14,20 @@
     padding: 0.75rem;
 }
 
+.frag-card > * {
+    /* Re-apply link styling on the card's children. */
+    --dwac-link-color: var(--dwac-theme-link-color);
+    --dwac-link-color-visited: var(--dwac-theme-link-color-visited);
+}
+
 .frag-card .card-title {
+    color: var(--dwac-theme-link-color);
+    text-decoration: underline;
     margin: 0;
+}
+
+.frag-card:visited .card-title {
+    color: var(--dwac-theme-link-color-visited);
 }
 
 .frag-card .card-content {
