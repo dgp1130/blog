@@ -2,17 +2,27 @@
 
 const fs = require('fs').promises;
 const path = require('path');
+const process = require('process');
 
 const { asyncFilter } = require('./utils.js');
 
-// Accepts a list of input file paths delineated by newlines, and resolves with
-// the content of the unqiue files in the list. Each path is relative to `www/`.
+/**
+ * Accepts a list of input file paths delineated by newlines, and resolves with
+ * the content of the unqiue files in the list. Each input path is relative to
+ * `www/` in the current working directory.
+ * 
+ * The deduplicate algorithm will dedupe multiple paths to the same location,
+ * even if they take different routes. For example, `bar.css` and
+ * `../www/bar.css` will be de-duplicated. However, other tricks like symlinks
+ * may work around deduplication. So don't get too complicated here.
+ */
 const aggregateStyles = asyncFilter(async (cssFiles) => {
-    // Format the loose input structure into a set of relative file paths.
+    // Format the loose input structure into a set of absoluate, normalized file
+    // paths without duplicates.
     const files = new Set(cssFiles.split('\n')
         .map((file) => file.trim())
         .filter((file) => file !== '')
-        .map((file) => path.join('www/', file)));
+        .map((file) => path.normalize(path.join(process.cwd(), 'www/', file))));
 
     // Read all source files.
     const styles = await Promise.all(Array.from(files)
