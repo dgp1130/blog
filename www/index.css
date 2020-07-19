@@ -23,7 +23,7 @@ h2 {
 
 main {
     flex-grow: 1;
-    background-color: var(--dwac-color-bg);
+    background-color: var(--dwac-theme-color-bg);
     padding: var(--dwac-index-padding);
     /* Leave extra room on bottom for last card's drop-shadow. */
     padding-bottom: calc(var(--dwac-index-padding) + 6px);

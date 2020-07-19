@@ -4,8 +4,8 @@
 body {
     margin: 0;
     padding: 0;
-    font-family: var(--dwac-font-primary);
-    font-size: var(--dwac-font-size-medium);
+    font-family: var(--dwac-theme-font-primary);
+    font-size: var(--dwac-theme-font-size-medium);
 }
 
 /*

@@ -14,22 +14,22 @@
 
 :root {
     /* Core theme colors. */
-    --dwac-color-primary: #0d47a1;
-    --dwac-color-bg: #e1e2e1;
-    --dwac-color-secondary: white;
+    --dwac-theme-color-primary: #0d47a1;
+    --dwac-theme-color-bg: #e1e2e1;
+    --dwac-theme-color-secondary: white;
     
     /* Fonts. */
-    --dwac-font-primary: "Lora", "Verdana", sans-serif;
+    --dwac-theme-font-primary: "Lora", "Verdana", sans-serif;
 
     /* Font sizes. */
-    --dwac-font-size-small: 12px;
-    --dwac-font-size-medium: 16px;
-    --dwac-font-size-title: 32px;
+    --dwac-theme-font-size-small: 12px;
+    --dwac-theme-font-size-medium: 16px;
+    --dwac-theme-font-size-title: 32px;
 
     /* Link theme colors. Should not be changed on any elements. */
-    --dwac-theme-link-color: var(--dwac-color-primary);
+    --dwac-theme-link-color: var(--dwac-theme-color-primary);
     --dwac-theme-link-color-visited: purple;
-    --dwac-theme-link-alt-color: var(--dwac-color-secondary);
+    --dwac-theme-link-alt-color: var(--dwac-theme-color-secondary);
     --dwac-theme-link-alt-color-visited: #ffa6df;
 
     /* Used link colors, can be changed on elements to alter the link color. */

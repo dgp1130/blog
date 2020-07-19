@@ -4,8 +4,8 @@
     --dwac-link-color: var(--dwac-theme-link-alt-color);
     --dwac-link-color-visited: var(--dwac-theme-link-alt-color-visited);
 
-    background-color: var(--dwac-color-primary);
-    color: var(--dwac-color-secondary);
+    background-color: var(--dwac-theme-color-primary);
+    color: var(--dwac-theme-color-secondary);
     padding: 0.75rem;
 }
 
@@ -14,7 +14,7 @@
 }
 
 .frag-footer p:not(:first-child) {
-    font-size: var(--dwac-font-size-small);
+    font-size: var(--dwac-theme-font-size-small);
 }
 
 .frag-footer p:first-child {

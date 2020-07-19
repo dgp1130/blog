@@ -2,13 +2,13 @@
 
 .frag-header {
     text-align: center;
-    background-color: var(--dwac-color-primary);
+    background-color: var(--dwac-theme-color-primary);
     padding: 0.5rem;
 }
 
 .frag-header h1 {
-    color: var(--dwac-color-secondary);
-    font-size: var(--dwac-font-size-title);
+    color: var(--dwac-theme-color-secondary);
+    font-size: var(--dwac-theme-font-size-title);
     margin: 0;
     padding: 0;
 }
