@@ -9,8 +9,16 @@ module.exports = function (config) {
     config.setTemplateFormats(['md', 'njk', 'css']);
 
     // Add filters.
+
+    // Display the current date in the format: "Jan 1, 2020".
     config.addFilter('date', (date, options) => {
         return new Date(date).toLocaleDateString('en', options);
+    });
+
+    // Print the given data to the console for debugging purposes.
+    config.addFilter('debug', (data) => {
+        console.log(data);
+        return data;
     });
 
     return {
