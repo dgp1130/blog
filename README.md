@@ -2,6 +2,9 @@
 
 My personal blog.
 
+<!-- CI status badge. -->
+![CI](https://github.com/dgp1130/blog/workflows/CI/badge.svg?branch=main)
+
 ## Development
 
 Run a hot-reloading server with `npm start`.
