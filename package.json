@@ -4,8 +4,10 @@
   "description": "Personal blog for https://github.com/dgp1130.",
   "main": "index.js",
   "scripts": {
-    "start": "rm -rf _site/ && eleventy --serve",
-    "test": "eleventy --dryrun && jasmine --config=jasmine.config.json"
+    "start": "npm run -s clean && eleventy --serve",
+    "build": "npm run -s clean && eleventy",
+    "test": "jasmine --config=jasmine.config.json",
+    "clean": "rm -rf _site/"
   },
   "repository": {
     "type": "git",

@@ -4,7 +4,12 @@ My personal blog.
 
 ## Development
 
-Run a hot-reloading server with `npm run start`.
+Run a hot-reloading server with `npm start`.
+
+Run tests with `npm test`.
+
+Make a one-off build with `npm run build`. This is not all that useful for local
+development, but CI takes advantage of it.
 
 ## Docs
 
