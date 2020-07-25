@@ -1,7 +1,5 @@
-// @ts-check
-
-const { execFilter } = require('../testing/filters.js');
-const { asyncFilter } = require('./utils.js');
+import { execFilter } from '../testing/filters';
+import { asyncFilter } from './utils';
 
 describe('utils', () => {
     describe('asyncFilter()', () => {
@@ -10,9 +8,9 @@ describe('utils', () => {
                 return first + second;
             });
 
-            const result = await execFilter(filter, 1, 2);
+            const result = await execFilter(filter, 'first', 'second');
 
-            expect(result).toBe(3);
+            expect(result).toBe('firstsecond');
         });
 
         it('propagates errors', async () => {

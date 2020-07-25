@@ -9,5 +9,6 @@ _site/
 
 # Ignore generated JavaScript files.
 filters/utils.js
+filters/utils_test.js
 testing/filters.js
 testing/filters_test.js
