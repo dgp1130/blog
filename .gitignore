@@ -4,8 +4,10 @@ node_modules/
 # Eleventy output directory.
 _site/
 
+# Ignore generated sourcemaps.
+**/*.js.map
+
 # Ignore generated JavaScript files.
 filters/utils.js
-filters/utils.js.map
 testing/filters.js
-testing/filters.js.map
+testing/filters_test.js
