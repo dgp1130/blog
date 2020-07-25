@@ -4,13 +4,7 @@ node_modules/
 # Eleventy output directory.
 _site/
 
-# Ignore generated sourcemaps.
+# Ignore generated JavaScript and sourcemaps.
+**/*.js
 **/*.js.map
-
-# Ignore generated JavaScript files.
-filters/styles.js
-filters/styles_test.js
-filters/utils.js
-filters/utils_test.js
-testing/filters.js
-testing/filters_test.js
+!.eleventy.js
