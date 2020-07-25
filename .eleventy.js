@@ -3,7 +3,7 @@
  * @see https://www.11ty.dev/docs/config/
  */
 
-const { aggregateStyles } = require('./filters/styles.js');
+const { aggregateStyles } = require('./src/filters/styles.js');
 
 module.exports = function (config) {
     // Process markdown and Nunjucks templates.
