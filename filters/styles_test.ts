@@ -1,10 +1,8 @@
-// @ts-check
+import { promises as fs } from 'fs';
+import process from 'process';
 
-const fs = require('fs').promises;
-const process = require('process');
-
-const { execFilter } = require('../testing/filters.js');
-const { aggregateStyles } = require('./styles.js');
+import { execFilter } from '../testing/filters';
+import { aggregateStyles } from './styles';
 
 describe('styles', () => {
     describe('aggregateStyles()', () => {
