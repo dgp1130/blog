@@ -1,0 +1,8 @@
+{
+    "extends": "./tsconfig.base.json",
+    "include": [ "src/**/*_test.ts" ],
+    "compilerOptions": {
+        // Allow testing types.
+        "types": [ "node", "jasmine" ]
+    }
+}

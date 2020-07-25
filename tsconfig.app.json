@@ -1,0 +1,9 @@
+{
+    "extends": "./tsconfig.base.json",
+    "include": [ "src/**/*.ts" ],
+    "exclude": [ "src/**/*_test.ts" ],
+    "compilerOptions": {
+        // Only allow Node types, no testing types like Jasmine.
+        "types": [ "node" ]
+    }
+}
