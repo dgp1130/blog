@@ -1,10 +1,8 @@
-// @ts-check
+import { promises as fs } from 'fs';
+import * as path from 'path';
+import process from 'process';
 
-const fs = require('fs').promises;
-const path = require('path');
-const process = require('process');
-
-const { asyncFilter } = require('./utils.js');
+import { asyncFilter } from './utils';
 
 /**
  * Accepts a list of input file paths delineated by newlines, and resolves with
@@ -16,7 +14,7 @@ const { asyncFilter } = require('./utils.js');
  * `../www/bar.css` will be de-duplicated. However, other tricks like symlinks
  * may work around deduplication. So don't get too complicated here.
  */
-const aggregateStyles = asyncFilter(async (cssFiles) => {
+export const aggregateStyles = asyncFilter(async (cssFiles) => {
     // Format the loose input structure into a set of absoluate, normalized file
     // paths without duplicates.
     const files = new Set(cssFiles.split('\n')
@@ -31,7 +29,3 @@ const aggregateStyles = asyncFilter(async (cssFiles) => {
     // Concatenate the files together.
     return styles.reduce((lStyles, rStyles) => lStyles + rStyles);
 });
-
-module.exports = {
-    aggregateStyles,
-};
