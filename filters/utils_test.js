@@ -30,5 +30,13 @@ describe('utils', () => {
             await expectAsync(execFilter(filter))
                     .toBeRejectedWithError(/Expected at least two arguments/g);
         });
+
+        it('throws an error when not given a callback as the last argument',
+                () => {
+            const filter = asyncFilter(async (input) => input + 1);
+
+            expect(() => filter('foo', 'bar'))
+                    .toThrowError(/Last argument is not a callback function/);
+        });
     });
 });

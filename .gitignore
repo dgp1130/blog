@@ -3,3 +3,7 @@ node_modules/
 
 # Eleventy output directory.
 _site/
+
+# Ignore generated JavaScript files.
+filters/utils.js
+filters/utils.js.map

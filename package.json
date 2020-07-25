@@ -4,9 +4,10 @@
   "description": "Personal blog for https://github.com/dgp1130.",
   "main": "index.js",
   "scripts": {
-    "start": "npm run -s clean && eleventy --serve",
-    "build": "npm run -s clean && eleventy",
-    "test": "jasmine --config=jasmine.config.json",
+    "start": "npm run -s clean && npm run -s build-ts && eleventy --serve",
+    "build": "npm run -s clean && npm run -s build-ts && eleventy",
+    "build-ts": "tsc",
+    "test": "npm run -s build-ts && jasmine --config=jasmine.config.json",
     "clean": "rm -rf _site/"
   },
   "repository": {
@@ -25,6 +26,8 @@
   "homepage": "https://github.com/dgp1130/blog#readme",
   "devDependencies": {
     "@11ty/eleventy": "^0.11.0",
-    "jasmine": "^3.5.0"
+    "@types/node": "^14.0.26",
+    "jasmine": "^3.5.0",
+    "typescript": "^3.9.7"
   }
 }
