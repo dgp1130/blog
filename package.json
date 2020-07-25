@@ -9,7 +9,7 @@
     "build:ts": "tsc -p tsconfig.app.json",
     "build:test": "tsc -p tsconfig.test.json",
     "test": "npm run -s clean && npm run -s build:test && jasmine --config=jasmine.config.json",
-    "clean": "rm -rf _site/ && rm src/**/*.js src/**/*.js.map"
+    "clean": "rm -rf _site/ && rm -f src/**/*.js src/**/*.js.map"
   },
   "repository": {
     "type": "git",
