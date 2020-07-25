@@ -20,11 +20,11 @@ describe('styles', () => {
 
             expect(fs.readFile).toHaveBeenCalledTimes(2);
             expect(fs.readFile).toHaveBeenCalledWith(
-                '/blog/www/styles/foo.css',
+                '/blog/src/www/styles/foo.css',
                 { encoding: 'utf8' },
             );
             expect(fs.readFile).toHaveBeenCalledWith(
-                '/blog/www/otherStyles/bar.css',
+                '/blog/src/www/otherStyles/bar.css',
                 { encoding: 'utf8' },
             );
 
@@ -46,7 +46,7 @@ describe('styles', () => {
 
             expect(fs.readFile).toHaveBeenCalledTimes(1);
             expect(fs.readFile).toHaveBeenCalledWith(
-                '/blog/www/foo.css',
+                '/blog/src/www/foo.css',
                 { encoding: 'utf8' },
             );
 
@@ -69,7 +69,7 @@ describe('styles', () => {
 
             expect(fs.readFile).toHaveBeenCalledTimes(1);
             expect(fs.readFile).toHaveBeenCalledWith(
-                '/blog/www/foo.css',
+                '/blog/src/www/foo.css',
                 { encoding: 'utf8' },
             );
 

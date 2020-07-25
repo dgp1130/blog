@@ -20,7 +20,8 @@ export const aggregateStyles = asyncFilter(async (cssFiles) => {
     const files = new Set(cssFiles.split('\n')
         .map((file) => file.trim())
         .filter((file) => file !== '')
-        .map((file) => path.normalize(path.join(process.cwd(), 'www/', file))));
+        .map((file) => path.normalize(path.join(
+            process.cwd(), 'src/www/', file))));
 
     // Read all source files.
     const styles = await Promise.all(Array.from(files)

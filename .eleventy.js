@@ -30,7 +30,7 @@ module.exports = function (config) {
 
     return {
         dir: {
-            input: 'www/',
+            input: 'src/www/',
         },
     };
 };
