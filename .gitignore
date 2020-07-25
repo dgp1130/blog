@@ -7,3 +7,5 @@ _site/
 # Ignore generated JavaScript files.
 filters/utils.js
 filters/utils.js.map
+testing/filters.js
+testing/filters.js.map

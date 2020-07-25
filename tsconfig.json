@@ -1,5 +1,8 @@
 {
-  "include": ["filters/**/*.ts"],
+  "include": [
+    "filters/**/*.ts",
+    "testing/**/*.ts"
+  ],
   "compilerOptions": {
     /* Visit https://aka.ms/tsconfig.json to read more about this file */
 
