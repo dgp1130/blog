@@ -7,8 +7,8 @@
     "start": "npm run -s clean && npm run -s build-ts && eleventy --serve",
     "build": "npm run -s clean && npm run -s build-ts && eleventy",
     "build-ts": "tsc",
-    "test": "npm run -s build-ts && jasmine --config=jasmine.config.json",
-    "clean": "rm -rf _site/"
+    "test": "npm run -s clean && npm run -s build-ts && jasmine --config=jasmine.config.json",
+    "clean": "rm -rf _site/ && rm src/**/*.js src/**/*.js.map"
   },
   "repository": {
     "type": "git",
