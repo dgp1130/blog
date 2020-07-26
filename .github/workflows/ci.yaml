@@ -31,7 +31,7 @@ jobs:
     - test # Pass CI before deploying.
 
     # Only publish the `deploy` branch.
-    if: ${{ github.ref == 'deploy' }}
+    if: ${{ github.ref == 'refs/heads/deploy' }}
 
     steps:
     - uses: actions/checkout@v2
