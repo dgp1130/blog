@@ -7,7 +7,6 @@ type FilterCallback = (err: Error|null, result?: string) => void;
 // handling all the intermixed cases of string params and callbacks in any order
 // as is specially required by the type. So instead, we can cast to a `Filter`
 // type to make the type checker happy without being too hacky.
-// TODO: TS 4.0 should allow more specific array types and can probably fix it.
 type Filter = Parameters<typeof execFilter>[0];
 
 describe('filters', () => {

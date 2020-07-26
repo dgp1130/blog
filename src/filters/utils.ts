@@ -8,7 +8,6 @@ type FilterCallback = (err: Error|null, result?: string) => void;
  */
 export function asyncFilter(filter: (...args: string[]) => Promise<string>):
         (...inputs: Array<string|FilterCallback>) => void {
-    // TODO: After TS 4.0, make this a more strongly typed input.
     return (...inputs: Array<string|FilterCallback>) => {
         if (inputs.length === 1) {
             throw new Error(

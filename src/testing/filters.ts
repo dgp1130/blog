@@ -6,7 +6,6 @@ type FilterCallback = (err: Error|null, result?: string) => void;
  * calling an 11ty async filter.
  */
 export function execFilter(
-    // TODO: TS 4.0 use more specific type.
     filter: (...args: Array<string|FilterCallback>) => void,
     ...args: string[]
 ) {
