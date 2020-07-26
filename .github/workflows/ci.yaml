@@ -6,12 +6,12 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, deploy ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, deploy ]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
 
     steps:
@@ -23,3 +23,20 @@ jobs:
     - run: npm ci
     - run: npm run build --dryrun
     - run: npm test
+  
+  deploy:
+    runs-on: ubuntu-latest
+
+    needs:
+    - test # Pass CI before deploying.
+
+    # Only publish the `deploy` branch.
+    if: ${{ github.ref == 'deploy' }}
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Publish
+      uses: netlify/actions/build@8f45b27afe97903b73347e97a1cdf1ab85b27eff
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
