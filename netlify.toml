@@ -2,6 +2,5 @@
 # See: https://docs.netlify.com/configure-builds/file-based-configuration/
 
 [build]
-# Netlify will run `npm install` by default.
-command = "npm run build"
+# Root directory of the output is _site/.
 publish = "_site/"
