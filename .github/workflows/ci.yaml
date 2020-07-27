@@ -31,8 +31,23 @@ jobs:
     - name: Build
       run: npm run build
 
-    - name: Deploy
-      # Only publish the `deploy` branch.
+    # Deploys to https://main-preview--dwac.netlify.app/.
+    - name: Deploy Main
+      # Only publish the `main` branch for preview.
+      if: ${{ github.ref == 'refs/heads/main' }}
+
+      # Don't use `--alias main`, as this particular alias appears to be broken.
+      # My guess is that it was already used for Netlify branch builds,
+      # independent of a deployment alias.
+      run: |
+        npm run -- netlify deploy -s "${{ secrets.NETLIFY_SITE_ID }}" \
+          --alias main-preview \
+          -m "Automated preview deployment from GitHub actions."
+      env:
+        NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_PAT }}
+
+    - name: Deploy Prod
+      # Only publish the `deploy` branch to prod.
       if: ${{ github.ref == 'refs/heads/deploy' }}
       run: |
         npm run -- netlify deploy -s "${{ secrets.NETLIFY_SITE_ID }}" --prod \
