@@ -23,29 +23,17 @@ jobs:
         node-version: 12.x
 
     - name: Install
-      run: |
-        ls -l
-        npm ci
-        ls -l
-
-    - name: Build
-      run: |
-        ls -l
-        npm run build
-        ls -l
+      run: npm ci
 
     - name: Test
-      run: |
-        ls -l
-        npm test
-        ls -l
+      run: npm test
+
+    - name: Build
+      run: npm run build
 
     - name: Deploy
       # Only publish the `deploy` branch.
       if: ${{ github.ref == 'refs/heads/deploy' }}
-      run: |
-        ls -l
-        npm run -- netlify deploy -s "${{ secrets.NETLIFY_SITE_ID }}" --prod
-        ls -l
+      run: npm run -- netlify deploy -s "${{ secrets.NETLIFY_SITE_ID }}" --prod
       env:
         NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_PAT }}
