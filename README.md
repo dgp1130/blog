@@ -29,10 +29,7 @@ configuration, while the rest is done on
 * The `main` branch is auto-deployed on GitHub push.
     * Deployed regardless of CI, because Netlify doesn't seem to support this
       feature in GitHub actions, so I can't make it dependent on CI).
-    * Hosted at
-      [https://main--dwac.netlify.app/](https://main--dwac.netlify.app).
-* Pull requests auto-deploy a preview, so they can verified before merging.
-    * Netlify should post a comment on the PR when the preview is ready.
+    * Hosted at [https://main-preview--dwac.netlify.app/](https://main-preview--dwac.netlify.app).
 
 ## Docs
 
