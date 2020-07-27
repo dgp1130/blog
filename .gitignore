@@ -8,3 +8,6 @@ _site/
 **/*.js
 **/*.js.map
 !.eleventy.js
+
+# Local Netlify folder
+.netlify
