@@ -34,6 +34,8 @@ jobs:
     - name: Deploy
       # Only publish the `deploy` branch.
       if: ${{ github.ref == 'refs/heads/deploy' }}
-      run: npm run -- netlify deploy -s "${{ secrets.NETLIFY_SITE_ID }}" --prod
+      run: |
+        npm run -- netlify deploy -s "${{ secrets.NETLIFY_SITE_ID }}" --prod \
+          -m "Automated prod deployment from GitHub actions."
       env:
         NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_PAT }}
