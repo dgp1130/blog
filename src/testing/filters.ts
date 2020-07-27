@@ -1,4 +1,4 @@
-type FilterCallback = (err: Error|null, result?: string) => void;
+import { FilterCallback } from '../filters/utils';
 
 /**
  * Executes the given filter with the provided arguments and returns a

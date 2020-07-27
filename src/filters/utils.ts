@@ -1,5 +1,5 @@
-// Type of the callback function for the async filter.
-type FilterCallback = (err: Error|null, result?: string) => void;
+/** Type of the callback function for the async filter. */
+export type FilterCallback = (err: Error|null, result?: string) => void;
 
 /**
  * Accepts a filter function as an argument and curries a filter function for

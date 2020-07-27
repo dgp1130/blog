@@ -1,6 +1,5 @@
 import { execFilter } from './filters';
-
-type FilterCallback = (err: Error|null, result?: string) => void;
+import { FilterCallback } from '../filters/utils';
 
 // Variance bites us for testing simple filters because most implementations of
 // a filter will be a subtype for a particular set of inputs, rather than
