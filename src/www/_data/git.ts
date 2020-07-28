@@ -1,18 +1,12 @@
-import { execFile as execFileImport } from 'child_process';
-import { promisify } from 'util';
+import { Repository, Revparse } from 'nodegit';
 
-const execFile = promisify(execFileImport);
-
-/**
- * Retrieves information from the Git repo.
- * 
- * Implementation note: `execFile` is injected to allow tests to easily mock it.
- */
-async function git(exec: typeof execFile = execFile) {
-    const { stdout: rev } = await exec('git', [ 'rev-parse', 'HEAD' ]);
+/** Retrieves information from the current Git repo. */
+async function git() {
+    const repo = await Repository.open('.');
+    const obj = await Revparse.single(repo, 'HEAD');
 
     return {
-        commit: rev.trim(),
+        commit: obj.id().toString(),
     };
 }
 

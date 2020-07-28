@@ -1,30 +1,42 @@
+import { Object as GitObject, Oid, Repository, Revparse } from 'nodegit';
+
 import git from './git';
 
 describe('git', () => {
     describe('default function', () => {
         it('outputs Git metadata', async () => {
-            const execFile = jasmine.createSpy('execFile').and.returnValue(
-                Promise.resolve({
-                    stdout: 'abcdef',
-                    stderr: 'Other junk...',
-                }),
-            );
+            const repo = {} as Repository;
+            const obj = {
+                id: () => ({
+                    toString: () => 'abcdef',
+                }) as Oid,
+            } as unknown as GitObject;
 
-            const { commit } = await git(execFile);
+            spyOn(Repository, 'open').and.returnValue(Promise.resolve(repo));
+            spyOn(Revparse, 'single').and.returnValue(Promise.resolve(obj));
 
-            expect(execFile).toHaveBeenCalledTimes(1);
-            expect(execFile).toHaveBeenCalledWith(
-                    'git', [ 'rev-parse', 'HEAD' ]);
+            const { commit } = await git();
+
+            expect(Repository.open).toHaveBeenCalledWith('.');
+            expect(Revparse.single).toHaveBeenCalledWith(repo, 'HEAD');
 
             expect(commit).toBe('abcdef');
         });
 
-        it('fails when `git` cannot be executed', async () => {
+        it('fails when unable to read the repository', async () => {
             const err = new Error('Could not "git"-er-done.');
-            const execFile = jasmine.createSpy('execFile').and.returnValue(
-                Promise.reject(err));
-            
-            await expectAsync(git(execFile)).toBeRejectedWith(err);
+            spyOn(Repository, 'open').and.returnValue(Promise.reject(err));
+
+            await expectAsync(git()).toBeRejectedWith(err);
+        });
+
+        it('fails when unable to parse the revision', async () => {
+            const err = new Error('Could not "git"-er-done.');
+            spyOn(Repository, 'open').and.returnValue(
+                    Promise.resolve({} as Repository));
+            spyOn(Revparse, 'single').and.returnValue(Promise.reject(err));
+
+            await expectAsync(git()).toBeRejectedWith(err);
         });
     });
 });
