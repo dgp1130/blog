@@ -10,7 +10,7 @@
                 Commit: <a href="{{ repo.href }}/commit/{{ git.commit }}">
                     {{- git.commit | short -}}
                 </a>
-                {% if not git.clean %}
+                {%- if not git.clean %}
                     (with local changes)
                 {%- endif -%}
                 .
