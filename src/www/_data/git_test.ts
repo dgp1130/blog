@@ -18,5 +18,13 @@ describe('git', () => {
 
             expect(commit).toBe('abcdef');
         });
+
+        it('fails when `git` cannot be executed', async () => {
+            const err = new Error('Could not "git"-er-done.');
+            const execFile = jasmine.createSpy('execFile').and.returnValue(
+                Promise.reject(err));
+            
+            await expectAsync(git(execFile)).toBeRejectedWith(err);
+        });
     });
 });
