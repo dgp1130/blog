@@ -1,5 +1,6 @@
 # This workflow will do a clean install of node dependencies, build the source
-# code and run tests. For more information, see:
+# code, run tests, and deploy a preview build for the `main` branch or to prod
+# for the `deploy` branch. For more information, see:
 # https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
 name: CI
@@ -11,7 +12,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build-test-deploy:
+  test-build-deploy:
     runs-on: ubuntu-latest
 
     steps:
