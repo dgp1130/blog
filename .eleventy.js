@@ -4,6 +4,7 @@
  */
 
 const { aggregateStyles } = require('./src/filters/styles.js');
+const { short } = require('./src/filters/git.js');
 
 module.exports = function (config) {
     // Process markdown and Nunjucks templates.
@@ -22,6 +23,8 @@ module.exports = function (config) {
         console.log(data);
         return data;
     });
+
+    config.addFilter('short', short);
 
     // Aggregate a list of CSS file references into a de-duplicated and
     // concatenated string of their content. Useful to pipe into `safe` and
