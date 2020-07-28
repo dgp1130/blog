@@ -1,0 +1,39 @@
+# This workflow will do a clean install of node dependencies, build the source
+# code, and deploy a preview for all `post/*` branches.
+#
+# We choose **not** to run tests because this is an in-progress branch which
+# may not be entirely stable. It isn't intended for production users, so there
+# is no need to restrict previews to passing tests.
+
+name: Post Preview
+
+on:
+  push:
+    branches: [ posts/* ]
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+
+    - name: Install
+      run: npm ci
+
+    - name: Build
+      run: npm run build
+
+    # Deploy a preview to https://post-${branch-name}--dwac.netlify.app/.
+    - name: Deploy Post Preview
+      run: |
+        npm run -- netlify deploy -s "${{ secrets.NETLIFY_SITE_ID }}" \
+          --alias post-$(echo "${{ github.ref }}" | sed "s,^refs/heads/posts/,,g") \
+          -m "Automated PR preview deployment from GitHub actions."
+      env:
+        NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_PAT }}

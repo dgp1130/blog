@@ -27,9 +27,11 @@ configuration, while the rest is done on
     * Only deployed if CI passes.
     * Hosted at https://dwac.netlify.app/.
 * The `main` branch is auto-deployed on GitHub push.
-    * Deployed regardless of CI, because Netlify doesn't seem to support this
-      feature in GitHub actions, so I can't make it dependent on CI).
+    * Only deployed if CI passes.
     * Hosted at [https://main-preview--dwac.netlify.app/](https://main-preview--dwac.netlify.app).
+* Any `posts/*` branches are auto-deployed on GitHub push.
+    * These are previews of in-progress posts, so tests are not executed here.
+    * Hosted at https://post-&lt;branch-name&gt;--dwac.netlify.app.
 
 ## Docs
 
