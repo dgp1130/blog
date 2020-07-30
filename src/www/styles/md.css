@@ -1,0 +1,369 @@
+/*
+  Forked from https://markedstyle.com/styles/grump with major and minor edits.
+
+  This document has been created with Marked.app <http://marked2app.com>
+  Please leave this notice in place, along with any additional credits below.
+  ---------------------------------------------------------------
+  Title: Grump
+  Author: Brett Terpstra <http://brettterpstra.com>
+  Description: Hard on the outside, soft on the inside
+*/
+
+.md {
+  color: #666666;
+  font-size: 1.25em;
+  padding: 1em;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.md * {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.md table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+.md caption, .md th, .md td {
+  text-align: left;
+  font-weight: normal;
+  vertical-align: middle;
+}
+
+.md q, .md blockquote {
+  quotes: none;
+}
+
+.md q:before, .md q:after, .md blockquote:before, .md blockquote:after {
+  content: "";
+  content: none;
+}
+
+.md a img {
+  border: none;
+}
+
+.md article, .md aside, .md details, .md figcaption, .md figure, .md footer,
+.md header, .md hgroup, .md menu, .md nav, .md section, .md summary {
+  display: block;
+}
+
+.md button, .md input {
+  line-height: normal;
+}
+
+.md button, .md input, .md select, .md textarea {
+  font-size: 100%;
+  margin: 0;
+  vertical-align: baseline;
+  *vertical-align: middle;
+}
+
+.md button, .md input[type="button"], .md input[type="reset"],
+.md input[type="submit"] {
+  cursor: pointer;
+  *overflow: visible;
+}
+
+.md button::-moz-focus-inner, .md input::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+
+.md textarea {
+  overflow: auto;
+  vertical-align: top;
+  resize: vertical;
+}
+
+.md img {
+  max-width: 100%;
+  height: auto;
+}
+
+.md dd {
+  margin-bottom: 1em;
+}
+
+.md li > p:first-child {
+  margin: 0;
+}
+
+.md caption, .md col, .md colgroup, .md table, .md tbody, .md td, .md tfoot,
+.md th, .md thead, .md tr {
+  border-spacing: 0;
+}
+
+.md table {
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  border-collapse: collapse;
+  display: table;
+  empty-cells: hide;
+  margin: -1px 0 23px;
+  padding: 0;
+  table-layout: fixed;
+  width: 100%;
+}
+
+.md caption {
+  display: table-caption;
+  font-weight: 700;
+}
+
+.md col {
+  display: table-column;
+}
+
+.md colgroup {
+  display: table-column-group;
+}
+
+.md tbody {
+  display: table-row-group;
+}
+
+.md tfoot {
+  display: table-footer-group;
+}
+
+.md thead {
+  display: table-header-group;
+  border-bottom: solid 1px #999;
+}
+
+.md td, .md th {
+  display: table-cell;
+}
+
+.md tr {
+  display: table-row;
+}
+
+.md table th, .md table td {
+  font-size: 1.1em;
+  line-height: 23px;
+  padding: 0 1em;
+}
+
+.md dt, .md th {
+  font-weight: 700;
+}
+
+.md dd {
+  padding-left: 1.4em;
+}
+
+.md table tr:nth-child(even) {
+  background: rgba(200, 200, 200, 0.25);
+}
+
+.md figure {
+  display: inline-block;
+  position: relative;
+  margin: 1em 0 2em;
+}
+
+.md figcaption {
+  font-style: italic;
+  text-align: center;
+}
+
+.md pre {
+  overflow: auto;
+  display: block;
+  margin: 1.4em auto;
+  background: #FAF8F5;
+  padding: 15px 10px 10px;
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  -ms-border-radius: 8px;
+  -o-border-radius: 8px;
+  border-radius: 8px;
+  border: solid 1px #ddd;
+}
+
+.md sup, .md sub, .md a.footnote {
+  font-size: 1.4ex;
+  height: 0;
+  line-height: 1;
+  position: relative;
+  vertical-align: super;
+}
+
+.md sub {
+  vertical-align: sub;
+  top: -1px;
+}
+
+.md .footnote {
+  font-size: .8em;
+  vertical-align: super;
+}
+
+.md .footnotes p {
+  font-size: 1.9ex;
+}
+
+.md ul ul, .md ol ol {
+  margin-left: 1em;
+}
+
+.md li ul, .md li ol {
+  margin-bottom: 0;
+}
+
+@media print {
+  img, pre, blockquote, table, figure, p {
+    page-break-inside: avoid;
+  }
+  .md {
+    background: #fff;
+    color: #303030;
+    padding: 10px;
+    position: relative;
+    text-indent: 0;
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+    box-shadow: none !important;
+  }
+}
+
+@media screen {
+  .inverted, .inverted .md {
+    background: #252a2a;
+  }
+  .inverted hr {
+    border-color: #333f40 !important;
+  }
+  .inverted p, .inverted td, .inverted li, .inverted h1, .inverted h2,
+  .inverted h3, .inverted h4, .inverted h5, .inverted h6, .inverted pre,
+  .inverted code, .inverted th, .inverted .math, .inverted caption,
+  .inverted dd, .inverted dt {
+    color: #fcf9f7 !important;
+  }
+  .inverted table tr:nth-child(odd), .inverted table th:nth-child(odd),
+  .inverted table td:nth-child(odd) {
+    background: none;
+  }
+  .inverted a {
+    color: #acd1d5;
+  }
+}
+
+.md h1, .md h2, .md h3, .md h4, .md h5, .md h6 {
+  font: inherit;
+  font-weight: bold;
+}
+
+.md h1 {
+  font-size: 2.25em;
+  line-height: 1.11111em;
+  margin: 0 0 0.66667em 0;
+}
+
+.md h2 {
+  font-size: 1.875em;
+  line-height: 1.33333em;
+  margin: 1.06667em 0 0.53333em 0;
+}
+
+.md h3 {
+  font-size: 1.375em;
+  line-height: 1.45455em;
+  margin: 1.45455em 0 0.72727em 0;
+}
+
+.md h4 {
+  font-size: 1.25em;
+  line-height: 1.2em;
+  margin: 0 0 0.4em 0;
+}
+
+.md h5 {
+  font-size: 1.125em;
+  line-height: 1.33333em;
+  margin: 0 0 0.44444em 0;
+}
+
+.md h6 {
+  font-size: 1em;
+  line-height: 1.5em;
+  margin: 0 0 0.5em 0;
+}
+
+.md p, .md pre, .md label {
+  font-size: 1em;
+  line-height: 1.5em;
+  margin: 0 0 1em 0;
+}
+
+.md ol, .md ul {
+  font-size: 1em;
+  line-height: 1.5em;
+}
+
+.md li {
+  line-height: auto;
+}
+
+.md code {
+  font-family: menlo, courier, monospace;
+  word-wrap: break-word;
+}
+
+.md ul, .md ol {
+  list-style-position: outside;
+
+  /*
+   * Shift bullet spacing to the margin, so long bullet line wrap at consistent
+   * left-margins, rather than wrapping around the bullet itself.
+   */
+  margin-inline-start: 40px;
+  padding-inline-start: 0;
+}
+
+.md ol {
+  list-style-type: decimal;
+}
+
+.md strong, .md b {
+  font-weight: 600;
+}
+
+.md em, .md i, .md q {
+  font-style: italic;
+}
+
+.md blockquote {
+  padding-left: 1em;
+  border-left: 0.3125em solid grey;
+  line-height: normal;
+  margin: 1.2em 0 1.2em 0;
+}
+
+.md blockquote p {
+  font-style: italic;
+  margin: 0;
+  font-size: 1.25em;
+  line-height: 1.2em;
+}
+
+.md a:link, .md a:visited {
+  text-decoration: none;
+  -webkit-transition: color 0.1s linear;
+  -moz-transition: color 0.1s linear;
+  -o-transition: color 0.1s linear;
+  transition: color 0.1s linear;
+}
+
+.md a:hover, .md a:active {
+  color: #7bdaff;
+  -webkit-transition: color 0.15s linear;
+  -moz-transition: color 0.15s linear;
+  -o-transition: color 0.15s linear;
+  transition: color 0.15s linear;
+}

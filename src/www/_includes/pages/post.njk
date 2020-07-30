@@ -1,4 +1,15 @@
+{% import "fragments/footer.njk" as footer %}
+{% import "fragments/header.njk" as header %}
 {% import "fragments/author.njk" as author %}
+
+{% set styleLinks %}
+    styles/base.css
+    styles/theme.css
+    styles/md.css
+    {{ header.styles() }}
+    {{ footer.styles() }}
+    _includes/pages/post.css
+{% endset %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -6,9 +17,18 @@
         <title>{{ title }}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="{{ excerpt }}">
+        <link rel="stylesheet"
+                href="https://fonts.googleapis.com/css2?family=Lora&display=swap">
+        <style>
+            {{ styleLinks | aggregateStyles | safe }}
+        </style>
     </head>
     <body>
-        <article>{{ content | safe }}</article>
-        <aside>{{ author.author() }}</aside>
+        {{ header.header() }}
+        <main>
+            <article class="md">{{ content | safe }}</article>
+            <aside>{{ author.author() }}</aside>
+        </main>
+        {{ footer.footer() }}
     </body>
 </html>
