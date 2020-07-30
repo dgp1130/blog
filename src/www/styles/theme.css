@@ -15,11 +15,11 @@
 :root {
     /* Core theme colors. */
     --dwac-theme-color-primary: #0d47a1;
-    --dwac-theme-color-bg: #e1e2e1;
+    --dwac-theme-color-bg: #fefefe;
     --dwac-theme-color-secondary: white;
     
     /* Fonts. */
-    --dwac-theme-font-primary: "Lora", "Verdana", sans-serif;
+    --dwac-theme-font-primary: Lora, Verdana, sans-serif;
 
     /* Font sizes. */
     --dwac-theme-font-size-small: 12px;
