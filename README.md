@@ -31,7 +31,7 @@ configuration, while the rest is done on
     * Hosted at [https://main-preview--dwac.netlify.app/](https://main-preview--dwac.netlify.app).
 * Any `posts/*` branches are auto-deployed on GitHub push.
     * These are previews of in-progress posts, so tests are not executed here.
-    * Hosted at https://post-&lt;branch-name&gt;--dwac.netlify.app.
+    * Hosted at https://post-${branch-name}--dwac.netlify.app.
 
 ## Docs
 
