@@ -5,6 +5,17 @@ body {
     margin: 0;
     padding: 0;
     font-family: var(--dwac-theme-font-primary);
+    font-size: 1.25em;
+}
+
+p {
+    /*
+     * Override this color by setting --dwac-text-color to the desired value for
+     * a particular element.
+     */
+    color: var(--dwac-text-color);
+    font-size: var(--dwac-font-size-medium);
+    line-height: 1.5em;
 }
 
 /*

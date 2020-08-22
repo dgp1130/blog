@@ -11,7 +11,6 @@
 
 .md {
   color: #666666;
-  font-size: 1.25em;
   padding: 1em;
   max-width: 720px;
   margin: 0 auto;
@@ -290,19 +289,19 @@
 }
 
 .md h6 {
-  font-size: 1em;
+  font-size: var(--dwac-font-size-medium);
   line-height: 1.5em;
   margin: 0 0 0.5em 0;
 }
 
 .md p, .md pre, .md label {
-  font-size: 1em;
+  font-size: var(--dwac-font-size-medium);
   line-height: 1.5em;
   margin: 0 0 1em 0;
 }
 
 .md ol, .md ul {
-  font-size: 1em;
+  font-size: var(--dwac-font-size-medium);
   line-height: 1.5em;
 }
 

@@ -1,7 +1,7 @@
 /** Style sheet for the root index page. */
 
 :root {
-    --dwac-index-padding: 0.75rem;
+    --dwac-index-padding: 1em;
 }
 
 body {
@@ -18,7 +18,12 @@ body {
 h2 {
     margin: 1rem 0;
     text-align: center;
-    text-decoration: underline;
+
+    /* From markdown styles. */
+    color: #666;
+    font-size: 1.875em;
+    line-height: 1.33333em;
+    margin: 0.8em 0 0.53333em 0;
 }
 
 main {
@@ -43,6 +48,7 @@ main {
 
 .post-timestamp {
     text-decoration: underline;
+    color: black;
 }
 
 .footer {

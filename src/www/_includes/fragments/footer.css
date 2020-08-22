@@ -1,11 +1,11 @@
 /** @fileoverview Styles for the page footer. */
 
 .frag-footer {
+    --dwac-text-color: var(--dwac-theme-text-color-secondary);
     --dwac-link-color: var(--dwac-theme-link-alt-color);
     --dwac-link-color-visited: var(--dwac-theme-link-alt-color-visited);
 
     background-color: var(--dwac-theme-color-primary);
-    color: var(--dwac-theme-color-secondary);
     padding: 0.75rem;
 }
 
