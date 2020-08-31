@@ -12,6 +12,10 @@ Run a hot-reloading server with `npm start`.
 
 Run tests with `npm test`.
 
+You can debug in VSCode with the `npm start` launch configuration. It will start
+a dev build and automatically connect to each Node process as it runs stop on
+breakpoints.
+
 Make a one-off build with `npm run build`. This is not all that useful for local
 development, but CI takes advantage of it.
 
