@@ -1,6 +1,6 @@
 {
     "extends": "./tsconfig.base.json",
-    "include": [ "src/**/*_test.ts" ],
+    "include": [ "src/11ty/**/*_test.ts" ],
     "compilerOptions": {
         // Allow testing types.
         "types": [ "node", "jasmine" ]

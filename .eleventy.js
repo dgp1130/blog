@@ -3,9 +3,9 @@
  * @see https://www.11ty.dev/docs/config/
  */
 
-const { aggregateStyles } = require('./src/filters/styles.js');
-const { short } = require('./src/filters/git.js');
-const { format: formatDate } = require('./src/filters/dates.js');
+const { aggregateStyles } = require('./src/11ty/filters/styles.js');
+const { short } = require('./src/11ty/filters/git.js');
+const { format: formatDate } = require('./src/11ty/filters/dates.js');
 
 module.exports = function (config) {
     // Process markdown and Nunjucks templates.
@@ -30,6 +30,10 @@ module.exports = function (config) {
     return {
         dir: {
             input: 'src/www/',
+
+            // Move _data/ outside input directory so it can be compiled as 11ty
+            // code without conflicting with other build targets.
+            data: '../11ty/_data/',
         },
     };
 };
