@@ -5,8 +5,14 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "command": "npm start",
-            "name": "npm start",
+            "name": "11ty Build",
+            "command": "npm run build",
+            "request": "launch",
+            "type": "node-terminal"
+        },
+        {
+            "name": "11ty Test",
+            "command": "npm test",
             "request": "launch",
             "type": "node-terminal"
         }
