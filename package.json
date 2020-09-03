@@ -4,9 +4,9 @@
   "description": "Personal blog for https://github.com/dgp1130.",
   "main": "index.js",
   "scripts": {
-    "start": "npm run -s clean && npm run -s build:11ty && npm run -s build:browser && eleventy --serve",
+    "start": "npm run -s clean && npm run -s build:11ty && eleventy --serve",
 
-    "build": "npm run -s clean && npm run -s build:11ty && npm run -s build:browser && eleventy",
+    "build": "npm run -s clean && npm run -s build:11ty && eleventy",
     "build:11ty": "tsc -p tsconfig.11ty.json",
     "build:11ty-test": "tsc -p tsconfig.11ty-test.json",
 
