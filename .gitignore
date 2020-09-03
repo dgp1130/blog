@@ -8,6 +8,7 @@ _site/
 **/*.js
 **/*.js.map
 !.eleventy.js
+!karma.conf.js
 
 # Local Netlify folder
 .netlify

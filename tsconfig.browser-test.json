@@ -1,0 +1,8 @@
+{
+    "extends": "./tsconfig.base.json",
+    "include": [ "src/client/**/*_test.ts", "src/www/**/*_test.ts" ],
+    "compilerOptions": {
+        "module": "CommonJS",
+        "types": [ "jasmine" ]
+    }
+}

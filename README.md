@@ -6,18 +6,34 @@ My personal blog.
 ![CI](https://github.com/dgp1130/blog/workflows/CI/badge.svg?branch=main)
 [![Netlify Status](https://api.netlify.com/api/v1/badges/2911a197-8a53-460c-ad53-016372148b01/deploy-status)](https://app.netlify.com/sites/dwac/deploys)
 
-## Development
+## Local Builds
 
-Run a hot-reloading server with `npm start`.
+Run a hot-reloading server with `npm start`. Open
+[`http://localhost:8080/`](http://localhost:8080/) to view the local site.
 
-Run tests with `npm test`.
+You can make a one-off build with `npm run build`. This is not all that useful
+for local development, but CI takes advantage of it.
 
-You can debug in VSCode with preset launch configurations.
-* `11ty Build` will run 11ty and attach the debugger to each process.
-* `11ty Test` will run tests for 11ty JavaScript and attach the debugger.
+You can debug the build in VSCode with the `11ty Build` launch configuration.
+This will run a build and attach the VSCode debugger to each process as it
+executes. This should trigger breakpoints in [`.eleventy.js`](.eleventy.js) and
+any related files.
 
-Make a one-off build with `npm run build`. This is not all that useful for local
-development, but CI takes advantage of it.
+## Tests
+
+Run all tests once with `npm test`.
+
+There are two sets of tests that are executed:
+1. Tests of the NodeJS code used in the 11ty build.
+    * Run directly with `npm run test:11ty`.
+    * Debug with the `11ty Test` launch configuration in VSCode.
+1. Tests of the client browser code.
+    * Run directly with `npm run test:browser`.
+    * Watch with `npm run test:browser:dev`.
+    * Debug with `npm run test:browser:dev` and open
+      [`http://localhost:9876/debug.html`](http://localhost:9876/debug.html).
+      This should include include an HTML reporter, live reloads, and
+      functioning source maps.
 
 ## Deployments
 
