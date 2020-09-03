@@ -3,5 +3,7 @@
         80
     ],
     "typescript.enablePromptUseWorkspaceTsdk": true,
-    "typescript.tsdk": "./node_modules/typescript/lib"
+    "typescript.tsdk": "./node_modules/typescript/lib",
+    "files.trimFinalNewlines": true,
+    "files.insertFinalNewline": true
 }
