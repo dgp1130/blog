@@ -4,12 +4,17 @@
   "description": "Personal blog for https://github.com/dgp1130.",
   "main": "index.js",
   "scripts": {
-    "start": "npm run -s clean && npm run -s build:ts && eleventy --serve",
-    "build": "npm run -s clean && npm run -s build:ts && eleventy",
-    "build:ts": "tsc -p tsconfig.app.json",
-    "build:test": "tsc -p tsconfig.test.json",
-    "test": "npm run -s clean && npm run -s build:test && jasmine --config=jasmine.config.json",
+    "start": "npm run -s clean && npm run -s build:11ty && npm run -s build:browser && eleventy --serve",
+
+    "build": "npm run -s clean && npm run -s build:11ty && npm run -s build:browser && eleventy",
+    "build:11ty": "tsc -p tsconfig.11ty.json",
+    "build:11ty-test": "tsc -p tsconfig.11ty-test.json",
+
+    "test": "npm run -s clean && npm run -s test:11ty",
+    "test:11ty": "npm run -s build:11ty-test && jasmine --config=jasmine.config.json",
+
     "clean": "rm -rf _site/ && find src/ \\( -name '*.js' -o -name '*.js.map' \\) -delete",
+
     "netlify": "netlify"
   },
   "repository": {
