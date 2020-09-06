@@ -11,6 +11,7 @@
 
     "compilerOptions": {
         "module": "CommonJS",
-        "types": [ "jasmine" ]
+        "types": [ "jasmine" ],
+        "noEmitOnError": true // Karma gives cleaner error messages this way.
     }
 }

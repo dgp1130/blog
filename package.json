@@ -36,6 +36,7 @@
   "homepage": "https://github.com/dgp1130/blog#readme",
   "devDependencies": {
     "@11ty/eleventy": "^0.11.0",
+    "@babel/plugin-transform-runtime": "^7.11.5",
     "@rollup/plugin-node-resolve": "^9.0.0",
     "@rollup/plugin-typescript": "^5.0.2",
     "@types/jasmine": "^3.5.11",
@@ -47,6 +48,7 @@
     "karma-jasmine": "^4.0.1",
     "karma-jasmine-html-reporter": "^1.5.4",
     "karma-typescript": "^5.1.0",
+    "karma-typescript-es6-transform": "^5.1.0",
     "netlify-cli": "^2.58.0",
     "nodegit": "^0.26.5",
     "rollup": "^2.26.5",

@@ -1,5 +1,7 @@
 // @ts-check
 
+const es6Transform = require('karma-typescript-es6-transform');
+
 module.exports = function(config) {
     config.set({
         // base path that will be used to resolve all patterns (eg. files,
@@ -22,6 +24,18 @@ module.exports = function(config) {
 
         karmaTypescriptConfig: {
             tsconfig: './tsconfig.browser-test.json',
+
+            bundlerOptions: {
+                transforms: [
+                    // Add Babel transformer to process ESM code.
+                    es6Transform({
+                        plugins: [
+                            // Add Babel runtime for transformed code.
+                            "@babel/plugin-transform-runtime",
+                        ],
+                    }),
+                ],
+            },
 
             // Disable coverage, or else it wraps source files inline and blocks
             // the sourcemap comment from being at the end of the file, thus the
