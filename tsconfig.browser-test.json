@@ -1,6 +1,14 @@
 {
     "extends": "./tsconfig.base.json",
-    "include": [ "src/client/**/*_test.ts", "src/www/**/*_test.ts" ],
+
+    // We only test `client/`, not `www/`. The later directory only contains
+    // entry points and no meaningful code that needs to be tested. If we wanted
+    // to test something in `www/`, it should be refactored into a function
+    // exported from `client/` and tested. It would then simply be called from
+    // `www/` at the top-level of a file. By not importing `www/` we avoid
+    // invoking all the top-level side effects that come with doing so.
+    "include": [ "src/client/**/*_test.ts" ],
+
     "compilerOptions": {
         "module": "CommonJS",
         "types": [ "jasmine" ]

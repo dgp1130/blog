@@ -1,0 +1,22 @@
+{
+    "extends": "./tsconfig.base.json",
+    "compilerOptions": {
+        "module": "ES2015"
+    },
+
+    // Ideally, this should just use a `files` array which references the
+    // "top-level" scripts loaded onto individual pages. However, Rollup's
+    // TypeScript plugin doesn't seem to like that, so we need to `include`
+    // instead. This will play better with the solution-style `tsconfig.json`
+    // anyways, since un-imported files will still be included in this
+    // compilation, which they would not be if using `files`.
+    "include": [ "src/client/**/*.ts", "src/www/**/*.ts" ],
+
+    "exclude": [
+        "src/client/**/*_test.ts",
+        // We exclude test files in `www/`, however there should not be any
+        // tests in that directory, because it should only contain entry points
+        // which import libraries from `client/` which are properly tested.
+        "src/www/**/*_test.ts",
+    ]
+}

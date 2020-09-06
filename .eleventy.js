@@ -9,8 +9,11 @@ const { format: formatDate } = require('./src/11ty/filters/dates.js');
 
 module.exports = function (config) {
     // Process markdown and Nunjucks templates.
-    // Pass through *.css files to the output directory.
-    config.setTemplateFormats(['md', 'njk', 'css']);
+    config.setTemplateFormats(['md', 'njk']);
+
+    // Copy pre-built client JavaScript and sourcemaps to the output.
+    config.addPassthroughCopy('src/www/**/*.js');
+    config.addPassthroughCopy('src/www/**/*.js.map');
 
     // Add filters.
     config.addFilter('date', formatDate);

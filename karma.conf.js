@@ -11,7 +11,7 @@ module.exports = function(config) {
         frameworks: [ 'jasmine', 'karma-typescript' ],
 
         // list of files / patterns to load in the browser
-        files: [ 'src/client/**/*.ts', 'src/www/**/*.ts' ],
+        files: [ 'src/client/**/*.ts' ],
 
         // preprocess matching files before serving them to the browser
         // available preprocessors:

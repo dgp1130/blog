@@ -9,6 +9,7 @@ _site/
 **/*.js.map
 !.eleventy.js
 !karma.conf.js
+!rollup.config.js
 
 # Local Netlify folder
 .netlify
