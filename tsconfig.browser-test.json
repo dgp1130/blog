@@ -12,6 +12,7 @@
     "compilerOptions": {
         "module": "CommonJS",
         "types": [ "jasmine" ],
-        "noEmitOnError": true // Karma gives cleaner error messages this way.
+        "noEmitOnError": true, // Karma gives cleaner error messages this way.
+        "experimentalDecorators": true // For lit-element.
     }
 }

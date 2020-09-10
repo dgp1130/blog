@@ -1,1 +1,1 @@
-console.log('Post!');
+import '../../client/components/hello';
