@@ -26,6 +26,9 @@ export class Share extends LitElement {
     @property({ attribute: 'article-title' }) public articleTitle?: string;
 
     render(): TemplateResult|void {
+        assertDefined(this.target);
+        assertDefined(this.articleTitle);
+
         return html`
             ${ifDefined(navigator.share && html`
                 <button id="share" @click="${this.onShare.bind(this)}">
@@ -37,6 +40,13 @@ export class Share extends LitElement {
                     Copy!
                 </button>
             `)}
+            <a href="https://twitter.com/intent/tweet?text=${
+                    encodeURIComponent(`Check out: "${this.articleTitle}". ${
+                            this.target.toString()}`)}"
+                    target="_blank"
+                    rel="noopener">
+                Tweet!
+            </a>
         `;
     }
 

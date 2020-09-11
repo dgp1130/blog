@@ -156,4 +156,22 @@ describe('Share', () => {
         expect(navigator.clipboard.writeText)
                 .toHaveBeenCalledWith('https://copied.test/foo');
     });
+
+    it('renders a direct link to tweet the link', async () => {
+        const share = await init({
+            target: new URL('https://tweeted.link/'),
+            articleTitle: 'Tweetable Article',
+        });
+
+        const link = share.shadowRoot!.querySelector('a')!;
+        expect(link).not.toBeNull();
+
+        expect(link.href).toContain('https://twitter.com/intent/tweet');
+        const href = new URL(link.href);
+        expect(href.searchParams.get('text'))
+                .toBe('Check out: "Tweetable Article". https://tweeted.link/');
+
+        expect(link.target).toBe('_blank');
+        expect(link.rel).toBe('noopener');
+    });
 });
