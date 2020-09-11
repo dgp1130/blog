@@ -2,7 +2,6 @@
   "name": "dgp1130-blog",
   "version": "0.0.0",
   "description": "Personal blog for https://github.com/dgp1130.",
-  "main": "index.js",
   "scripts": {
     "start": "npm run -s clean && npm run -s build:11ty && npm run -s build:browser && eleventy --serve",
     "build": "npm run -s clean && npm run -s build:11ty && npm run -s build:browser && eleventy",
