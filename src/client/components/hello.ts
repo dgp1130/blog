@@ -14,3 +14,9 @@ export class Hello extends LitElement {
         `;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        'dwac-hello': Hello;
+    }
+}
