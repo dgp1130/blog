@@ -2,7 +2,29 @@
     "extends": "./tsconfig.base.json",
     "compilerOptions": {
         "module": "ES2015",
-        "experimentalDecorators": true // For lit-element.
+        "experimentalDecorators": true, // For lit-element.
+        "plugins": [
+            {
+                "name": "ts-lit-plugin",
+                "strict": true,
+                "rules": {
+                    // Set rules to strictest possible set.
+                    // Must keep in sync with the `test:lit` NPM script.
+                    // Rules definitions: https://github.com/runem/lit-analyzer/blob/68620f62d408f484e51629fcecfb719389daab10/docs/readme/rules.md
+                    "no-unknown-tag-name": "error",
+                    "no-missing-import": "error",
+                    "no-missing-element-type-definition": "error",
+                    "no-unknown-attribute": "error",
+                    "no-unknown-property": "error",
+                    "no-unknown-event": "error",
+                    "no-unknown-slot": "error",
+                    "no-legacy-attribute": "error",
+                    "no-unintended-mixed-binding": "error",
+                    "no-property-visibility-mismatch": "error",
+                    "no-invalid-css": "error"
+                }
+            }
+        ]
     },
 
     // Ideally, this should just use a `files` array which references the
