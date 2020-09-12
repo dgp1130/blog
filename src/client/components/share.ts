@@ -8,7 +8,16 @@ import { makeShareable } from '../share';
 export class Share extends LitElement {
     static styles = css`
         :host {
-            --dwac-twitter-blue: rgb(29, 161, 242);
+            --dwac-share-twitter-blue: rgb(29, 161, 242);
+        }
+
+        #copy {
+            height: 24px;
+            vertical-align: middle;
+        }
+
+        #copy > svg {
+            height: 100%;
         }
 
         #twitter-logo {
@@ -17,7 +26,26 @@ export class Share extends LitElement {
             vertical-align: middle;
 
             fill: currentColor;
-            color: var(--dwac-twitter-blue);
+            color: var(--dwac-share-twitter-blue);
+        }
+
+        /*
+         * Removes default styling on a button element. Useful for a semantic
+         * button that doesn't **look** like a traditional button.
+         */
+        button.unstyled {
+            display: inline-block;
+            background: none;
+            border: none;
+            margin: 0;
+            padding: 0;
+            text-decoration: none;
+            font-family: sans-serif;
+            font-size: 1rem;
+            cursor: pointer;
+            text-align: center;
+            -webkit-appearance: none;
+            -moz-appearance: none;
         }
     `;
 
@@ -51,8 +79,14 @@ export class Share extends LitElement {
                 </button>
             `)}
             ${ifDefined(navigator.clipboard?.writeText && html`
-                <button id="copy" @click="${this.onCopy.bind(this)}">
-                    Copy!
+                <button id="copy" @click="${this.onCopy.bind(this)}"
+                        class="unstyled" title="Copy to clipboard">
+                    <svg viewBox="0 0 373 475" xmlns="http://www.w3.org/2000/svg">
+                        <g>
+                            <rect stroke="#000" rx="60" width="248" height="328" x="105" y="20" stroke-width="40" fill="#fff" />
+                            <rect stroke="#000" rx="60" width="248" height="328" x="20" y="127" stroke-width="40" fill="#fff" />
+                        </g>
+                    </svg>
                 </button>
             `)}
             <a href="https://twitter.com/intent/tweet?text=${
