@@ -1,7 +1,9 @@
-{% macro header(class="") %}
-    <header class="frag-header {{ class }}">
-        <h1>Devel without a Cause</h1>
-    </header>
+{% macro header(class="", href="/") %}
+    <a href="{{ href }}" class="unstyled">
+        <header class="frag-header {{ class }}">
+            <h1>Devel without a Cause</h1>
+        </header>
+    </a>
 {% endmacro %}
 
 {% macro styles() %}
