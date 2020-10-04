@@ -9,6 +9,8 @@ export class Share extends LitElement {
     static styles = css`
         :host {
             --dwac-share-twitter-blue: rgb(29, 161, 242);
+
+            display: block;
         }
 
         #share {
