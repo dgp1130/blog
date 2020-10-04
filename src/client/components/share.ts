@@ -11,6 +11,15 @@ export class Share extends LitElement {
             --dwac-share-twitter-blue: rgb(29, 161, 242);
         }
 
+        #share {
+            height: 24px;
+            vertical-align: middle;
+        }
+
+        #share > svg {
+            height: 100%;
+        }
+
         #copy {
             height: 24px;
             vertical-align: middle;
@@ -74,8 +83,35 @@ export class Share extends LitElement {
 
         return html`
             ${ifDefined(navigator.share && html`
-                <button id="share" @click="${this.onShare.bind(this)}">
-                    Share!
+                <button id="share" @click="${this.onShare.bind(this)}"
+                        class="unstyled" title="Share">
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid meet" viewBox="0 0 365 329">
+                        <defs>
+                            <path d="M255 60C255 87.6 277.4 110 305 110C332.6 110 355 87.6 355 60C355 32.4 332.6 10 305 10C277.4 10 255 32.4 255 60Z" id="c1Ggf7vaAL"></path>
+                            <path d="M255.93 66.39L101.39 130.67L109.07 149.13L263.61 84.86L255.93 66.39Z" id="c45etRo0QD"></path>
+                            <path d="M10 161.4C10 189 32.4 211.4 60 211.4C87.59 211.4 110 189 110 161.4C110 133.81 87.59 111.4 60 111.4C32.4 111.4 10 133.81 10 161.4Z" id="c2tpKmjxHV"></path>
+                            <path d="M255 269.17C255 241.58 277.4 219.17 305 219.17C332.6 219.17 355 241.58 355 269.17C355 296.77 332.6 319.17 305 319.17C277.4 319.17 255 296.77 255 269.17Z" id="a42YXrfFV"></path>
+                            <path d="M251.88 259.06L97.34 194.79L105.02 176.32L259.56 240.6L251.88 259.06Z" id="c40venACK"></path>
+                        </defs>
+                        <g>
+                            <g>
+                                <g>
+                                    <use xlink:href="#c1Ggf7vaAL" opacity="1" fill="#ffffff" fill-opacity="1"></use>
+                                    <g><use xlink:href="#c1Ggf7vaAL" opacity="1" fill-opacity="0" stroke="#000000" stroke-width="20" stroke-opacity="1"></use></g>
+                                </g>
+                                <g><use xlink:href="#c45etRo0QD" opacity="1" fill="#000000" fill-opacity="1"></use></g>
+                                <g>
+                                    <use xlink:href="#c2tpKmjxHV" opacity="1" fill="#ffffff" fill-opacity="1"></use>
+                                    <g><use xlink:href="#c2tpKmjxHV" opacity="1" fill-opacity="0" stroke="#000000" stroke-width="20" stroke-opacity="1"></use></g>
+                                </g>
+                                <g>
+                                    <use xlink:href="#a42YXrfFV" opacity="1" fill="#ffffff" fill-opacity="1"></use>
+                                    <g><use xlink:href="#a42YXrfFV" opacity="1" fill-opacity="0" stroke="#000000" stroke-width="20" stroke-opacity="1"></use></g>
+                                </g>
+                                <g><use xlink:href="#c40venACK" opacity="1" fill="#000000" fill-opacity="1"></use></g>
+                            </g>
+                        </g>
+                    </svg>
                 </button>
             `)}
             ${ifDefined(navigator.clipboard?.writeText && html`
