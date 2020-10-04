@@ -1,3 +1,7 @@
+.frag-author h3 {
+    margin-top: 0;
+}
+
 .frag-author .flexbox {
     display: flex;
 }
