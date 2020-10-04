@@ -60,6 +60,8 @@ export class Share extends LitElement {
         }
     `;
 
+    @property({ attribute: 'prompt'}) public prompt?: string;
+
     // Required.
     @property({
         converter: {
@@ -84,6 +86,10 @@ export class Share extends LitElement {
         assertDefined(this.articleTitle);
 
         return html`
+            ${ifDefined(this.prompt && html`
+                <span>${this.prompt}</span>
+            `)}
+
             ${ifDefined(navigator.share && html`
                 <button id="share" @click="${this.onShare.bind(this)}"
                         class="unstyled" title="Share">

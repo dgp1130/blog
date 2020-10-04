@@ -10,13 +10,16 @@ describe('Share', () => {
     });
 
     async function init({
+        prompt,
         target = new URL('https://dummy.url/'),
         articleTitle = 'Dummy Article',
     }: {
+        prompt?: string,
         target?: URL | string,
         articleTitle?: string,
     } = {}): Promise<Share> {
         share = new Share();
+        share.prompt = prompt;
         
         // Either set the target property directly as a URL, or set an attribute
         // which gets converted into a URL using the `fromAttribute()` function.
@@ -41,6 +44,22 @@ describe('Share', () => {
         const share = await init();
 
         expect(share.tagName).toBe('DWAC-SHARE');
+    });
+
+    it('renders the prompt', async () => {
+        const share = await init({
+            prompt: 'Share me!',
+        });
+
+        expect(share.shadowRoot!.textContent).toContain('Share me!');
+    });
+
+    it('renders no text when missing a prompt', async () => {
+        const share = await init({
+            prompt: undefined,
+        });
+
+        expect(share.shadowRoot!.querySelector('span')).toBeNull();
     });
 
     it('shows share UI when supported', async () => {
