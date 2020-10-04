@@ -1,11 +1,12 @@
+{% import "fragments/author.njk" as author %}
 {% import "fragments/footer.njk" as footer %}
 {% import "fragments/header.njk" as header %}
-{% import "fragments/author.njk" as author %}
 
 {% set styleLinks %}
     styles/base.css
     styles/theme.css
     styles/md.css
+    {{ author.styles() }}
     {{ header.styles() }}
     {{ footer.styles() }}
     _includes/pages/post.css

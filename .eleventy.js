@@ -11,9 +11,14 @@ module.exports = function (config) {
     // Process markdown and Nunjucks templates.
     config.setTemplateFormats(['md', 'njk']);
 
-    // Copy pre-built client JavaScript and sourcemaps to the output.
+    // Copy pre-built client JavaScript and sourcemaps to the output directory.
     config.addPassthroughCopy('src/www/**/*.js');
     config.addPassthroughCopy('src/www/**/*.js.map');
+
+    // Copy image resources to the output directory.
+    config.addPassthroughCopy('src/www/**/*.avif');
+    config.addPassthroughCopy('src/www/**/*.jpg');
+    config.addPassthroughCopy('src/www/**/*.webp');
 
     // Add filters.
     config.addFilter('date', formatDate);

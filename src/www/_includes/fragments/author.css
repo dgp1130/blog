@@ -1,0 +1,13 @@
+.frag-author .flexbox {
+    display: flex;
+}
+
+.frag-author img {
+    height: 100px;
+    border-radius: 50%;
+    margin: 5px;
+}
+
+.frag-author span {
+    margin-left: 5px;
+}

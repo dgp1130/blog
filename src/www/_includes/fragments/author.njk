@@ -1,7 +1,20 @@
-{% macro author() %}
-    <h3>About the author</h3>
-    <section>
-        Doug is an overly opinionated software engineer, most of which are varing
-        degress of unpopular.
-    </section>
+{% macro author(class="") %}
+    <aside class="frag-author {{ class }}">
+        <h3>About the author</h3>
+        <div class="flexbox">
+            <picture>
+                <source type="image/avif" srcset="/res/img/profile.avif" />
+                <source type="image/webp" srcset="/res/img/profile.webp" />
+                <img src="/res/img/profile.jpg" />
+            </picture>
+            <span>
+                Doug is an overly opinionated software engineer, most of which
+                are varying degress of unpopular.
+            </span>
+        </div>
+    </aside>
+{% endmacro %}
+
+{% macro styles() %}
+    _includes/fragments/author.css
 {% endmacro %}

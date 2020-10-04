@@ -57,3 +57,9 @@ configuration, while the rest is done on
 
 Looking for more documentation about the project? Take a look at our
 [docs](doc/)!
+
+## Unversioned Resources
+
+Resources not stored in source control (like original, uncompressed images) are
+stored in a
+[DWAC Google Drive folder](https://drive.google.com/drive/folders/1D8nKCF3skWZ65clGnUDk1yrdxJ0zhgIT).
