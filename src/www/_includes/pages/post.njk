@@ -31,7 +31,7 @@
         </dwac-share>
         <main>
             <article class="md">{{ content | safe }}</article>
-            <aside>{{ author.author() }}</aside>
+            {{ author.author(class="author") }}
         </main>
         {{ footer.footer() }}
     </body>
