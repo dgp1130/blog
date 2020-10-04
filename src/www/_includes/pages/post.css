@@ -7,11 +7,15 @@ main {
     padding-bottom: 0;
 }
 
-dwac-share {
+dwac-share.start {
     text-align: right;
     margin: 5px;
 }
 
+dwac-share.end {
+    text-align: center;
+}
+
 .author {
-    margin: 0 20px 20px 20px;
+    margin: 20px;
 }

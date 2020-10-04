@@ -2,6 +2,14 @@
 {% import "fragments/footer.njk" as footer %}
 {% import "fragments/header.njk" as header %}
 
+{% macro share(prompt, class="") %}
+    <dwac-share class="{{ class }}"
+            {% if prompt %} prompt="{{prompt}}" {% endif %}
+            target="{{ page.url | url }}"
+            article-title="{{ title }}">
+    </dwac-share>
+{% endmacro %}
+
 {% set styleLinks %}
     styles/base.css
     styles/theme.css
@@ -27,12 +35,12 @@
     </head>
     <body>
         {{ header.header() }}
-        <dwac-share target="{{ page.url | url }}" article-title="{{ title }}">
-        </dwac-share>
+        {{ share(class="start") }}
         <main>
             <article class="md">{{ content | safe }}</article>
-            {{ author.author(class="author") }}
         </main>
+        {{ share(prompt="Interesting post? Share it!", class="end") }}
+        {{ author.author(class="author") }}
         {{ footer.footer() }}
     </body>
 </html>
