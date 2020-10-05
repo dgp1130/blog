@@ -1,5 +1,11 @@
 /** Style sheet for the root index page. */
 
+@import url(./styles/base.css);
+@import url(./styles/theme.css);
+@import url(./_includes/fragments/card.css);
+@import url(./_includes/fragments/footer.css);
+@import url(./_includes/fragments/header.css);
+
 :root {
     --dwac-index-padding: 1em;
 }

@@ -2,16 +2,6 @@
 {% import "fragments/footer.njk" as footer %}
 {% import "fragments/header.njk" as header %}
 
-{# Aggregate dependencies into a single set of styles for the page. #}
-{% set styleLinks %}
-    styles/base.css
-    styles/theme.css
-    {{ card.styles() }}
-    {{ footer.styles() }}
-    {{ header.styles() }}
-    index.css
-{% endset %}
-
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -25,7 +15,7 @@
         <link rel="stylesheet"
                 href="https://fonts.googleapis.com/css2?family=Lora&display=swap">
 
-        <style>{{ styleLinks | aggregateStyles | safe }}</style>
+        <style>{{ "./index.css" | css | safe }}</style>
     </head>
     <body>
         {{ header.header(class="header") }}
