@@ -1,3 +1,10 @@
+@import url("../../styles/base.css");
+@import url("../../styles/theme.css");
+@import url("../../styles/md.css");
+@import url("../fragments/author.css");
+@import url("../fragments/footer.css");
+@import url("../fragments/header.css");
+
 main {
     background-color: var(--dwac-theme-color-bg);
 }

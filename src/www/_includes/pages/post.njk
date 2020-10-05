@@ -10,16 +10,6 @@
     </dwac-share>
 {% endmacro %}
 
-{% set styleLinks %}
-    styles/base.css
-    styles/theme.css
-    styles/md.css
-    {{ author.styles() }}
-    {{ header.styles() }}
-    {{ footer.styles() }}
-    _includes/pages/post.css
-{% endset %}
-
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -28,9 +18,7 @@
         <meta name="description" content="{{ excerpt }}">
         <link rel="stylesheet"
                 href="https://fonts.googleapis.com/css2?family=Lora&display=swap">
-        <style>
-            {{ styleLinks | aggregateStyles | safe }}
-        </style>
+        <style>{{ "./_includes/pages/post.css" | css | safe }}</style>
         <script src="/scripts/post.js" type="module" async defer></script>
     </head>
     <body>
