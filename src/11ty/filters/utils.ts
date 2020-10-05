@@ -1,13 +1,16 @@
 /** Type of the callback function for the async filter. */
 export type FilterCallback = (err: Error|null, result?: string) => void;
 
+/** Type of an ansychronous filter function. */
+export type AsyncFilter = (...inputs: Array<string|FilterCallback>) => void;
+
 /**
  * Accepts a filter function as an argument and curries a filter function for
  * use in `eleventyConfig.addNunjucksAsyncFilter()`. The input filter function
  * must return a {@link Promise} which resolves to the output of the filter.
  */
 export function asyncFilter(filter: (...args: string[]) => Promise<string>):
-        (...inputs: Array<string|FilterCallback>) => void {
+        AsyncFilter {
     return (...inputs: Array<string|FilterCallback>) => {
         if (inputs.length === 1) {
             throw new Error(
