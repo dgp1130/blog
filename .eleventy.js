@@ -3,7 +3,7 @@
  * @see https://www.11ty.dev/docs/config/
  */
 
-const { aggregateStyles, minifyStyles } = require('./src/11ty/filters/styles.js');
+const { minifyStyles } = require('./src/11ty/filters/styles.js');
 const { short } = require('./src/11ty/filters/git.js');
 const { format: formatDate } = require('./src/11ty/filters/dates.js');
 
@@ -27,7 +27,6 @@ module.exports = function (config) {
     // Aggregate a list of CSS file references into a de-duplicated and
     // concatenated string of their content. Useful to pipe into `safe` and
     // place into a `<style />` tag to apply all the styles.
-    config.addNunjucksAsyncFilter('aggregateStyles', aggregateStyles);
     config.addNunjucksAsyncFilter('css', minifyStyles({
         level: 2,  // Optimize as aggressively as possible.
     }));
