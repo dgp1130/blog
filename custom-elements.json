@@ -1,0 +1,52 @@
+{
+  "version": "experimental",
+  "tags": [
+    {
+      "name": "dwac-share",
+      "path": "./src/client/components/share.ts",
+      "description": "Displays a share UI to allow users to easily share the given URL.",
+      "attributes": [
+        {
+          "name": "prompt",
+          "type": "string",
+          "default": "\"\""
+        },
+        {
+          "name": "target",
+          "type": "URL | undefined",
+          "default": "\"new URL('http://localhost/')\""
+        },
+        {
+          "name": "article-title",
+          "type": "string",
+          "default": "\"\""
+        }
+      ],
+      "properties": [
+        {
+          "name": "styles",
+          "type": "CSSResult",
+          "default": "\"css`\\n        :host {\\n            --dwac-share-twitter-blue: rgb(29, 161, 242);\\n\\n            display: block;\\n        }\\n\\n        ul {\\n            margin: 0;\\n            padding: 0;\\n        }\\n\\n        span + ul {\\n            margin-top: 10px;\\n        }\\n\\n        li {\\n            display: inline-block;\\n        }\\n\\n        li + li {\\n            margin-left: 5px;\\n        }\\n\\n        #share {\\n            height: 44px;\\n            vertical-align: middle;\\n        }\\n\\n        #share > svg {\\n            height: 100%;\\n        }\\n\\n        #copy {\\n            height: 44px;\\n            vertical-align: middle;\\n        }\\n\\n        #copy > svg {\\n            height: 100%;\\n        }\\n\\n        #twitter-logo {\\n            width: 44px;\\n            height: 44px;\\n            vertical-align: middle;\\n\\n            fill: currentColor;\\n            color: var(--dwac-share-twitter-blue);\\n        }\\n\\n        /*\\n         * Removes default styling on a button element. Useful for a semantic\\n         * button that doesn't **look** like a traditional button.\\n         */\\n        button.unstyled {\\n            display: inline-block;\\n            background: none;\\n            border: none;\\n            margin: 0;\\n            padding: 0;\\n            text-decoration: none;\\n            font-family: sans-serif;\\n            font-size: 1rem;\\n            cursor: pointer;\\n            text-align: center;\\n            -webkit-appearance: none;\\n            -moz-appearance: none;\\n        }\\n    `\""
+        },
+        {
+          "name": "prompt",
+          "attribute": "prompt",
+          "type": "string",
+          "default": "\"\""
+        },
+        {
+          "name": "target",
+          "attribute": "target",
+          "type": "URL | undefined",
+          "default": "\"new URL('http://localhost/')\""
+        },
+        {
+          "name": "articleTitle",
+          "attribute": "article-title",
+          "type": "string",
+          "default": "\"\""
+        }
+      ]
+    }
+  ]
+}

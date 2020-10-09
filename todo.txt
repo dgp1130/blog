@@ -1,0 +1,21 @@
+First post
+Test on other browsers
+File known issues
+File post ideas
+
+Special thanks for external contributors.
+Section header links.
+Lighthouse CI test / Core Web Vitals
+Google Search Console / SEO?
+Trusted types?
+content-visibility: auto;?
+Track scroll depth with discrete buckets (quarter page sizes?).
+Track share buttons?
+Storybook
+Non-blog content I've contributed to.
+  * Building a PWA
+  * Complete Developer Podcast
+  * What's new in Angular v10 * 2
+  * Bazel Transitions
+CI for PRs
+RSS reader
