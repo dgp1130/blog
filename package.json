@@ -5,19 +5,15 @@
   "scripts": {
     "start": "npm run -s clean && npm run -s build:11ty && npm run -s build:browser && eleventy --serve",
     "build": "npm run -s clean && npm run -s build:11ty && npm run -s build:browser && eleventy",
-
     "build:11ty": "tsc -p tsconfig.11ty.json",
     "build:11ty-test": "tsc -p tsconfig.11ty-test.json",
     "build:browser": "rollup --config",
-
     "test": "npm run -s clean && npm run -s test:11ty && npm run -s test:lit && npm run -s test:browser",
     "test:11ty": "npm run -s build:11ty-test && jasmine --config=jasmine.config.json",
     "test:browser": "karma start --single-run",
     "test:browser:dev": "karma start",
     "test:lit": "lit-analyzer --strict --rules.no-unknown-tag-name error --rules.no-missing-import error --rules.no-missing-element-type-definition error --rules.no-unknown-attribute error --rules.no-unknown-property error --rules.no-unknown-event error --rules.no-unknown-slot error --rules.no-legacy-attribute error --rules.no-unintended-mixed-binding error --rules.no-property-visibility-mismatch error --rules.no-invalid-css error",
-
     "clean": "rm -rf _site/ && find src/ \\( -name '*.js' -o -name '*.js.map' \\) -delete",
-
     "netlify": "netlify"
   },
   "repository": {
