@@ -5,11 +5,8 @@ node_modules/
 _site/
 
 # Ignore generated JavaScript and sourcemaps.
-**/*.js
-**/*.js.map
-!.eleventy.js
-!karma.conf.js
-!rollup.config.js
+src/**/*.js
+src/**/*.js.map
 
 # Local Netlify folder
 .netlify

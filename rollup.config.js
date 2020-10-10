@@ -3,7 +3,11 @@
 import alias from '@rollup/plugin-alias';
 import resolve from '@rollup/plugin-node-resolve';
 import typescript from '@rollup/plugin-typescript';
+import minifyHtmlTemplateLiterals from 'rollup-plugin-minify-html-literals';
 import { terser } from 'rollup-plugin-terser';
+
+const { cleanCssConfig } = require('./configs/clean_css');
+const { htmlMinifierConfig } = require('./configs/html_minifier');
 
 export default [
     // Post page entry point.
@@ -26,6 +30,14 @@ export default [
                 }],
             }),
             resolve({ browser: true }),
+            minifyHtmlTemplateLiterals({
+                options: {
+                    minifyOptions: {
+                        ...htmlMinifierConfig,
+                        minifyCSS: cleanCssConfig,
+                    },
+                },
+            }),
             terser(),
         ],
     },

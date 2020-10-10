@@ -7,6 +7,8 @@ const { minifyStyles } = require('./src/11ty/filters/styles.js');
 const { short } = require('./src/11ty/filters/git.js');
 const { format: formatDate } = require('./src/11ty/filters/dates.js');
 const { minify: minifyHtml } = require('html-minifier-terser');
+const { cleanCssConfig } = require('./configs/clean_css');
+const { htmlMinifierConfig } = require('./configs/html_minifier');
 
 module.exports = function (config) {
     // Process markdown and Nunjucks templates.
@@ -28,9 +30,7 @@ module.exports = function (config) {
     // Aggregate a list of CSS file references into a de-duplicated and
     // concatenated string of their content. Useful to pipe into `safe` and
     // place into a `<style />` tag to apply all the styles.
-    config.addNunjucksAsyncFilter('css', minifyStyles({
-        level: 2,  // Optimize as aggressively as possible.
-    }));
+    config.addNunjucksAsyncFilter('css', minifyStyles(cleanCssConfig));
 
     // Print the given data to the console for debugging purposes.
     config.addFilter('debug', (data) => {
@@ -46,19 +46,7 @@ module.exports = function (config) {
         }
 
         // Minify the HTML.
-        return minifyHtml(content, {
-            caseSensitive: true,
-            collapseBooleanAttributes: true,
-            collapseWhitespace: true,
-            decodeEntities: true,
-            removeAttributeQuotes: true,
-            removeComments: true,
-            removeEmptyAttributes: true,
-            removeRedundantAttributes: true,
-            removeScriptTypeAttributes: true,
-            removeStyleLinkTypeAttributes: true,
-            useShortDoctype: true,
-        });
+        return minifyHtml(content, htmlMinifierConfig);
     });
 
     return {
