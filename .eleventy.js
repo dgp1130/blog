@@ -6,6 +6,7 @@
 const { minifyStyles } = require('./src/11ty/filters/styles.js');
 const { short } = require('./src/11ty/filters/git.js');
 const { format: formatDate } = require('./src/11ty/filters/dates.js');
+const { minify: minifyHtml } = require('html-minifier-terser');
 
 module.exports = function (config) {
     // Process markdown and Nunjucks templates.
@@ -35,6 +36,29 @@ module.exports = function (config) {
     config.addFilter('debug', (data) => {
         console.log(data);
         return data;
+    });
+
+    // Post-process HTML files and minify them.
+    config.addTransform('minify-html', (content, path) => {
+        if (!path.endsWith('.html')) {
+            // Not an HTML file, do nothing.
+            return content;
+        }
+
+        // Minify the HTML.
+        return minifyHtml(content, {
+            caseSensitive: true,
+            collapseBooleanAttributes: true,
+            collapseWhitespace: true,
+            decodeEntities: true,
+            removeAttributeQuotes: true,
+            removeComments: true,
+            removeEmptyAttributes: true,
+            removeRedundantAttributes: true,
+            removeScriptTypeAttributes: true,
+            removeStyleLinkTypeAttributes: true,
+            useShortDoctype: true,
+        });
     });
 
     return {
