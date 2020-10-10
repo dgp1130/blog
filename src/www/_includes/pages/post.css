@@ -5,7 +5,28 @@
 @import url("../fragments/footer.css");
 @import url("../fragments/header.css");
 
+html {
+    height: 100vh;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.content {
+    /* Fill available space. */
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+}
+
 main {
+    /* Fill available space. */
+    flex: 1;
+
     background-color: var(--dwac-theme-color-bg);
 }
 

@@ -23,12 +23,14 @@
     </head>
     <body>
         {{ header.header() }}
-        {{ share(class="start") }}
-        <main>
-            <article class="md">{{ content | safe }}</article>
-        </main>
-        {{ share(prompt="Interesting post? Share it!", class="end") }}
-        {{ author.author(class="author") }}
+        <div class="content">
+            {{ share(class="start") }}
+            <main>
+                <article class="md">{{ content | safe }}</article>
+            </main>
+            {{ share(prompt="Interesting post? Share it!", class="end") }}
+            {{ author.author(class="author") }}
+        </div>
         {{ footer.footer() }}
     </body>
 </html>
