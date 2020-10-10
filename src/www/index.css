@@ -16,11 +16,6 @@ body {
     min-height: 100vh;
 }
 
-.header {
-    padding-left: var(--dwac-index-padding);
-    padding-right: var(--dwac-index-padding);
-}
-
 h2 {
     margin: 1rem 0;
     text-align: center;
