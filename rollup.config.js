@@ -2,6 +2,7 @@
 
 import resolve from '@rollup/plugin-node-resolve';
 import typescript from '@rollup/plugin-typescript';
+import { terser } from 'rollup-plugin-terser';
 
 export default [
     // Post page entry point.
@@ -18,6 +19,7 @@ export default [
                 tsconfig: './tsconfig.browser.json',
             }),
             resolve({ browser: true }),
+            terser(),
         ],
     },
 ];
