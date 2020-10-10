@@ -1,4 +1,5 @@
 {% import "fragments/card.njk" as card %}
+{% import "fragments/font.njk" as font %}
 {% import "fragments/footer.njk" as footer %}
 {% import "fragments/header.njk" as header %}
 
@@ -12,8 +13,7 @@
         tech, programming langauges, game design, and whatever else I feel
         unqualified to discuss.">
 
-        <link rel="stylesheet"
-                href="https://fonts.googleapis.com/css2?family=Lora&display=swap">
+        {{ font.font("Lora") }}
 
         <style>{{ "./index.css" | css | safe }}</style>
     </head>

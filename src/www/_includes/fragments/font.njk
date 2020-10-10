@@ -1,0 +1,11 @@
+{% macro font(name, display = "swap") %}
+    {# Load font from Google Fonts in a non-render blocking fashion. #}
+    <link href="https://fonts.googleapis.com/css2?family={{ name }}&display={{ display }}"
+            rel="preload"
+            as="style"
+            onload="this.rel='stylesheet'; this.onload=null;">
+    <noscript>
+        <link rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family={{ name }}&display={{ display }}">
+    </noscript>
+{% endmacro %}
