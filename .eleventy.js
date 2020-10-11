@@ -23,6 +23,9 @@ module.exports = function (config) {
     config.addPassthroughCopy('src/www/**/*.jpg');
     config.addPassthroughCopy('src/www/**/*.webp');
 
+    // Live reload on CSS file changes.
+    config.addWatchTarget('src/www/**/*.css');
+
     // Add filters.
     config.addFilter('date', formatDate);
     config.addFilter('short', short);
