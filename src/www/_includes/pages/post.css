@@ -18,6 +18,10 @@ body {
 .content {
     /* Fill available space. */
     flex: 1;
+    
+    max-width: 1024px;
+    width: 100%; /* Needed for centering to not over-expand the content. */
+    margin: 0 auto; /* Center content. */
 
     display: flex;
     flex-direction: column;
