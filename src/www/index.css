@@ -33,6 +33,8 @@ main {
     padding: var(--dwac-index-padding);
     /* Leave extra room on bottom for last card's drop-shadow. */
     padding-bottom: calc(var(--dwac-index-padding) + 6px);
+    max-width: 1024px;
+    margin: 0 auto; /* Center text content. */
 }
 
 .posts {
@@ -43,7 +45,12 @@ main {
     padding: 0 0.5rem;
 }
 
-.posts li + li {
+.posts > li {
+    max-width: 512px;
+    margin: 0 auto; /* Center the card. */
+}
+
+.posts > li + li {
     margin-top: 20px;
 }
 
