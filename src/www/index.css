@@ -60,6 +60,5 @@ main {
 }
 
 .footer {
-    padding: var(--dwac-index-padding);
     margin-top: auto;
 }
