@@ -14,19 +14,22 @@
     margin: 0 auto; /* Center the text block. */
 }
 
-.frag-footer p:not(:first-child):not(:last-child) {
-    margin: 0.75rem 0;
-}
-
 .frag-footer p:not(:first-child) {
     font-size: var(--dwac-theme-font-size-small);
+}
+
+.frag-footer p:not(:first-child):not(:last-child) {
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0.75rem;
+    margin-bottom: 0;
 }
 
 .frag-footer p:first-child {
     /* Leave margin-top to be the default. */
     margin-left: 0;
     margin-right: 0;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0;
 }
 
 .frag-footer p:last-child {
