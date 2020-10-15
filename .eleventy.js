@@ -5,13 +5,13 @@
 
 const { minify: minifyHtml } = require('html-minifier-terser');
 
-const { cleanCssConfig } = require('./configs/clean_css');
+const { cleanCssConfig, cleanCssConfigDev } = require('./configs/clean_css');
 const { htmlMinifierConfig } = require('./configs/html_minifier');
 const { injectCsp } = require('./src/11ty/csp');
 const { Environment, getEnv } = require('./src/11ty/environment');
 const { format: formatDate } = require('./src/11ty/filters/dates');
 const { short } = require('./src/11ty/filters/git');
-const { minifyStyles } = require('./src/11ty/filters/styles');
+const { bundleStyles } = require('./src/11ty/filters/styles');
 
 module.exports = function (config) {
     // Process markdown and Nunjucks templates.
@@ -36,7 +36,10 @@ module.exports = function (config) {
     // Aggregate a list of CSS file references into a de-duplicated and
     // concatenated string of their content. Useful to pipe into `safe` and
     // place into a `<style />` tag to apply all the styles.
-    config.addNunjucksAsyncFilter('css', minifyStyles(cleanCssConfig));
+    const cssConfig = getEnv() === Environment.DEV
+            ? cleanCssConfigDev
+            : cleanCssConfig;
+    config.addNunjucksAsyncFilter('css', bundleStyles(cssConfig));
 
     // Print the given data to the console for debugging purposes.
     config.addFilter('debug', (data) => {

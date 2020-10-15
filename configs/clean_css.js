@@ -6,3 +6,8 @@ const CleanCss = require('clean-css');
 module.exports.cleanCssConfig = {
     level: 2,
 };
+
+/** @type {!CleanCss.Options} */
+module.exports.cleanCssConfigDev = {
+    level: 0,
+};

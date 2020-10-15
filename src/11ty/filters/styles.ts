@@ -9,7 +9,7 @@ import { AsyncFilter, asyncFilter } from './utils';
  * Generates a filter to minify the CSS at a provided file path with the given
  * options.
  */
-export function minifyStyles(options: CssOptions = {}): AsyncFilter {
+export function bundleStyles(options: CssOptions = {}): AsyncFilter {
     // Find default export at runtime to be easily mockable for tests.
     const CleanCss = getCleanCss();
     const minifier = new CleanCss({

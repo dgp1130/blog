@@ -1,6 +1,6 @@
 import * as cleanCssLib from '../clean_css';
 import { execFilter } from '../testing/filters';
-import { minifyStyles } from './styles';
+import { bundleStyles } from './styles';
 
 describe('styles', () => {
     describe('minifyStyles', () => {
@@ -21,7 +21,7 @@ describe('styles', () => {
                 minify = minifySpy;
             });
 
-            const minifyFilter = minifyStyles({
+            const minifyFilter = bundleStyles({
                 level: 2,
             });
             expect(constructorSpy).toHaveBeenCalledTimes(1);
@@ -46,7 +46,7 @@ describe('styles', () => {
                 minify = minifySpy;
             });
 
-            const minifyFilter = minifyStyles();
+            const minifyFilter = bundleStyles();
             await expectAsync(execFilter(minifyFilter, 'foo.css'))
                     .toBeRejectedWithError(Error, `Failed to minify src/www/foo.css:\nStyles are too ugly to minify.`);
         });
@@ -63,7 +63,7 @@ describe('styles', () => {
                 minify = minifySpy;
             });
 
-            await execFilter(minifyStyles(), 'foo.css');
+            await execFilter(bundleStyles(), 'foo.css');
 
             expect(console.warn).toHaveBeenCalledWith(
                     'Got warnings while minifying src/www/foo.css:\nStyles are looking very ugly...');
