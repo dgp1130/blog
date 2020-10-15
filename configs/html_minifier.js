@@ -15,4 +15,5 @@ module.exports.htmlMinifierConfig = {
     removeScriptTypeAttributes: true,
     removeStyleLinkTypeAttributes: true,
     useShortDoctype: true,
+    minifyJS: true,
 };
