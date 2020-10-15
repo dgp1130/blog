@@ -58,6 +58,12 @@ configuration, while the rest is done on
     * These are previews of in-progress posts, so tests are not executed here.
     * Hosted at https://post-${branch-name}--dwac.netlify.app.
 
+You can also perform one-off test deployments to verify the Netlify
+configuration and the real production environment. Build the application first,
+then use `npm run deploy-test ${alias}` to deploy it to Netlify. This should
+generate a URL for you to visit and test the site with. It is also an easy way
+to test on mobile phones without having to run the site locally.
+
 ## Docs
 
 Looking for more documentation about the project? Take a look at our
