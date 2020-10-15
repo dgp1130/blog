@@ -4,3 +4,10 @@
 [build]
 # Root directory of the output is _site/.
 publish = "_site/"
+
+[build.processing]
+# We already optimize assets at build time, so Netlify can't do much more here.
+# When Netlify optimizes, it hosts them at a different URL, which causes
+# problems with CSP. It's just easier to disable Netlify's optimizations and use
+# the real resources generated.
+skip_processing = true
