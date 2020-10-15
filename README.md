@@ -19,6 +19,11 @@ This will run a build and attach the VSCode debugger to each process as it
 executes. This should trigger breakpoints in [`.eleventy.js`](.eleventy.js) and
 any related files.
 
+You can run/build for production by using `npm run start:prod` and
+`npm run build:prod`. These enable various optimizations for production use.
+Note that `npm run start:prod` will encounter a CSP error and live reload will
+not work, as browser sync is not included in prod.
+
 ## Tests
 
 Run all tests once with `npm test`.

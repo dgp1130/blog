@@ -27,7 +27,7 @@ jobs:
       run: npm ci
 
     - name: Build
-      run: npm run build
+      run: npm run build:dev
 
     # Deploy a preview to https://post-${branch-name}--dwac.netlify.app/.
     - name: Deploy Post Preview
