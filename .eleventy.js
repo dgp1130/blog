@@ -9,6 +9,7 @@ const { format: formatDate } = require('./src/11ty/filters/dates.js');
 const { minify: minifyHtml } = require('html-minifier-terser');
 const { cleanCssConfig } = require('./configs/clean_css');
 const { htmlMinifierConfig } = require('./configs/html_minifier');
+const { injectCsp } = require('./src/11ty/csp');
 
 module.exports = function (config) {
     // Process markdown and Nunjucks templates.
@@ -41,15 +42,23 @@ module.exports = function (config) {
         return data;
     });
 
-    // Post-process HTML files and minify them.
-    config.addTransform('minify-html', (content, path) => {
-        if (!path.endsWith('.html')) {
-            // Not an HTML file, do nothing.
-            return content;
-        }
+    // Post-process HTML files.
+    config.addTransform('html-post-process', (content, path) => {
+        // Ignore non-HTML files.
+        if (!path.endsWith('.html')) return content;
 
-        // Minify the HTML.
-        return minifyHtml(content, htmlMinifierConfig);
+        // Minify the HTML first. Some scripts may be minified, so CSP hashes
+        // need to be calculated afterwards.
+        const minified = minifyHtml(content, htmlMinifierConfig);
+
+        // Generate and inject a content security policy.
+        return injectCsp(minified, {
+            scriptSrc: [
+                // Live reload script.
+                `'self'`,
+                `'sha256-d8xVpEfOlXT388lPL445U0wcaE4cweRSVh5BQpm9scE='`,
+            ],
+        });
     });
 
     return {
