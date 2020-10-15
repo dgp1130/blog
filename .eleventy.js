@@ -3,13 +3,15 @@
  * @see https://www.11ty.dev/docs/config/
  */
 
-const { minifyStyles } = require('./src/11ty/filters/styles.js');
-const { short } = require('./src/11ty/filters/git.js');
-const { format: formatDate } = require('./src/11ty/filters/dates.js');
 const { minify: minifyHtml } = require('html-minifier-terser');
+
 const { cleanCssConfig } = require('./configs/clean_css');
 const { htmlMinifierConfig } = require('./configs/html_minifier');
 const { injectCsp } = require('./src/11ty/csp');
+const { Environment, getEnv } = require('./src/11ty/environment');
+const { format: formatDate } = require('./src/11ty/filters/dates');
+const { short } = require('./src/11ty/filters/git');
+const { minifyStyles } = require('./src/11ty/filters/styles');
 
 module.exports = function (config) {
     // Process markdown and Nunjucks templates.
@@ -48,8 +50,11 @@ module.exports = function (config) {
         if (!path.endsWith('.html')) return content;
 
         // Minify the HTML first. Some scripts may be minified, so CSP hashes
-        // need to be calculated afterwards.
-        const minified = minifyHtml(content, htmlMinifierConfig);
+        // need to be calculated afterwards. Don't minify dev builds to improve
+        // debuggability.
+        const minified = getEnv() !== Environment.DEV
+                ? minifyHtml(content, htmlMinifierConfig)
+                : content;
 
         // Generate and inject a content security policy.
         return injectCsp(minified, {
