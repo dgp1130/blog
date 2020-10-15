@@ -1,11 +1,37 @@
 {% macro font(name, display = "swap") %}
-    {# Load font from Google Fonts in a non-render blocking fashion. #}
-    <link href="https://fonts.googleapis.com/css2?family={{ name }}&display={{ display }}"
-            rel="preload"
-            as="style"
-            onload="this.rel='stylesheet'; this.onload=null;">
+    {% set googleFontsLink %}
+        https://fonts.googleapis.com/css2?family={{ name }}&display={{ display }}
+    {% endset %}
+    {% set fontHref = googleFontsLink | trim | safe %}
+
+    {#
+        Load from Google Fonts in a non-render blocking fashion.
+        Unfortunately the only way to do that is by dynamically changing a
+        `link[rel=preload]` tag into a `link[rel=stylesheet]` via JavaScript.
+        Inline event handlers would make this nicer, but cannot be allowlisted
+        via CSP hashes; instead we need to use an inline script.
+    #}
+    <script>
+        // The `load` event does not bubble, so we can't use
+        // `window.addEventListener('load', /* ... */)`, and must instead have
+        // a hard reference to the `<link />` tag :(. Easiest way to do this is
+        // to just generate it with JavaScript in the first place.
+        const link = document.createElement('link');
+        link.href = '{{ fontHref }}';
+        link.rel = 'preload';
+        link.as = 'style';
+        link.onload = () => {
+            link.rel = 'stylesheet';
+            link.onload = undefined;
+        };
+        document.head.appendChild(link);
+    </script>
+
+    {#
+        Also include a non-blocking version for users with JavaScript disabled.
+        This gets picked up by CSP generation as well to allowlist the font URL.
+    #}
     <noscript>
-        <link rel="stylesheet"
-            href="https://fonts.googleapis.com/css2?family={{ name }}&display={{ display }}">
+        <link rel="stylesheet" href="{{ fontHref }}">
     </noscript>
 {% endmacro %}
