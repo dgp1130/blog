@@ -9,6 +9,8 @@ import { terser } from 'rollup-plugin-terser';
 const { cleanCssConfig } = require('./configs/clean_css');
 const { htmlMinifierConfig } = require('./configs/html_minifier');
 
+const prodMode = process.env.DWAC_ENV === 'prod';
+
 export default [
     // Post page entry point.
     {
@@ -30,15 +32,18 @@ export default [
                 }],
             }),
             resolve({ browser: true }),
-            minifyHtmlTemplateLiterals({
-                options: {
-                    minifyOptions: {
-                        ...htmlMinifierConfig,
-                        minifyCSS: cleanCssConfig,
+            ...(!prodMode ? [] : [
+                // Production-only plugins.
+                minifyHtmlTemplateLiterals({
+                    options: {
+                        minifyOptions: {
+                            ...htmlMinifierConfig,
+                            minifyCSS: cleanCssConfig,
+                        },
                     },
-                },
-            }),
-            terser(),
+                }),
+                terser(),
+            ]),
         ],
     },
 ];
