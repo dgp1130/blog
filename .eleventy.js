@@ -53,11 +53,7 @@ module.exports = function (config) {
 
         // Generate and inject a content security policy.
         return injectCsp(minified, {
-            scriptSrc: [
-                // Live reload script.
-                `'self'`,
-                `'sha256-d8xVpEfOlXT388lPL445U0wcaE4cweRSVh5BQpm9scE='`,
-            ],
+            scriptSrc: getEnv() === Environment.DEV ? liveReloadCspSources : [],
         });
     });
 
@@ -71,3 +67,12 @@ module.exports = function (config) {
         },
     };
 };
+
+// CSP sources for 11ty live reload functionality.
+const liveReloadCspSources = [
+    // Live reload inlined script.
+    `'sha256-d8xVpEfOlXT388lPL445U0wcaE4cweRSVh5BQpm9scE='`,
+    // The inlined script creates another script that loads browser sync as a
+    // self-hosted script.
+    `'self'`,
+];
