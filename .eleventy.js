@@ -3,6 +3,8 @@
  * @see https://www.11ty.dev/docs/config/
  */
 
+const { promises: fs } = require('fs');
+
 const { minify: minifyHtml } = require('html-minifier-terser');
 
 const { cleanCssConfig, cleanCssConfigDev } = require('./configs/clean_css');
@@ -63,6 +65,21 @@ module.exports = function (config) {
         return injectCsp(minified, {
             scriptSrc: getEnv() === Environment.DEV ? liveReloadCspSources : [],
         });
+    });
+
+    config.setBrowserSyncConfig({
+        callbacks: {
+            ready: (err, browserSync) => {
+                if (err) throw err;
+
+                // Serve the 404 page to any unresolved path.
+                browserSync.addMiddleware("*", async (_, res) => {
+                    const content = await fs.readFile('_site/404/index.html');
+                    res.writeHead(404);
+                    res.end(content);
+                });
+            },
+        },
     });
 
     return {
