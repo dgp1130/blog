@@ -27,6 +27,9 @@
         document.head.appendChild(link);
     </script>
 
+    {# Google Fonts typically redirect to the gstatic CDN. Preconnect to it. #}
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+
     {#
         Also include a non-blocking version for users with JavaScript disabled.
         This gets picked up by CSP generation as well to allowlist the font URL.
