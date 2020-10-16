@@ -9,9 +9,12 @@
         <title>Devel without a Cause</title>
 
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="Personal blog about software, web
-        tech, programming langauges, game design, and whatever else I feel
-        unqualified to discuss.">
+        
+        {% set desc %}
+            Personal blog about software, web tech, programming langauges, game
+            design, and whatever else I feel unqualified to discuss.
+        {% endset %}
+        <meta name="description" content="{{ desc | oneline }}">
 
         {{ font.font("Lora") }}
 
