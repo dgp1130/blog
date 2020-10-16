@@ -1,3 +1,10 @@
+{% set copyrightYear %}
+    {# Extract year from the current build date. #}
+    {% filter yearUtc %}
+        {% buildDate %}
+    {% endfilter %}
+{% endset %}
+
 {% macro footer(class="", author, repo) %}
     <footer class="frag-footer {{ class }}">
         <div class="content">
@@ -15,6 +22,14 @@
                 <a href="{{ repo.source }}/src/www/index.njk">
                     dgp1130/blog
                 </a>
+            </p>
+            <p>
+                © Copyright {{ copyrightYear | trim }}, Douglas Parker. All
+                rights reserved. Powered by
+                <a href="https://www.11ty.dev/" target="_blank">Eleventy</a>
+                and
+                <a href="https://www.netlify.com/" target="_blank">Netlify</a>.
+                <a href="/attributions">Copyright notices and attributions.</a>
             </p>
         </div>
     </footer>
