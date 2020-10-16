@@ -1,0 +1,24 @@
+/** Style sheet for the attributions page. */
+
+@import url(./styles/base.css);
+@import url(./styles/theme.css);
+@import url(./_includes/fragments/footer.css);
+@import url(./_includes/fragments/header.css);
+
+body {
+    display: flex;
+    flex-flow: column nowrap;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+    max-width: 1024px;
+    margin: 0 auto; /* Center text content. */
+    padding: 1rem;
+    color: var(--dwac-text-color);
+}
+
+main li + li {
+    margin-top: 0.75rem;
+}
