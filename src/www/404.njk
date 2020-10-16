@@ -1,9 +1,55 @@
+{% import "fragments/font.njk" as font %}
+{% import "fragments/footer.njk" as footer %}
+{% import "fragments/header.njk" as header %}
+
 <!DOCTYPE html>
 <html>
     <head>
         <title>Not Found</title>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description"
+                content="This is not the page you're looking for.">
+
+        {{ font.font("Lora") }}
+
+        <style>{{ "./404.css" | css | safe }}</style>
     </head>
     <body>
-        <h2>Oh noes! We couldn't find this file!</h2>
+        {{ header.header() }}
+
+        <main>
+            <h2>Oh noes!</h2>
+            <p>
+                This page doesn't exist! We looked everywhere, but couldn't find
+                it.
+            </p>
+            <ul>
+                <li>
+                    If you are just lost, maybe check out the
+                    <a href="/">home page</a>? Read some posts to pass the time
+                    while you find your way.
+                </li>
+                <li>
+                    If you think this page should exist, consider
+                    <a href="{{ repo.new_issue }}" target="_blank">filing an issue</a>
+                    or nagging
+                    <a href="{{ author.twit }}" target="_blank">@develwoutacause</a>.
+                </li>
+                <li>
+                    If you think you visited a bad link, consider notifying the
+                    owner so they can fix it and help others from running into
+                    the same issue.
+                </li>
+                <li>
+                    If you were URL-bombing, then congratulations, you missed!
+                </li>
+            </ul>
+            <p>
+                Or you can just chill here. That's cool too I guess.
+            </p>
+        </main>
+
+        {{ footer.footer() }}
     </body>
 </html>

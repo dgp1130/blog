@@ -1,0 +1,28 @@
+/** Style sheet for the 404 page. */
+
+@import url(./styles/base.css);
+@import url(./styles/theme.css);
+@import url(./_includes/fragments/footer.css);
+@import url(./_includes/fragments/header.css);
+
+body {
+    display: flex;
+    flex-flow: column nowrap;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+    padding: 1em;
+    max-width: 1024px;
+    margin: 0 auto; /* Center text content. */
+    color: var(--dwac-text-color);
+}
+
+main ul {
+    list-style: none;
+}
+
+main li + li {
+    margin-top: 0.75em;
+}
