@@ -25,6 +25,7 @@ module.exports = function (config) {
 
     // Copy image resources to the output directory.
     config.addPassthroughCopy('src/www/**/*.avif');
+    config.addPassthroughCopy('src/www/**/*.ico');
     config.addPassthroughCopy('src/www/**/*.jpg');
     config.addPassthroughCopy('src/www/**/*.svg');
     config.addPassthroughCopy('src/www/**/*.webp');

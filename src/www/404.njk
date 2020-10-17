@@ -1,3 +1,4 @@
+{% import "fragments/favicon.njk" as favicon %}
 {% import "fragments/font.njk" as font %}
 {% import "fragments/footer.njk" as footer %}
 {% import "fragments/header.njk" as header %}
@@ -12,6 +13,7 @@
                 content="This is not the page you're looking for.">
 
         {{ font.font("Lora") }}
+        {{ favicon.favicon() }}
 
         <style>{{ "./404.css" | css | safe }}</style>
     </head>
