@@ -5,7 +5,7 @@
     {% endfilter %}
 {% endset %}
 
-{% macro footer(author, repo, class="") %}
+{% macro footer(author, repo, inputPath, class="") %}
     <footer class="frag-footer {{ class }}">
         <div class="content">
             <p>Failed to scare you away? Try one of these links:</p>
@@ -19,7 +19,7 @@
             </p>
             <p>
                 Fix a typo or help me write more gooder:
-                <a href="{{ repo.source }}/src/www/index.njk" target="_blank">
+                <a href="{{ repo.source }}/{{ inputPath }}" target="_blank">
                     dgp1130/blog
                 </a>
             </p>
