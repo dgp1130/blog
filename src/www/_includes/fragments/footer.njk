@@ -1,6 +1,6 @@
 {% set copyrightYear %}
     {# Extract year from the current build date. #}
-    {% filter yearUtc %}
+    {% filter date({ year: 'numeric' }) %}
         {% buildDate %}
     {% endfilter %}
 {% endset %}

@@ -54,9 +54,6 @@ module.exports = function (config) {
     config.addShortcode('buildDate', () => {
         return new Date().toISOString();
     });
-    config.addFilter('yearUtc', (date) => {
-        return new Date(date.trim()).getUTCFullYear().toString();
-    });
 
     // Aggregate a list of CSS file references into a de-duplicated and
     // concatenated string of their content. Useful to pipe into `safe` and
