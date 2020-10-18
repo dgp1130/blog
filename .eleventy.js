@@ -6,6 +6,7 @@
 const { promises: fs } = require('fs');
 
 const { minify: minifyHtml } = require('html-minifier-terser');
+const Nunjucks = require('nunjucks');
 
 const { cleanCssConfig, cleanCssConfigDev } = require('./configs/clean_css');
 const { htmlMinifierConfig } = require('./configs/html_minifier');
@@ -18,6 +19,14 @@ const { bundleStyles } = require('./src/11ty/filters/styles');
 module.exports = function (config) {
     // Process markdown and Nunjucks templates.
     config.setTemplateFormats(['md', 'njk']);
+
+    // Explicitly provide the Nunjucks library to set an explicit configuration.
+    config.setLibrary('njk', new Nunjucks.Environment(
+        new Nunjucks.FileSystemLoader('src/www/_includes'),
+        {
+            throwOnUndefined: true,
+        },
+    ));
 
     // Copy pre-built client JavaScript and sourcemaps to the output directory.
     config.addPassthroughCopy('src/www/**/*.js');
