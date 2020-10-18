@@ -1,4 +1,4 @@
-{% import "fragments/author.njk" as author %}
+{% import "fragments/author.njk" as authorFrag %}
 {% import "fragments/favicon.njk" as favicon %}
 {% import "fragments/font.njk" as font %}
 {% import "fragments/footer.njk" as footer %}
@@ -33,8 +33,8 @@
                 <article class="md">{{ content | safe }}</article>
             </main>
             {{ share(prompt="Interesting post? Share it!", class="end") }}
-            {{ author.author(class="author") }}
+            {{ authorFrag.author(class="author") }}
         </div>
-        {{ footer.footer() }}
+        {{ footer.footer(class="", author, repo) }}
     </body>
 </html>
