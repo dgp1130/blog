@@ -10,6 +10,7 @@
     height: 1em;
     font-size: var(--dwac-theme-font-size-title);
     vertical-align: text-bottom;
+    margin-right: 0.5rem;
 }
 
 .frag-header h1 {
