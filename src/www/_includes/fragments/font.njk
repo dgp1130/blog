@@ -1,6 +1,10 @@
 {% macro font(name, display = "swap") %}
     {% set fontHref %}
-        https://fonts.googleapis.com/css2?family={{ name }}&display={{ display }}
+        {% filter safe %}
+            {% filter trim %}
+                https://fonts.googleapis.com/css2?family={{ name }}&display={{ display }}
+            {% endfilter %}
+        {% endfilter %}
     {% endset %}
 
     {#
