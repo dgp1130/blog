@@ -25,6 +25,8 @@ module.exports = function (config) {
         new Nunjucks.FileSystemLoader('src/www/_includes'),
         {
             throwOnUndefined: true,
+            trimBlocks: true,
+            lstripBlocks: true,
         },
     ));
 

@@ -1,8 +1,7 @@
 {% macro font(name, display = "swap") %}
-    {% set googleFontsLink %}
+    {% set fontHref %}
         https://fonts.googleapis.com/css2?family={{ name }}&display={{ display }}
     {% endset %}
-    {% set fontHref = googleFontsLink | trim | safe %}
 
     {#
         Load from Google Fonts in a non-render blocking fashion.
