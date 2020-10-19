@@ -1,33 +1,21 @@
-@import url("../../styles/base.css");
+@import url("./base.css");
 @import url("../../styles/theme.css");
 @import url("../../styles/md.css");
 @import url("../fragments/author.css");
-@import url("../fragments/footer.css");
-@import url("../fragments/header.css");
 
-html {
-    height: 100vh;
+.base-content {
+    padding-top: 0;
 }
 
-body {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-}
-
-.content {
+.post-container {
     /* Fill available space. */
     flex: 1;
-    
-    max-width: 1024px;
-    width: 100%; /* Needed for centering to not over-expand the content. */
-    margin: 0 auto; /* Center content. */
 
     display: flex;
     flex-direction: column;
 }
 
-main {
+.post-content {
     /* Fill available space. */
     flex: 1;
 
@@ -39,15 +27,15 @@ main {
     padding-bottom: 0;
 }
 
-dwac-share.start {
+dwac-share.post-end {
     text-align: right;
     margin: 5px;
 }
 
-dwac-share.end {
+dwac-share.post-center {
     text-align: center;
 }
 
-.author {
+.post-author {
     margin: 20px;
 }

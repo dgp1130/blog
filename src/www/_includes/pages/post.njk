@@ -1,40 +1,38 @@
 {% import "fragments/author.njk" as authorFrag %}
-{% import "fragments/favicon.njk" as favicon %}
-{% import "fragments/font.njk" as font %}
-{% import "fragments/footer.njk" as footer %}
-{% import "fragments/header.njk" as header %}
 
-{% macro share(prompt, class="") %}
-    <dwac-share class="{{ class }}"
-            {% if prompt %} prompt="{{prompt}}" {% endif %}
-            target="{{ page.url | url }}"
-            article-title="{{ title }}">
-    </dwac-share>
-{% endmacro %}
+{% extends "pages/base.njk" %}
 
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <title>{{ title }}</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="{{ excerpt | oneline }}">
+{% block title %}
+    {{ title }}
+{% endblock %}
 
-        {{ font.font("Lora") }}
-        {{ favicon.favicon() }}
+{% block description %}
+    {{ excerpt }}
+{% endblock %}
 
-        <style>{{ "./_includes/pages/post.css" | css | safe }}</style>
-        <script src="/scripts/post.js" type="module" async defer></script>
-    </head>
-    <body>
-        {{ header.header() }}
-        <div class="content">
-            {{ share(class="start") }}
-            <main>
-                <article class="md">{{ content | safe }}</article>
-            </main>
-            {{ share(prompt="Interesting post? Share it!", class="end") }}
-            {{ authorFrag.author(class="author") }}
+{% block styles %}
+    _includes/pages/post.css
+{% endblock %}
+
+{% block head %}
+    <script src="/scripts/post.js" type="module" async defer></script>
+{% endblock %}
+
+{% block content %}
+    {% macro share(prompt, class="") %}
+        <dwac-share class="{{ class }}"
+                {% if prompt %} prompt="{{prompt}}" {% endif %}
+                target="{{ page.url | url }}"
+                article-title="{{ title }}">
+        </dwac-share>
+    {% endmacro %}
+
+    <div class="post-container">
+        {{ share(class="post-end") }}
+        <div class="post-content">
+            <article class="md">{{ content | safe }}</article>
         </div>
-        {{ footer.footer(author, repo, page.inputPath) }}
-    </body>
-</html>
+        {{ share(prompt="Interesting post? Share it!", class="post-center") }}
+        {{ authorFrag.author(class="post-author") }}
+    </div>
+{% endblock %}
