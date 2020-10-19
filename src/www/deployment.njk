@@ -1,21 +1,29 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Deployment Info</title>
-    </head>
-    <body>
-        <h1>Deployment Info</h1>
-        <ul>
-            <li>
-                Commit: <a href="{{ repo.href }}/commit/{{ git.commit }}">
-                    {{- git.commit | short -}}
-                </a>
-                {%- if not git.clean %}
-                    (with local changes)
-                {%- endif -%}
-                .
-            </li>
-            <li>Build type: {{ environment }}</li>
-        </ul>
-    </body>
-</html>
+{% extends "pages/base.njk" %}
+
+{% block title %}
+    Deployment Info - Devel without a Cause
+{% endblock %}
+
+{% block description %}
+    Deployment info.
+{% endblock %}
+
+{% block styles %}
+    ./deployment.css
+{% endblock %}
+
+{% block content %}
+    <h1>Deployment Info</h1>
+    <ul>
+        <li>
+            Commit: <a href="{{ repo.href }}/commit/{{ git.commit }}">
+                {{- git.commit | short -}}
+            </a>
+            {%- if not git.clean %}
+                (with local changes)
+            {%- endif -%}
+            .
+        </li>
+        <li>Build type: {{ environment }}</li>
+    </ul>
+{% endblock %}
