@@ -1,40 +1,13 @@
 /** Style sheet for the root index page. */
 
-@import url(./styles/base.css);
 @import url(./styles/theme.css);
+@import url(./_includes/pages/base.css);
 @import url(./_includes/fragments/card.css);
-@import url(./_includes/fragments/footer.css);
 @import url(./_includes/fragments/header.css);
 
-:root {
-    --dwac-index-padding: 1em;
-}
-
-body {
-    display: flex;
-    flex-flow: column nowrap;
-    min-height: 100vh;
-}
-
-h2 {
-    margin: 1rem 0;
-    text-align: center;
-
-    /* From markdown styles. */
-    color: #666;
-    font-size: 1.875em;
-    line-height: 1.33333em;
-    margin: 0.8em 0 0.53333em 0;
-}
-
-main {
-    flex-grow: 1;
-    background-color: var(--dwac-theme-color-bg);
-    padding: var(--dwac-index-padding);
+.base-content {
     /* Leave extra room on bottom for last card's drop-shadow. */
-    padding-bottom: calc(var(--dwac-index-padding) + 6px);
-    max-width: 1024px;
-    margin: 0 auto; /* Center text content. */
+    padding-bottom: calc(var(--dwac-base-padding) + 6px);
 }
 
 .posts {
@@ -57,8 +30,4 @@ main {
 .post-timestamp {
     text-decoration: underline;
     color: black;
-}
-
-.footer {
-    margin-top: auto;
 }

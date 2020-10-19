@@ -1,81 +1,66 @@
 {% import "fragments/card.njk" as card %}
-{% import "fragments/favicon.njk" as favicon %}
-{% import "fragments/font.njk" as font %}
-{% import "fragments/footer.njk" as footer %}
-{% import "fragments/header.njk" as header %}
 
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <title>Devel without a Cause</title>
+{% extends "pages/base.njk" %}
 
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        
-        {% set desc %}
-            Personal blog about software, web tech, programming langauges, game
-            design, and whatever else I feel unqualified to discuss.
-        {% endset %}
-        <meta name="description" content="{{ desc | oneline }}">
+{% block title %}
+    Devel without a Cause
+{% endblock %}
 
-        {{ font.font("Lora") }}
-        {{ favicon.favicon() }}
+{% block description %}
+    Personal blog about software, web tech, programming langauges, game design,
+    and whatever else I feel unqualified to discuss.
+{% endblock %}
 
-        <style>{{ "./index.css" | css | safe }}</style>
-    </head>
-    <body>
-        {{ header.header(class="header") }}
+{% block styles %}
+    ./index.css
+{% endblock %}
 
-        <main>
-            <section>
-                <p>
-                    This is my personal blog, where I rant, rave, complain, and
-                    exclaim about everything that no one asked my opinion of.
-                </p>
+{% block content %}
+    <section>
+        <p>
+            This is my personal blog, where I rant, rave, complain, and exclaim
+            about everything that no one asked my opinion of.
+        </p>
 
-                <p>
-                    I mostly post about software development, of the frontend
-                    web variety in particular, but I will talk about anything I
-                    am interested in. This ranges from programming languages, to
-                    game design, to hot takes about the latest JavaScript
-                    framework.
-                </p>
+        <p>
+            I mostly post about software development, of the frontend web
+            variety in particular, but I will talk about anything I am
+            interested in. This ranges from programming languages, to game
+            design, to hot takes about the latest JavaScript framework.
+        </p>
 
-                <p>
-                    Send your thoughts, feedback, praise, and (well-reasoned)
-                    rants to <a href="{{ author.twit }}">@develwoutacause</a>.
-                </p>
-            </section>
+        <p>
+            Send your thoughts, feedback, praise, and (well-reasoned) rants to
+            <a href="{{ author.twit }}">@develwoutacause</a>.
+        </p>
+    </section>
 
-            <section>
-                <!-- List of posts most-recent first. -->
-                <h2>Posts</h2>
-                <ol class="posts">
-                    {% for post in collections.posts
-                        | sort(attr="date")
-                        | reverse
-                    %}
-                        <li>
-                            {% call card.card(link = post.url) %}
-                                <h3 class="card-title">
-                                    {{- post.data.title -}}
-                                </h3>
-                                <p class="card-content">
-                                    <time class="post-timestamp">
-                                        {{- post.date | date({
-                                            day: 'numeric',
-                                            month: 'short',
-                                            year: 'numeric'
-                                        }) -}}
-                                    </time>
-                                    - {{ post.data.excerpt }}
-                                </p>
-                            {% endcall %}
-                        </li>
-                    {% endfor %}
-                </ol>
-            </section>
-        </main>
-
-        {{ footer.footer(author, repo, page.inputPath, class="footer") }}
-    </body>
-</html>
+    <section>
+        <!-- List of posts most-recent first. -->
+        <h2>Posts</h2>
+        <ol class="posts">
+            {% for post in collections.posts
+                | sort(attr="date")
+                | reverse
+            %}
+                <li>
+                    {% call card.card(link = post.url) %}
+                        <h3 class="card-title">
+                            {{- post.data.title -}}
+                        </h3>
+                        <p class="card-content">
+                            <time class="post-timestamp">
+                                {{- post.date | date({
+                                    day: 'numeric',
+                                    month: 'short',
+                                    year: 'numeric'
+                                }) -}}
+                            </time>
+                            - {{ post.data.excerpt }}
+                        </p>
+                    {% endcall %}
+                </li>
+            {% endfor %}
+        </ol>
+    </section>
+{% endblock %}
