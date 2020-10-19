@@ -1,0 +1,51 @@
+{% import "fragments/card.njk" as card %}
+{% import "fragments/favicon.njk" as favicon %}
+{% import "fragments/font.njk" as font %}
+{% import "fragments/footer.njk" as footer %}
+{% import "fragments/header.njk" as header %}
+
+{#
+    For some unknown reason, by putting a `block` inside a `set`, that block is
+    now **required** and will throw an error if not provided. There seems to be
+    no way to use an optional `block` inside a `set`, which is quite limiting.
+    However, it does provide a means of requiring specific blocks where this
+    template is used.
+#}
+{% set title %}
+    {% block title %}{% endblock %}
+{% endset %}
+{% set desc %}
+    {% block description %}{% endblock %}
+{% endset %}
+{% set styles %}
+    {% block styles %}{% endblock %}
+{% endset %}
+{% set content %}
+    {% block content %}{% endblock %}
+{% endset %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>{{ title }}</title>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="{{ desc | oneline }}">
+
+        {{ font.font("Lora") }}
+        {{ favicon.favicon() }}
+
+        <style>{{ styles | trim | css | safe }}</style>
+
+        {% block head %}{% endblock %}
+    </head>
+    <body>
+        {{ header.header(class="header") }}
+
+        <main class="base-content">
+            {{ content | safe }}
+        </main>
+
+        {{ footer.footer(author, repo, page.inputPath, class="base-footer") }}
+    </body>
+</html>

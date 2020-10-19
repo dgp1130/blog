@@ -1,0 +1,38 @@
+/** Style sheet for the base page. */
+
+@import url(../../styles/base.css);
+@import url(../../styles/theme.css);
+@import url(../fragments/footer.css);
+@import url(../fragments/header.css);
+
+:root {
+    --dwac-base-padding: 1em;
+}
+
+body {
+    display: flex;
+    flex-flow: column;
+    min-height: 100vh;
+}
+
+h2 {
+    margin: 0 0 1rem 0;
+    text-align: center;
+
+    /* From markdown styles. */
+    color: #666;
+    font-size: 1.875em;
+    line-height: 1.33333em;
+}
+
+main {
+    flex: 1;
+    background-color: var(--dwac-theme-color-bg);
+    padding: var(--dwac-base-padding);
+    width: calc(min(100%, 1024px) - (2 * var(--dwac-base-padding)));
+    margin: 0 auto; /* Center text content. */
+}
+
+.base-footer {
+    margin-top: auto;
+}
