@@ -1,61 +1,49 @@
-{% import "fragments/favicon.njk" as favicon %}
-{% import "fragments/font.njk" as font %}
-{% import "fragments/footer.njk" as footer %}
-{% import "fragments/header.njk" as header %}
+{% extends "pages/base.njk" %}
 
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <title>Attributions - Devel without a Cause</title>
+{% block title %}
+    Attributions - Devel without a Cause
+{% endblock %}
 
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description"
-                content="Copyright attributions for Devel without a Cause.">
+{% block description %}
+    Copyright attributions for Devel without a Cause.
+{% endblock %}
 
-        {{ font.font("Lora") }}
-        {{ favicon.favicon() }}
+{% block styles %}
+    ./attributions.css
+{% endblock %}
 
-        <style>{{ "./attributions.css" | css | safe }}</style>
-    </head>
-    <body>
-        {{ header.header() }}
+{% block content %}
+    <h2>Attributions</h2>
+    <p>
+        Below is the list of all copyrights and attributions for
+        libraries and systems used by this website.
+    </p>
+    <ul>
+        <li>
+            <a href="https://github.com/Polymer/lit-element/" target="_blank">LitElement</a>
+            - Copyright (c) 2017, The Polymer Authors. All rights
+            reserved.
+            (<a href="https://github.com/Polymer/lit-element/blob/630031a2006c5bf26b60cd550282fc49a3ca3257/LICENSE" target="_blank">License</a>)
+        </li>
 
-        <main>
-            <h2>Attributions</h2>
-            <p>
-                Below is the list of all copyrights and attributions for
-                libraries and systems used by this website.
-            </p>
-            <ul>
-                <li>
-                    <a href="https://github.com/Polymer/lit-element/" target="_blank">LitElement</a>
-                    - Copyright (c) 2017, The Polymer Authors. All rights
-                    reserved.
-                    (<a href="https://github.com/Polymer/lit-element/blob/630031a2006c5bf26b60cd550282fc49a3ca3257/LICENSE" target="_blank">License</a>)
-                </li>
+        <li>
+            <a href="https://github.com/Polymer/lit-html/" target="_blank">lit-html</a>
+            - Copyright (c) 2017, The Polymer Authors. All rights
+            reserved.
+            (<a href="https://github.com/Polymer/lit-html/blob/cb88d79024c6ee406ab89b0fdfabed07818c3ff6/LICENSE" target="_blank">License</a>)
+        </li>
 
-                <li>
-                    <a href="https://github.com/Polymer/lit-html/" target="_blank">lit-html</a>
-                    - Copyright (c) 2017, The Polymer Authors. All rights
-                    reserved.
-                    (<a href="https://github.com/Polymer/lit-html/blob/cb88d79024c6ee406ab89b0fdfabed07818c3ff6/LICENSE" target="_blank">License</a>)
-                </li>
+        <li>
+            <a href="https://github.com/Microsoft/TypeScript/" target="_blank">TypeScript</a>
+            (<a href="https://github.com/Microsoft/TypeScript/blob/214df64e287804577afa1fea0184c18c40f7d1ca/LICENSE.txt" target="_blank">License</a>)
+        </li>
 
-                <li>
-                    <a href="https://github.com/Microsoft/TypeScript/" target="_blank">TypeScript</a>
-                    (<a href="https://github.com/Microsoft/TypeScript/blob/214df64e287804577afa1fea0184c18c40f7d1ca/LICENSE.txt" target="_blank">License</a>)
-                </li>
-
-                <li>
-                    Logo modified from
-                    <a href="https://commons.wikimedia.org/wiki/User:Eugenio_Hansen,_OFS" target="_blank">Eugenio Hansen, OFS</a>
-                     - Own work,
-                    <a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank">CC BY-SA 4.0</a>,
-                    <a href="https://commons.wikimedia.org/w/index.php?curid=65787095" target="_blank">Link</a>
-                </li>
-            </ul>
-        </main>
-
-        {{ footer.footer(author, repo, page.inputPath) }}
-    </body>
-</html>
+        <li>
+            Logo modified from
+            <a href="https://commons.wikimedia.org/wiki/User:Eugenio_Hansen,_OFS" target="_blank">Eugenio Hansen, OFS</a>
+                - Own work,
+            <a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank">CC BY-SA 4.0</a>,
+            <a href="https://commons.wikimedia.org/w/index.php?curid=65787095" target="_blank">Link</a>
+        </li>
+    </ul>
+{% endblock %}
