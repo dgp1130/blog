@@ -9,11 +9,17 @@ import { AsyncFilter, asyncFilter } from './utils';
  * Generates a filter to minify the CSS at a provided file path with the given
  * options.
  */
-export function bundleStyles(options: CssOptions = {}): AsyncFilter {
+export function bundleStyles({
+    cleanCssOptions = {},
+    ignoredWarnings = [],
+}: {
+    ignoredWarnings?: RegExp[],
+    cleanCssOptions?: CssOptions,
+} = {}): AsyncFilter {
     // Find default export at runtime to be easily mockable for tests.
     const CleanCss = getCleanCss();
     const minifier = new CleanCss({
-        ...options,
+        ...cleanCssOptions,
         returnPromise: true,
     });
 
@@ -21,13 +27,17 @@ export function bundleStyles(options: CssOptions = {}): AsyncFilter {
         const rootPath = path.normalize(path.join('src/www/', root));
         const output = await minifier.minify([ rootPath ]);
 
+        const actualWarnings = output.warnings.filter((warning) => {
+            return ignoredWarnings.every((regex) => !regex.test(warning));
+        });
+
         if (output.errors.length > 0) {
             throw new Error(`Failed to minify src/www/${root}:\n${
                     output.errors.join('\n')}`);
         }
-        if (output.warnings.length > 0) {
+        if (actualWarnings.length > 0) {
             console.warn(`Got warnings while minifying src/www/${root}:\n${
-                    output.warnings.join('\n')}`);
+                    actualWarnings.join('\n')}`);
         }
 
         return output.styles;

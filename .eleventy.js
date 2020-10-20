@@ -61,7 +61,12 @@ module.exports = function (config) {
     const cssConfig = getEnv() === Environment.DEV
             ? cleanCssConfigDev
             : cleanCssConfig;
-    config.addNunjucksAsyncFilter('css', bundleStyles(cssConfig));
+    config.addNunjucksAsyncFilter('css', bundleStyles({
+        ignoredWarnings: [
+            /^Ignoring local @import of "[^"]*" as it has already been imported.$/,
+        ],
+        cleanCssOptions: cssConfig,
+    }));
 
     // Print the given data to the console for debugging purposes.
     config.addFilter('debug', (data) => {

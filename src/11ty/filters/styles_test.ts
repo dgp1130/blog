@@ -22,7 +22,9 @@ describe('styles', () => {
             });
 
             const minifyFilter = bundleStyles({
-                level: 2,
+                cleanCssOptions: {
+                    level: 2,
+                },
             });
             expect(constructorSpy).toHaveBeenCalledTimes(1);
             expect(constructorSpy).toHaveBeenCalledWith({
@@ -40,6 +42,7 @@ describe('styles', () => {
             const minifySpy = jasmine.createSpy('minify').and.returnValue(
                 Promise.resolve({
                     errors: [ 'Styles are too ugly to minify.' ],
+                    warnings: [],
                 }),
             );
             spyOn(cleanCssLib, 'getCleanCss').and.returnValue(class {
@@ -64,6 +67,29 @@ describe('styles', () => {
             });
 
             await execFilter(bundleStyles(), 'foo.css');
+
+            expect(console.warn).toHaveBeenCalledWith(
+                    'Got warnings while minifying src/www/foo.css:\nStyles are looking very ugly...');
+        });
+
+        it('ignores undesired warnings', async () => {
+            spyOn(console, 'warn');
+            const minifySpy = jasmine.createSpy('minify').and.returnValue(
+                Promise.resolve({
+                    errors: [],
+                    warnings: [
+                        'Styles are looking very ugly...',
+                        'Some useless warning.',
+                    ],
+                }),
+            );
+            spyOn(cleanCssLib, 'getCleanCss').and.returnValue(class {
+                minify = minifySpy;
+            });
+
+            await execFilter(bundleStyles({
+                ignoredWarnings: [ /^Some useless warning.$/ ],
+            }), 'foo.css');
 
             expect(console.warn).toHaveBeenCalledWith(
                     'Got warnings while minifying src/www/foo.css:\nStyles are looking very ugly...');
