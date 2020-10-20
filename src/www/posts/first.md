@@ -7,3 +7,7 @@ excerpt: First post for a brand new blog.
 ---
 
 # First post!
+
+::: timestamp :::
+
+This is my first post.

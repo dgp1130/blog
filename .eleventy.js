@@ -6,6 +6,7 @@
 const { promises: fs } = require('fs');
 
 const { minify: minifyHtml } = require('html-minifier-terser');
+const mdLib = require('markdown-it');
 const Nunjucks = require('nunjucks');
 
 const { cleanCssConfig, cleanCssConfigDev } = require('./configs/clean_css');
@@ -15,10 +16,16 @@ const { Environment, getEnv } = require('./src/11ty/environment');
 const { format: formatDate } = require('./src/11ty/filters/dates');
 const { short } = require('./src/11ty/filters/git');
 const { bundleStyles } = require('./src/11ty/filters/styles');
+const { addMdTimestampPlugin } = require('./src/11ty/timestamp');
 
 module.exports = function (config) {
     // Process markdown and Nunjucks templates.
     config.setTemplateFormats(['md', 'njk']);
+
+    // Explicitly provide the Markdown library to set an explicit configuration.
+    const md = mdLib();
+    addMdTimestampPlugin(md);
+    config.setLibrary('md', md);
 
     // Explicitly provide the Nunjucks library to set an explicit configuration.
     config.setLibrary('njk', new Nunjucks.Environment(

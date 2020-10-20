@@ -364,3 +364,9 @@
   -o-transition: color 0.15s linear;
   transition: color 0.15s linear;
 }
+
+.md time.timestamp {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
