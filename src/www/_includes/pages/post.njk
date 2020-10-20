@@ -21,9 +21,9 @@
 {% block content %}
     {% macro share(prompt, class="") %}
         <dwac-share class="{{ class }}"
-                {% if prompt %} prompt="{{prompt}}" {% endif %}
-                target="{{ page.url | url }}"
-                article-title="{{ title }}">
+                {% if prompt %} prompt="{{ prompt | trim }}" {% endif %}
+                target="{{ page.url | url | trim }}"
+                article-title="{{ title | trim }}">
         </dwac-share>
     {% endmacro %}
 
