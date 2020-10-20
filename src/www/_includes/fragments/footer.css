@@ -1,5 +1,8 @@
 /** @fileoverview Styles for the page footer. */
 
+@import url(../../styles/base.css);
+@import url(../../styles/theme.css);
+
 .frag-footer {
     --dwac-text-color: var(--dwac-theme-text-color-secondary);
     --dwac-link-color: var(--dwac-theme-link-alt-color);
@@ -14,7 +17,7 @@
     margin: 0 auto; /* Center the text block. */
 }
 
-.frag-footer p:not(:first-child) {
+.frag-footer {
     font-size: var(--dwac-theme-font-size-small);
 }
 
