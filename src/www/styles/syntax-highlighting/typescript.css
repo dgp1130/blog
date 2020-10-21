@@ -1,65 +1,62 @@
 /** @fileoverview Styles for syntax highlighting of TypeScript code. */
 
-code[class="language-typescript"] {
+code.language-typescript {
     --dwac-code-base-color: #26b8b8;
+    color: var(--dwac-code-base-color);
 }
 
-code[class="language-typescript"] .token.comment {
+code.language-typescript .comment {
     color: green;
 }
 
-code[class="language-typescript"] .token.template-string {
+code.language-typescript .template-string {
     color: orange;
 }
 
-code[class="language-typescript"] .token.template-string > .token.interpolation {
+code.language-typescript .template-string > .interpolation {
     color: var(--dwac-code-base-color); /* Reset to base color. */
 }
 
-code[class="language-typescript"] .token.string {
+code.language-typescript .string {
     color: orange;
 }
 
-code[class="language-typescript"] .token.class-name {
+code.language-typescript .class-name {
     color: var(--dwac-code-base-color); /* Reset to base color. */
 }
 
-code[class="language-typescript"] .token.regex {
+code.language-typescript .regex {
     color: red;
 }
 
-code[class="language-typescript"] .token.constant {
+code.language-typescript .constant {
     color: blue;
 }
 
-code[class="language-typescript"] .token.keyword {
+code.language-typescript .keyword {
     color: blue;
 }
 
-code[class="language-typescript"] .token.boolean {
+code.language-typescript .boolean {
     color: blue;
 }
 
-code[class="language-typescript"] .token.function {
+code.language-typescript .function {
     color: #99a326;
 }
 
-code[class="language-typescript"] .token.number {
+code.language-typescript .number {
     color: #00c000;
 }
 
-code[class="language-typescript"] .token.operator {
+code.language-typescript .operator {
     color: black;
 }
 
-code[class="language-typescript"] .token.punctuation {
+code.language-typescript .punctuation {
     color: black;
 }
 
-code[class="language-typescript"] .token.builtin {
+code.language-typescript .builtin {
     color: blue;
-}
-
-code[class="language-typescript"] {
-    color: var(--dwac-code-base-color);
 }
