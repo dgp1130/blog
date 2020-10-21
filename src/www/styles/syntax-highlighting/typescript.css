@@ -1,0 +1,65 @@
+/** @fileoverview Styles for syntax highlighting of TypeScript code. */
+
+code[class="language-typescript"] {
+    --dwac-code-base-color: #26b8b8;
+}
+
+code[class="language-typescript"] .token.comment {
+    color: green;
+}
+
+code[class="language-typescript"] .token.template-string {
+    color: orange;
+}
+
+code[class="language-typescript"] .token.template-string > .token.interpolation {
+    color: var(--dwac-code-base-color); /* Reset to base color. */
+}
+
+code[class="language-typescript"] .token.string {
+    color: orange;
+}
+
+code[class="language-typescript"] .token.class-name {
+    color: var(--dwac-code-base-color); /* Reset to base color. */
+}
+
+code[class="language-typescript"] .token.regex {
+    color: red;
+}
+
+code[class="language-typescript"] .token.constant {
+    color: blue;
+}
+
+code[class="language-typescript"] .token.keyword {
+    color: blue;
+}
+
+code[class="language-typescript"] .token.boolean {
+    color: blue;
+}
+
+code[class="language-typescript"] .token.function {
+    color: #99a326;
+}
+
+code[class="language-typescript"] .token.number {
+    color: #00c000;
+}
+
+code[class="language-typescript"] .token.operator {
+    color: black;
+}
+
+code[class="language-typescript"] .token.punctuation {
+    color: black;
+}
+
+code[class="language-typescript"] .token.builtin {
+    color: blue;
+}
+
+code[class="language-typescript"] {
+    color: var(--dwac-code-base-color);
+}
