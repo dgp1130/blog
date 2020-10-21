@@ -8,6 +8,7 @@ const { promises: fs } = require('fs');
 const { minify: minifyHtml } = require('html-minifier-terser');
 const mdLib = require('markdown-it');
 const Nunjucks = require('nunjucks');
+const syntaxHighlight = require('@11ty/eleventy-plugin-syntaxhighlight');
 
 const { cleanCssConfig, cleanCssConfigDev } = require('./configs/clean_css');
 const { htmlMinifierConfig } = require('./configs/html_minifier');
@@ -36,6 +37,8 @@ module.exports = function (config) {
             lstripBlocks: true,
         },
     ));
+
+    config.addPlugin(syntaxHighlight);
 
     // Copy pre-built client JavaScript and sourcemaps to the output directory.
     config.addPassthroughCopy('src/www/**/*.js');
