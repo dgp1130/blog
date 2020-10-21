@@ -60,9 +60,39 @@ How about some inline `code`? What do you think of
 `FooModuleFactoryProducerManagerProvider`?
 
 ```typescript
+// Does something cool.
 export async function doSomething(input: string): string {
-    console.log(`Does a thing with ${input}`);
-    return input.split('').reverse().join('');
+    console.log(`Does a thing with ${input.trim()}`);
+    return new class {
+        constructor(private readonly input: string) { }
+
+        public do() {
+            return this.input.split('').reverse().join('');
+        }
+    }(input).do();
+}
+
+type Foo<T> = Record<string, T>;
+const test = 100;
+
+function mixin<T extends LitElement>(element: T): Class<T> {
+    return class extends element {
+        protected foo(): boolean {
+            return /^[a-zA-Z0-9_-$]+$/.test('foo');
+        }
+    }
+}
+
+@customElement('dwac-bar')
+class Bar<T extends Foo<number>> extends mixin(LitElement) {
+    @internalProperty({ attribute: false })
+    protected name: string;
+
+    render(): TemplateResult | void {
+        return html`
+            <h2>Hello ${this.name}!</h2>
+        `;
+    }
 }
 ```
 
