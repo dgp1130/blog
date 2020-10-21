@@ -1,0 +1,55 @@
+/** @fileoverview Styles for syntax highlighting of Java code. */
+
+code.language-java {
+    --dwac-code-base-color: #26b8b8;
+    color: var(--dwac-code-base-color);
+}
+
+code.language-java .comment {
+    color: green;
+}
+
+code.language-java .string {
+    color: orange;
+}
+
+code.language-java .annotation,
+code.language-java .annotation.punctuation {
+    color: var(--dwac-code-base-color);
+}
+
+code.language-java .namespace {
+    color: #767676;
+}
+
+code.language-java .generics {
+    color: skyblue;
+}
+
+code.language-java .class-name {
+    color: green;
+}
+
+code.language-java .keyword {
+    color: blue;
+}
+
+code.language-java .boolean {
+    color: blue;
+}
+
+code.language-java .function {
+    color: #99a326;
+}
+
+code.language-java .number {
+    color: #00c000;
+}
+
+code.language-java .operator {
+    color: black;
+}
+
+code.language-java .punctuation {
+    color: black;
+}

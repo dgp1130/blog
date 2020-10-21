@@ -60,7 +60,8 @@ How about some inline `code`? What do you think of
 `FooModuleFactoryProducerManagerProvider`?
 
 ```typescript
-// Does something cool.
+// Some TypeScript code.
+
 export async function doSomething(input: string): string {
     console.log(`Does a thing with ${input.trim()}`);
     return new class {
@@ -92,6 +93,33 @@ class Bar<T extends Foo<number>> extends mixin(LitElement) {
         return html`
             <h2>Hello ${this.name}!</h2>
         `;
+    }
+}
+```
+
+```java
+// Some Java code.
+
+package com.develwithoutacause.blog;
+
+import java.lang.Qualifier;
+
+@Qualifier
+@RetentionPolicy(Runtime)
+@interface MyAnnotation { }
+
+public final class Foo<T extends Something> extends Bar {
+    private static final String myString = "Hello World!";
+    private static final String multiLineString = """
+        This is a multi-line string!
+    """;
+
+    private boolean isEnabled = true;
+
+    @Provide
+    @MyAnnotation
+    private int provideValue() {
+        return 100;
     }
 }
 ```
