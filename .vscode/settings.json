@@ -24,7 +24,14 @@
         ]
     },
     "cSpell.words": [
-        "dwac"
+        "devs",
+        "dwac",
+        "instanceof",
+        "malloc",
+        "struct",
+        "subclassing",
+        "vtable",
+        "vtables"
     ],
     "javascript.preferences.quoteStyle": "single",
     "typescript.preferences.quoteStyle": "single"
