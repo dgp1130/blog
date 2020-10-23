@@ -130,8 +130,8 @@ module.exports = function (config) {
 
 // CSP sources for 11ty live reload functionality.
 const liveReloadCspSources = [
-    // Live reload inlined script.
-    `'sha256-d8xVpEfOlXT388lPL445U0wcaE4cweRSVh5BQpm9scE='`,
+    // Live reload inlined script for browser sync 2.26.13.
+    `'sha256-ktarjbJmNtF8IylbwgjSQoKrcQSdXJkqf60bj4nusHA='`,
     // The inlined script creates another script that loads browser sync as a
     // self-hosted script.
     `'self'`,
