@@ -74,3 +74,7 @@ Looking for more documentation about the project? Take a look at our
 Resources not stored in source control (like original, uncompressed images) are
 stored in a
 [DWAC Google Drive folder](https://drive.google.com/drive/folders/1D8nKCF3skWZ65clGnUDk1yrdxJ0zhgIT).
+
+## Analytics
+
+Analytics are hosted on [Plausible](https://plausible.io/).

@@ -38,6 +38,8 @@
         <style>{{ styles | trim | css | safe }}</style>
 
         {% block head %}{% endblock %}
+
+        <script async defer src="https://plausible.io/js/plausible.js"></script>
     </head>
     <body>
         {{ header.header(class="header") }}
