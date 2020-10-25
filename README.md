@@ -53,8 +53,7 @@ configuration, while the rest is done on
     * Hosted at https://blog.dwac.dev/ and https://dwac.netlify.app/.
 * The `main` branch is auto-deployed on GitHub push.
     * Only deployed if CI passes.
-    * Hosted at https://blog-next.dwac.dev/ and
-      [https://main-preview--dwac.netlify.app/](https://main-preview--dwac.netlify.app).
+    * Hosted at [https://main-preview--dwac.netlify.app/](https://main-preview--dwac.netlify.app).
 * Any `posts/*` branches are auto-deployed on GitHub push.
     * These are previews of in-progress posts, so tests are not executed here.
     * Hosted at https://post-${branch-name}--dwac.netlify.app.
@@ -86,12 +85,9 @@ The [domain is registered](https://domains.google.com/registrar/dwac.dev) with
 [Google Domains](https://domains.google.com/) and uses their default DNS.
 
 Domains in Google Domains are configured with Netlify via DNS CNAME redirects.
-Below is the mapping of which branch publishes to which domains.
-
-| Branch | Domain             | Redirects To                   |
-| ------ | ------------------ | ------------------------------ |
-| deploy | blog.dwac.dev      | dwac.netlify.app               |
-| main   | blog-next.dwac.dev | main-preview--dwac.netlify.app |
+[blog.dwac.dev](https://blog.dwac.dev/) redirects to
+[dwac.netlify.app](https://dwac.netlify.app/) which is updated from the
+[`deploy`](https://github.com/dgp1130/blog/tree/deploy) branch.
 
 ## SSL
 
