@@ -1,6 +1,7 @@
 {
   "name": "dgp1130-blog",
   "version": "0.0.0",
+  "private": true,
   "description": "Personal blog for https://github.com/dgp1130.",
   "scripts": {
     "start": "npm run -s clean && npm run -s build:11ty && npm run -s build:browser && npm run -s 11ty -- --serve",
