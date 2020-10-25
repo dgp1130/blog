@@ -1,6 +1,6 @@
 # dgp1130 Blog
 
-My personal blog.
+My personal blog, hosted at [https://blog.dwac.dev/](https://blog.dwac.dev/).
 
 <!-- status badges for CI and Netlify. -->
 ![CI](https://github.com/dgp1130/blog/workflows/CI/badge.svg?branch=main)
@@ -50,10 +50,11 @@ configuration, while the rest is done on
 * The `deploy` branch is pushed to production immediately after a push to
   GitHub.
     * Only deployed if CI passes.
-    * Hosted at https://dwac.netlify.app/.
+    * Hosted at https://blog.dwac.dev/ and https://dwac.netlify.app/.
 * The `main` branch is auto-deployed on GitHub push.
     * Only deployed if CI passes.
-    * Hosted at [https://main-preview--dwac.netlify.app/](https://main-preview--dwac.netlify.app).
+    * Hosted at https://blog-next.dwac.dev/ and
+      [https://main-preview--dwac.netlify.app/](https://main-preview--dwac.netlify.app).
 * Any `posts/*` branches are auto-deployed on GitHub push.
     * These are previews of in-progress posts, so tests are not executed here.
     * Hosted at https://post-${branch-name}--dwac.netlify.app.
@@ -78,3 +79,25 @@ stored in a
 ## Analytics
 
 Analytics are hosted on [Plausible](https://plausible.io/).
+
+## Domain Management
+
+The [domain is registered](https://domains.google.com/registrar/dwac.dev) with
+[Google Domains](https://domains.google.com/) and uses their default DNS.
+
+Domains in Google Domains are configured with Netlify via DNS CNAME redirects.
+Below is the mapping of which branch publishes to which domains.
+
+| Branch | Domain             | Redirects To                   |
+| ------ | ------------------ | ------------------------------ |
+| deploy | blog.dwac.dev      | dwac.netlify.app               |
+| main   | blog-next.dwac.dev | main-preview--dwac.netlify.app |
+
+## SSL
+
+`*.dev` domains must use
+[HSTS](https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security), so
+[SSL/TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security) is
+**required**. The certificate is provisioned from
+[Let's Encrypt](https://letsencrypt.org/) via
+[Netlify's native integration](https://app.netlify.com/sites/dwac/settings/domain#https).
