@@ -1,16 +1,16 @@
 /** @fileoverview Styles for syntax highlighting of Java code. */
 
 code.language-java {
-    --dwac-code-base-color: #26b8b8;
+    --dwac-code-base-color: #0073dd;
     color: var(--dwac-code-base-color);
 }
 
 code.language-java .comment {
-    color: green;
+    color: #006800;
 }
 
 code.language-java .string {
-    color: orange;
+    color: #a55828;
 }
 
 code.language-java .annotation,
@@ -39,11 +39,11 @@ code.language-java .boolean {
 }
 
 code.language-java .function {
-    color: #99a326;
+    color: #a55828;
 }
 
 code.language-java .number {
-    color: #00c000;
+    color: #006800;
 }
 
 code.language-java .operator {

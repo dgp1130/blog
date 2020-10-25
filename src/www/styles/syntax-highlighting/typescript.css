@@ -1,16 +1,16 @@
 /** @fileoverview Styles for syntax highlighting of TypeScript code. */
 
 code.language-typescript {
-    --dwac-code-base-color: #26b8b8;
+    --dwac-code-base-color: #0073dd;
     color: var(--dwac-code-base-color);
 }
 
 code.language-typescript .comment {
-    color: green;
+    color: #006800;
 }
 
 code.language-typescript .template-string {
-    color: orange;
+    color: #a55828;
 }
 
 code.language-typescript .template-string > .interpolation {
@@ -18,7 +18,7 @@ code.language-typescript .template-string > .interpolation {
 }
 
 code.language-typescript .string {
-    color: orange;
+    color: #a55828;
 }
 
 code.language-typescript .class-name {
@@ -26,7 +26,7 @@ code.language-typescript .class-name {
 }
 
 code.language-typescript .regex {
-    color: red;
+    color: #a00;
 }
 
 code.language-typescript .constant {
@@ -42,11 +42,11 @@ code.language-typescript .boolean {
 }
 
 code.language-typescript .function {
-    color: #99a326;
+    color: #a55828;
 }
 
 code.language-typescript .number {
-    color: #00c000;
+    color: #006800;
 }
 
 code.language-typescript .operator {
