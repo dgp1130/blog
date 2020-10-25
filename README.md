@@ -1,4 +1,4 @@
-# dgp1130 Blog
+# Devel without a Cause Blog
 
 My personal blog, hosted at [https://blog.dwac.dev/](https://blog.dwac.dev/).
 
