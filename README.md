@@ -89,7 +89,7 @@ Domains in Google Domains are configured with Netlify via DNS CNAME redirects.
 [dwac-blog.netlify.app](https://dwac-blog.netlify.app/) which is updated from
 the [`deploy`](https://github.com/dgp1130/blog/tree/deploy) branch.
 
-## SSL
+## SSL/TLS
 
 `*.dev` domains must use
 [HSTS](https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security), so
@@ -97,3 +97,8 @@ the [`deploy`](https://github.com/dgp1130/blog/tree/deploy) branch.
 **required**. The certificate is provisioned from
 [Let's Encrypt](https://letsencrypt.org/) via
 [Netlify's native integration](https://app.netlify.com/sites/dwac/settings/domain#https).
+
+## Search Engine Optimization
+
+Google Search Console can be accessed
+[here](https://search.google.com/search-console?resource_id=sc-domain%3Adwac.dev).
