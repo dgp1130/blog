@@ -11,7 +11,10 @@ The front matter **must** contain the following values:
 * `layout: pages/post` - This makes it use the standard post template.
 * `title` - The title to generate for the page.
 * `date` - The ISO 8601 date when the post is first published to prod.
-* `excerpt` - A short description for SEO purposes.
+* `excerpt` - A short description for SEO purposes. General recommendations
+  appear to be that more than 120 characters will be truncated on mobile devices
+  and more than 158 will be truncated on desktop. Ideally, this should be
+  shorter than 120, and will almost certainly be truncated beyond 160.
 
 ## Special tags
 
