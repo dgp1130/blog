@@ -12,10 +12,14 @@
     template is used.
 #}
 {% set title %}
-    {% block title %}{% endblock %}
+    {% filter oneline %}
+        {% block title %}{% endblock %}
+    {% endfilter %}
 {% endset %}
 {% set desc %}
-    {% block description %}{% endblock %}
+    {% filter oneline %}
+        {% block description %}{% endblock %}
+    {% endfilter %}
 {% endset %}
 {% set styles %}
     {% block styles %}{% endblock %}
@@ -30,7 +34,7 @@
         <title>{{ title }}</title>
 
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="{{ desc | oneline }}">
+        <meta name="description" content="{{ desc }}">
 
         {{ font.font("Lora") }}
         {{ favicon.favicon() }}
