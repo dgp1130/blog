@@ -77,7 +77,8 @@ export class Share extends LitElement {
         }
     `;
 
-    @property({ attribute: 'prompt'}) public prompt?: string;
+    @property({ type: String, attribute: 'prompt'})
+    public prompt: string = '';
 
     // Required.
     @property({
@@ -96,7 +97,7 @@ export class Share extends LitElement {
     }) public target?: URL;
 
     // Required.
-    @property({ attribute: 'article-title' }) public articleTitle?: string;
+    @property({ type: String, attribute: 'article-title' }) public articleTitle: string = '';
 
     render(): TemplateResult|void {
         assertDefined(this.target);
