@@ -4,6 +4,9 @@ node_modules/
 # Eleventy output directory.
 _site/
 
+# Component Metadata (generated)
+custom-elements.json
+
 # Ignore generated JavaScript and sourcemaps.
 src/**/*.js
 src/**/*.js.map
