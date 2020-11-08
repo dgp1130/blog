@@ -9,13 +9,14 @@ excerpt: |
 ---
 
 * TODO: `ctor<T>` is the name of this implementation, X is a conceptual name?
-* TODO: Use TypeScript throughout?
 * TODO: Limitations of constructor interfaces vs a function that returns
   `ctor<T>`?
 * TODO: Don't use `Model`, give less abstract examples?
-* TODO: Cut case studies in favor of the library tests?
 * TODO: Does this break encapsulation too much? Is it reasonable to allow
   consumers to provide a superclass implementation?
+* TODO: Discuss mixin potential.
+* TODO: Discuss choosing a superclass at factory invocation.
+* TODO: Check misspellings of inheritance.
 * TODO: Choosing a parent class at construction time means there could be public
   symbol conflicts.
 * TODO: Framework use case example?
@@ -72,7 +73,7 @@ general purpose object-oriented languages):
 class Model extends SuperModel {
   private readonly bar: number;
 
-  public constructor(halfFoo: int, bar: int) {
+  public constructor(halfFoo: number, bar: number) {
     super(halfFoo * 2);
     this.bar = bar;
   }
@@ -348,10 +349,6 @@ call this type `ctor<T>`.
 can create an instance of type `T`. This has two core uses, it can defer the
 construction of an object to a later time, or it can be extended by a subclass.
 
-TODO: Fix `#method` syntax.
-TODO: Check for `int` syntax.
-TODO: Check Java is not referenced anywhere it shouldn't be.
-
 The first use case is the simplest, as `ctor<T>` has a `.construct()` method to
 create an actual instance of `T`.
 
@@ -417,16 +414,113 @@ This structure decouples superclass construction from subclass construction. Any
 number of operations or function calls could be made between the two. The
 `ctor<SuperModel>` could be passed in and out of functions, saved to a `Map`,
 retrieved at later time, and then instantiated into a `Model`. `abstract`
-classes can *only* become a `ctor<T>` and do not support a direct `#construct()`
+classes can *only* become a `ctor<T>` and do not support a direct `.construct()`
 call, while `final` classes can *never* be used in a `from` expression.
 
 This decoupling also removes confusion around `this`. In TypeScript, `super()`
 must be executed before `this` comes into scope, because the object has not been
 created until `super()` is invoked. This awkward foot gun is now impossible
 because a reference to `this` refers to the factory context, which is either a
-`static` method, a loose function, or an independent class. `this` in a factory
-will never refer to the constructed object, and it is impossible to get a
-reference to the constructed class until after it is properly constructed.
+`static` method, a loose function, or an independent class instance. `this` in a
+factory will never refer to the constructed object, and it is impossible to get
+a reference to the constructed class until after it is properly constructed.
+
+### Extending interfaces
+
+It was long ago decided in the computer science hive mind that
+[multiple inheritance](https://en.wikipedia.org/wiki/Multiple_inheritance) is a
+bad idea. There are many reasons for this which I will not go into here, however
+most modern object-oriented language choose to use a single-inheritance model
+as an alternative. This is much simpler, but provides less flexibility, so
+[interfaces](https://en.wikipedia.org/wiki/Interface_(computing)#In_object-oriented_languages:~:text=In%20object%2Doriented%20languages,-%5B)
+are often touted as the single-inheritance answer to most multiple-inheritance
+use cases.
+
+However, many developers (myself included) feel that interfaces do not fully
+satisfy all the use cases for multiple-inheritance. Interfaces provide
+[polymorphism](https://en.wikipedia.org/wiki/Polymorphism_(computer_science)),
+enabling one class to "masquerade" as another. However interfaces generally do
+not enable multiple implementations of an interface to share code, nor do they
+allow defining local data on an implementation. An interface is an API contract,
+not a feature or functionality which is shared between many classes. Some
+languages fill in this gap via a trait (ex. Rust) or mixin (ex. Dart) system.
+
+However, `ctor<T>` has some interesting implications regarding interfaces. A
+core property of using `ctor<T>`, is that a subclass is no longer responsible
+for invoking the superclass constructor via `super()`. The chained `ctor<T>`
+objects are responsible for holding class fields and setting them on the final
+constructed object. One interesting side effect of not relying on a subclass to
+invoke its superclass' constructor, is that the subclass does *not* require a
+direct reference to its superclass. This has some unique implications regarding
+interfaces, most notably that **extending a class only requires knowledge of a
+supported interface, not the implementation itself.**
+
+Take for example, the follow TypeScript-like code:
+
+```typescript
+interface Foo {
+  foo(): string;
+}
+
+// We "extend" an interface. This can be thought of as `Child` extending an
+// unknown implementation of Foo. `Child` has no knowledge of what superclass it
+// actually has, it only knows that the superclass implements `Foo`.
+class Child extends Foo {
+  public bar(): string {
+    // Child can invoke `foo()` because it knows its superclass implements it.
+    return this.foo();
+  }
+
+  // Constructs off some `ctor<Foo>`, any implementation of `Foo` can be
+  // provided here. We return an intersection (`Child & TParent`) to merge the
+  // types so the caller of this function (who does know the implementation of
+  // `TParent`) can also use any additional functionality it provides.
+  public static from<TParent extends Foo>(parentCtor: ctor<TParent>):
+      Child & TParent {
+    return new Child() from parentCtor;
+  }
+}
+
+// Make an implementation of `Foo`.
+class Parent implements Foo {
+  // Satisfies the interface.
+  public foo(): string {
+    return 'foo';
+  }
+
+  // Some additional functionality unrelated to the interface.
+  public parent(): string {
+    return 'parent';
+  }
+
+  public static from(): ctor<Parent> {
+    return new ctor<Parent>();
+  }
+}
+
+// `Child` can now extend from `Parent`, despite having no knowledge of it.
+const parentCtor: ctor<Parent> = Parent.from();
+const child: Parent & Child = Child.from(parentCtor);
+console.log(child.foo()); // 'foo' - Satisfies the interface.
+console.log(child.bar()); // 'foo' - `Child` can call its superclass.
+console.log(child.parent()); // 'parent' - `child` is known to extend `Parent`.
+```
+
+The idea of "extending an unknown implementation of a known interface" provides
+much more power and flexibility to the traditional concept of interfaces. It
+still provides polymorphism, as `Child` and `Parent` can both be cast to `Foo`.
+It also allows `Child` to rely on its superclass to provide the `Foo` interface,
+meaning the implementation of `foo()` can be shared across multiple subclasses
+who extend the `Foo` interface. Both `Child` and `Parent` also own their own
+factories, meaning they can both declare their own fields and encapsulate their
+own relevant state. This is far more powerful than a traditional
+single-inheritance interface.
+
+### Dynamic inheritance hierarchy
+
+### Mixins
+
+TODO
 
 ## Experimental implementation
 
