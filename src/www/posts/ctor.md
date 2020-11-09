@@ -203,8 +203,8 @@ around this limitation, trying to present a nice API built on awkward
 constructor behaviors.
 
 Contrast this with JavaScript, which (while uncommon) can use its prototypical
-inheritence to decouple the creation of prototype objects. Note: I am not
-advocating for writting code this way, just using it to illustrate a point.
+inheritance to decouple the creation of prototype objects. Note: I am not
+advocating for writing code this way, just using it to illustrate a point.
 
 ```typescript
 const mySuperClass = { foo: "foo" };
@@ -275,7 +275,7 @@ detail anyways).
 All the logic that traditionally goes inside constructors can be handled by this
 factory instead. This nicely separates concerns, as a constructor's only purpose
 is to allocate memory and assign values to class field members, while factories
-are responsible for validating and intializing the object's data.
+are responsible for validating and initializing the object's data.
 
 ```typescript
 class Model {
@@ -294,7 +294,7 @@ class Model {
 The auto-generated constructor accepts its class fields as parameters, setting
 the initial value. Depending on the language, this structure can be tweaked as
 well; if a field is omitted, then it could be set to a default value specified
-by the intiailizer for that field. If no initializer is present either, then it
+by the initializer for that field. If no initializer is present either, then it
 could fall back to its default primitive value or `null`/`undefined`. More
 `null`-safe languages might require *all* values to be provided as a constructor
 argument or include a field initializer.
@@ -327,9 +327,9 @@ separate `static` functions just to work with `readonly`.
 ### Inheritance
 
 While these initial examples work quite well for simple cases, they do not
-handle inheritence, which brings its own set of requirements.
+handle inheritance, which brings its own set of requirements.
 
-The first issue with inheritence is that by calling a superclass' factory, the
+The first issue with inheritance is that by calling a superclass' factory, the
 object has already been instantiated. This makes abstract classes impossible,
 and requires concrete superclasses to be extended *after* they have been
 constructed, which does not make a whole lot of sense. This problems comes from
@@ -360,7 +360,7 @@ class Model {
   }
 
   public print(): void {
-    System.out.println(this.myFoo);
+    console.log(this.myFoo);
   }
 }
 
@@ -374,7 +374,7 @@ model.print(); // Success
 `ctor<T>` is a distinct type, so it does not have access to the methods of `T`,
 after all `T` has not been constructed yet, so it does not make sense to call
 any methods on it. It only has one method `.construct()`, which creates and
-returns the intance of `T` from its existing data.
+returns the instance of `T` from its existing data.
 
 `ctor<T>` has one key feature, it can be extended. Consider a `from` keyword
 that can be used with `new`. This will allow a subclass to extend a particular
@@ -388,7 +388,7 @@ abstract class SuperModel {
   }
 
   public print(): void {
-    System.out.println(this.myFoo);
+    console.log(this.myFoo);
   }
 }
 
@@ -538,7 +538,7 @@ only a 3-star safety rating. The repository explains how to use it in detail,
 but here is a rough translation with the idealized system described above:
 
 ```typescript
-import { ctor, from } from 'ctor-exp';
+import { ctor, from, Implementation } from 'ctor-exp';
 
 class Foo {
   private readonly myFoo: string;
@@ -549,30 +549,28 @@ class Foo {
   }
 
   public static createFoo(foo: string): Foo {
-    // Equivalent to: `new Foo(myFoo = foo)`.
+    // Equivalent to: `new Foo({ myFoo: foo })`.
     return ctor.new(Foo, { myFoo: foo }).construct();
   }
 
   public static extendFoo(foo: string): ctor<Foo> {
-    // Equivalent to: `new ctor<Foo>(myFoo = foo)`.
+    // Equivalent to: `new ctor<Foo>({ myFoo: foo })`.
     return ctor.new(Foo, { myFoo: foo });
   }
 }
 
-class Bar extends Foo {
+// Extend for `Implementation<SuperClass>()` rather than `SuperClass` directly.
+class Bar extends Implementation<Foo>() {
   private readonly myBar: string;
 
-  // Subclass constructors must propagate inputs to the `super()` call.
-  public constructor(
-    superParams: ConstructorParameters<typeof Foo>,
-    { myBar }: { myBar: string },
-  ) {
-    super(...superParams);
+  // Subclass constructors are the same, but must make an empty `super()` call.
+  public constructor({ myBar }: { myBar: string }) {
+    super();
     this.myBar = myBar;
   }
 
   public static createBar(foo: string, bar: string): Bar {
-    // Equivalent to: `new Bar(myBar = bar) from Foo.extendFoo(foo)`.
+    // Equivalent to: `new Bar({ myBar: bar }) from Foo.extendFoo(foo)`.
     return from(Foo.extendFoo(foo))
         .new(Bar, { myBar: bar }).construct();
   }
@@ -615,7 +613,7 @@ impractical to avoid in many use cases.
 
 This system would also be tricky to implement in compilers which colocate
 subclass and superclass memory together. Typically, `new` is only ever invoked
-on the concrete subclass of a given inheritence hierarchy. This means it is
+on the concrete subclass of a given inheritance hierarchy. This means it is
 known at compile-time how large the class is and how much memory to allocate for
 any given `new` operation.
 
@@ -662,9 +660,9 @@ Mr. and/or Ms. Smarty Pants, way to steal my thunder here.* More seriously, a
 `ctor<T>` can be effectively implemented with a traditional builder class.
 There are a few core differences with `ctor<T>`:
 
-* `ctor<T>` is more about reconceptualizing the *concept* of a constructor,
+* `ctor<T>` is more about re-conceptualizing the *concept* of a constructor,
   forcing developers to think more in terms of factories. It decouples memory
-  allocation (constructors) from initialization and varlidation (factories).
+  allocation (constructors) from initialization and validation (factories).
   While this can be done with builders, it is not inherent in the builder design
   pattern.
 * With `ctor<T>`, the compiler **requires** developers to always use this
@@ -814,7 +812,7 @@ public class Bar {
     System.out.println(this.myBar);
   }
 
-  // Even explicit support in a class returns an unexpressible type.
+  // Even explicit support in a class returns an non-expressible type.
   public static Bar & T from<T>(ctor<T> base, String bar) {
     return new Bar(myBar = bar) from base;
   }
@@ -843,4 +841,4 @@ Use cases for changing superclass at construction time:
     composing the superclass factory decision.
 * Adding a mixin of test/dev infra.
     * ie. A `flush()` command.
-    * A `logger` metaclass?
+    * A `logger` meta-class?
