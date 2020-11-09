@@ -5,5 +5,13 @@
     "typescript.enablePromptUseWorkspaceTsdk": true,
     "typescript.tsdk": "./node_modules/typescript/lib",
     "files.trimFinalNewlines": true,
-    "files.insertFinalNewline": true
+    "files.insertFinalNewline": true,
+    "cSpell.enableFiletypes": [
+        "!javascript",
+        "!typescript",
+        "md"
+    ],
+    "cSpell.words": [
+        "dwac"
+    ]
 }
