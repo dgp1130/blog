@@ -14,12 +14,12 @@ excerpt: |
 * TODO: Don't use `Model`, give less abstract examples?
 * TODO: Does this break encapsulation too much? Is it reasonable to allow
   consumers to provide a superclass implementation?
-* TODO: Discuss mixin potential.
-* TODO: Discuss choosing a superclass at factory invocation.
 * TODO: Check misspellings of inheritance.
 * TODO: Choosing a parent class at construction time means there could be public
   symbol conflicts.
-* TODO: Framework use case example?
+* TODO: Extending a sibling class foot-gun.
+* TODO: Line length of code examples for mobile devices.
+* TODO: vtable challenges?
 
 # Construct Better
 
@@ -425,12 +425,23 @@ because a reference to `this` refers to the factory context, which is either a
 factory will never refer to the constructed object, and it is impossible to get
 a reference to the constructed class until after it is properly constructed.
 
+Now at this point we have a system which is roughly equivalent to most
+object-oriented type systems like Java or C#. We can construct objects and
+inherit from other classes using `ctor<T>`. With a few tweaks in how developers
+design their code using `ctor<T>`, it can be used as a mostly drop-in
+replacement of modern constructors. However, there are a few interesting
+"features" this system can provide which are worth discussing. These certainly
+are not required to gain the benefits of `ctor<T>` and I am not totally
+convinced these are good ideas to begin with. However, I do believe they are at
+least *interesting*, and it would be a disservice not to talk about them. With
+that disclaimer out of the way...
+
 ### Extending interfaces
 
 It was long ago decided in the computer science hive mind that
 [multiple inheritance](https://en.wikipedia.org/wiki/Multiple_inheritance) is a
 bad idea. There are many reasons for this which I will not go into here, however
-most modern object-oriented language choose to use a single-inheritance model
+most modern object-oriented languages choose to use a single-inheritance model
 as an alternative. This is much simpler, but provides less flexibility, so
 [interfaces](https://en.wikipedia.org/wiki/Interface_(computing)#In_object-oriented_languages:~:text=In%20object%2Doriented%20languages,-%5B)
 are often touted as the single-inheritance answer to most multiple-inheritance
@@ -471,12 +482,9 @@ class Child extends Foo {
     return this.foo();
   }
 
-  // Constructs off some `ctor<Foo>`, any implementation of `Foo` can be
-  // provided here. We return an intersection (`Child & TParent`) to merge the
-  // types so the caller of this function (who does know the implementation of
-  // `TParent`) can also use any additional functionality it provides.
-  public static from<TParent extends Foo>(parentCtor: ctor<TParent>):
-      Child & TParent {
+  // Constructs off some `ctor<Foo>`. Any implementation of `Foo` can be
+  // provided here and it will be extended to a `Child`.
+  public static from<TParent extends Foo>(parentCtor: ctor<TParent>): Child {
     return new Child() from parentCtor;
   }
 }
@@ -488,11 +496,6 @@ class Parent implements Foo {
     return 'foo';
   }
 
-  // Some additional functionality unrelated to the interface.
-  public parent(): string {
-    return 'parent';
-  }
-
   public static from(): ctor<Parent> {
     return new ctor<Parent>();
   }
@@ -500,10 +503,9 @@ class Parent implements Foo {
 
 // `Child` can now extend from `Parent`, despite having no knowledge of it.
 const parentCtor: ctor<Parent> = Parent.from();
-const child: Parent & Child = Child.from(parentCtor);
+const child: Child = Child.from(parentCtor);
 console.log(child.foo()); // 'foo' - Satisfies the interface.
 console.log(child.bar()); // 'foo' - `Child` can call its superclass.
-console.log(child.parent()); // 'parent' - `child` is known to extend `Parent`.
 ```
 
 The idea of "extending an unknown implementation of a known interface" provides
@@ -518,16 +520,222 @@ single-inheritance interface.
 
 ### Dynamic inheritance hierarchy
 
+There is an interesting consequence of allowing a class to extend an unknown
+implementation of an interface, that a class can extend multiple superclasses,
+chosen dynamically at runtime. This has a few, far-reaching effects.
+
+On the one hand, it means that a class can dynamically choose its superclass at
+runtime, via its own condition or having that superclass provided as an input to
+a factory. Take for example a simple `Set` use case. Here, we want two
+implementations, one optimized for very small sets, and another optimized for
+very large sets. Then, we want to have a `MutableSet` that provides some
+mutability features on top of this. How can we design this to reuse the size
+optimizations?
+
+```typescript
+interface Set { /* ... */ }
+
+// Two implementations of Set, one optimized for a small set, and another for a
+// large set.
+class SparseSet implements Set { /* ... */ }
+class DenseSet implements Set { /* ... */ }
+
+// A simple function to choose the ideal implementation of a Set based on the
+// size of its input.
+function createSet(items: number[]): ctor<Set> {
+  if (items.length < 100) {
+    return SparseSet.from(items);
+  } else {
+    return DenseSet.from(items);
+  }
+}
+
+// Extend any implementation of `Set`.
+class MutableSet extends Set {
+  public static from(items: number[]): MutableSet {
+    // Dynamically choose the optimal set implementation as a superclass.
+    return new MutableSet() from createSet(items);
+  }
+
+  // ...
+}
+```
+
+Here, `MutableSet` is dynamically choosing at runtime whether to extend a
+`SparseSet` or a `DenseSet`, implicitly taking advantage of any optimizations
+they provide for the size of the input. Since `MutableSet` extends an unknown
+implementation of `Set`, it is not intrinsically bound to any particular
+superclass. This reduces overall coupling between the classes and nicely reuses
+the existing optimizations.
+
+This is a really useful feature, as this same design would be quite difficult to
+achieve with traditional class hierarchies. You would either need a
+`MutableSparseSet` and a `MutableDenseSet` as distinct subclasses with
+duplicated functionality or you would need to refactor the whole thing to use a
+mixin or trait system, if you are lucky enough to use a language which supports
+them.
+
+On the other hand, this means that class hierarchies are not statically known at
+compile-time. Any open implementation of a particular interface could
+potentially be used as a superclass which extends that interface. While
+everything is still reasonably typed and can be checked at compile-time, the
+precise class hierarchy may vary at runtime, and could even differ between
+different instances of the same class. A `MutableSet` with 10 items will extend
+`SparseSet`, while a different `MutableSet` with 1000 items will extend
+`DenseSet` and could exist in the same program and even interact with each
+other. This makes reasoning about `MutableSet` a bit harder, as any
+`super.method()` could refer to any implementation of `Set` rather than a fixed
+superclass.
+
 ### Mixins
 
-TODO
+The idea of "extending an unknown implementation" is basically the definition of
+a [mixin](https://en.wikipedia.org/wiki/Mixin). Languages vary widely in their
+support of a mixin mechanism, and those that do often have their own problems
+with constructors. Take a TypeScript example, which often implements mixins as
+a function which converts a class definition into an anonymous class with the
+mixin behavior included.
+
+```typescript
+type Constructor = new (...args: any[]) => {};
+function Mixin<TBase extends Constructor>(Base: TBase) {
+  // Return a new class which extends the one provided.
+  return class extends Base {
+    // Add mixin functionality.
+    public mixin(): string {
+      return 'mixin';
+    }
+  };
+}
+```
+
+While this works great for simple cases, it starts to break down with
+constructors. Consider changing this so the `'mixin'` string literal was
+provided as a constructor parameter.
+
+```typescript
+type Constructor = new (...args: any[]) => {};
+function Mixin<TBase extends Constructor>(Base: TBase) {
+  // Return a new class which extends the one provided.
+  return class extends Base {
+    public str: string;
+
+    // ERR: A mixin class must have a constructor with a single rest parameter
+    // of type 'any[]'
+    public constructor(str: string, ...args: any[]) {
+      super(...args);
+      this.str = str;
+    }
+
+    // Add mixin functionality.
+    public mixin(): string {
+      return 'mixin';
+    }
+  };
+}
+```
+
+We run into a problem with constructor arguments. This is because a mixin, by
+definition, does not have knowledge of its superclass and has no way of knowing
+what to provide. TypeScript actually requires that mixins like this declare
+their constructors with `...args: any[]` specifically for this reason. Other
+limitations of constructors from the `super()` syntax further complicate this to
+make it very difficult to extract the first argument as the mixin string and
+pass through the rest to the superclass. The end result here, is that it is
+near-impossible to pass in a value to a mixin through its constructor.
+
+With `ctor<T>`, a mixin pattern works just like extending an interface:
+
+```typescript
+// A mixin simply extends an unknown type parameter. We do not need to know what
+// `TParent` is at compile-time, because we do not need a value reference to its
+// implementation. This is only used to type-check the `from` clause.
+class Mixin<TParent> extends TParent {
+  private readonly myStr: string;
+
+  public mixin(): string {
+    return this.myStr;
+  }
+
+  // Construct from any given `ctor<T>`. Must use a function-specific generic
+  // because as a static function, `TParent` is not in scope or known at this
+  // time.
+  public static from<TSuper>(parentCtor: ctor<TSuper>, str: string): ctor<Mixin<TSuper>> {
+    return new ctor<Mixin<TSuper>>({ myStr: str }) from parentCtor;
+  }
+}
+
+// Define a simple parent class, with no knowledge of `Mixin`.
+class Parent {
+  public parent(): string {
+    return 'parent';
+  }
+
+  public static from(): ctor<Parent> {
+    return new ctor<Parent>();
+  }
+}
+
+// `Child` extends `Parent` mixed with `Mixin`.
+class Child extends Mixin<Parent> {
+  public child(): string {
+    // `Child` can reference both `Mixin` and `Parent` members.
+    return this.mixin() + this.parent(); // 'mixinparent'
+  }
+
+  public static from(): Child {
+    // Call `Mixin` factory with the `ctor<Parent>`.
+    const parentCtor: ctor<Parent> = Parent.from();
+    const mixinCtor: ctor<Mixin<Parent>> = Mixin.from(parentCtor, 'mixin');
+    return new Child() from mixinCtor;
+  }
+}
+```
+
+With `ctor<T>`, we are able to define a mixin as simply a class that will extend
+any given superclass. This is done by simply allowing a class to extend its own
+type parameter, since all "extending" does is simply type check the `from`
+clause of a `new` expression. In a structural type system like TypeScript, this
+could be implemented by simply having `Mixin.from()` return `Mixin & TParent`,
+intersecting the types to merge their definitions, removing the need to extend a
+generic type parameter at the class level.
+
+Using mixins with `ctor<T>` composes factories smoothly and allows each mixin to
+own its own constructor parameters. You can even introduce type constraints on
+the classes that can be used with a given mixin simply by adding those
+constraints to the generic:
+
+```typescript
+class Component { /* ... */ }
+class Mixin1<T extends Component> extends T { /* ... */ }
+class Mixin2<T extends Component> extends T { /* ... */ }
+class Child extends Mixin2<Mixin1<Component>> {
+  public static from(): Child {
+    const componentCtor: ctor<Component>
+        = Component.from(/* ... */);
+
+    const mixin1Ctor: ctor<Mixin1<Component>>
+        = Mixin1.from(componentCtor, /* ... */);
+
+    const mixin2Ctor: ctor<Mixin2<Mixin1<Component>>>
+        = Mixin2.from(mixin1Ctor, /* ... */);
+
+    return new Child() from mixin2Ctor;
+  }
+}
+```
+
+Note that not much needs to change to support mixins, as they mostly "just
+work"ᵗᵐ. This shows the power and flexibility of `ctor<T>` and decoupling a
+superclass from its subclasses, which is all enabled with the use of minimal
+constructors.
 
 ## Experimental implementation
 
 While authoring this post, I wanted to actually play around with these ideas and
-make sure it worked as well as I hoped it would. A proper implementation would
-require a custom compiler, or at least a compiler plugin, however a library
-could be "good enough" for small experiments. As a result, I published
+make sure they worked as well as I hoped. A proper implementation would require
+a custom compiler, or at least a compiler plugin, however a library could be
+"good enough" for small experiments. As a result, I published
 [`ctor-exp`](https://github.com/dgp1130/ctor-exp), a simple TypeScript library
 which implements many of the ideas here.
 
@@ -559,11 +767,11 @@ class Foo {
   }
 }
 
-// Extend for `Implementation<SuperClass>()` rather than `SuperClass` directly.
+// Extend `Implementation<SuperClass>()` rather than `SuperClass` directly.
 class Bar extends Implementation<Foo>() {
   private readonly myBar: string;
 
-  // Subclass constructors are the same, but must make an empty `super()` call.
+  // Subclass constructors are the same, but with an empty `super()` call.
   public constructor({ myBar }: { myBar: string }) {
     super();
     this.myBar = myBar;
@@ -572,7 +780,8 @@ class Bar extends Implementation<Foo>() {
   public static createBar(foo: string, bar: string): Bar {
     // Equivalent to: `new Bar({ myBar: bar }) from Foo.extendFoo(foo)`.
     return from(Foo.extendFoo(foo))
-        .new(Bar, { myBar: bar }).construct();
+        .new(Bar, { myBar: bar })
+        .construct();
   }
 }
 ```
@@ -580,8 +789,9 @@ class Bar extends Implementation<Foo>() {
 Hopefully this provides a close-enough approximation to a real implementation
 for devs to experiment with. There are also a number of
 [examples of real world use cases](https://github.com/dgp1130/ctor-exp#examples)
-to compare a `ctor<T>` approach with traditional constructors. Check it out and
-let me know how well some real world examples hold up!
+to compare a `ctor<T>` approach with traditional constructors, including some of
+the more out-there features like dynamically choosing a superclass at runtime.
+Check it out and let me know how well some real world examples hold up!
 
 ## Drawbacks
 
@@ -698,7 +908,7 @@ public class Parent {
 
 // Could add `T implements Foo`.
 // Could add `T extends Bar`.
-public class Mixin<T> {
+public class Mixin<T> extends T {
   public static ctor<Mixin<T>> from(ctor<T> parent) {
     return new ctor<Mixin<T>> from parent;
   }
