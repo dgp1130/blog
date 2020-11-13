@@ -10,7 +10,7 @@ excerpt: |
 
 * TODO: Limitations of constructor interfaces vs a function that returns
   `ctor<T>`?
-* TODO: Don't use `Model`, give less abstract examples?
+* TODO: A better mixin example? Maybe Simpsons-based?
 * TODO: Does this break encapsulation too much? Is it reasonable to allow
   consumers to provide a superclass implementation?
 * TODO: Choosing a parent class at construction time means there could be public
@@ -69,12 +69,12 @@ on TypeScript here and languages do vary, many of these points apply to *most*
 general purpose object-oriented languages):
 
 ```typescript
-class Model extends SuperModel {
-  private readonly bar: number;
+class Cat extends Animal {
+  private readonly firstName: string;
 
-  public constructor(halfFoo: number, bar: number) {
-    super(halfFoo * 2);
-    this.bar = bar;
+  public constructor(firstName: string, lastName: string) {
+    super(firstName + ' ' + lastName);
+    this.firstName = firstName;
   }
 }
 ```
@@ -84,14 +84,14 @@ constructors in TypeScript:
 
 * Constructors do *not* have a declared return type, it is implied to be the
   same class.
-  * When else do you not specify a return type to what is clearly a method?
+  * When else do you not specify a return type to what is clearly a function?
 * Constructors are declared with the special keyword `constructor()`. Other
   languages commonly use the same name as their class.
   * When else does the name of something affect its behavior?
 * `super()` *must* be executed before `this` can be used.
   * You also cannot use `this` in the `super()` expression itself.
-  * When else does a particular binding not come into scope until part way
-    through a block?
+  * When else does a particular named binding come into scope part way through a
+    block?
 * Code which does not reference `this` can come before `super()`, but doing so
   means you
   [cannot use field initializers, parameter properties, or native private fields](https://github.com/microsoft/TypeScript/issues/945#issuecomment-60419937).
@@ -100,15 +100,15 @@ constructors in TypeScript:
   * This means that the following is not ok, despite the fact that it would
     compile to the exact same thing!
     ```typescript
-    class Model extends SuperModel {
-      private readonly bar: number;
+    class Cat extends Animal {
+      private readonly firstName: string;
       // Any field initializer means `super()` must come first!
-      private readonly unrelatedInitializer: number = 0;
+      private readonly age: number|null = null;
 
-      public constructor(halfFoo: number, bar: number) {
-        const foo = halfFoo * 2;
-        super(foo); // ERR: `super()` must be first statement in constructor.
-        this.bar = bar;
+      public constructor(firstName: string, lastName: string) {
+        const fullName = firstName + ' ' + lastName;
+        super(fullName); // ERR: `super()` must be the first statement.
+        this.firstName = firstName;
       }
     }
     ```
@@ -125,8 +125,8 @@ constructors in TypeScript:
   * JavaScript throws another wrench into this because `return 'foo';` will
     actually use `'foo'` instead of the constructed class. Except
     `return undefined;` is the same as `return;`, so the constructed class will
-    be used instead. It also means that calling `new Model()` may not *actually*
-    create a new object, so that keyword can just lie sometimes.
+    be used instead. It also means that calling `new Cat()` may not *actually*
+    create a new `Cat`, so that keyword can just lie sometimes.
 
 Most of the restrictions have valid reasons for existing. It makes logical sense
 that `this` cannot be used before `super()` is called, or else it would not
@@ -141,7 +141,7 @@ something that should be as simple as "make an object and return it".
 Many languages fix specific parts of these issues. Dart has named constructors.
 C# uses a `: base()` syntax to pull the `super()` call out of the body of the
 function, which avoids the scope problems of `this`. C++ uses initializer lists
-to set `const` fields, so `this->constField = //. ..` is never valid as would be
+to set `const` fields, so `this->constField = ...` is never valid as would be
 expected. Kotlin omits the `new` operator entirely, making object construction a
 private implementation detail.
 
@@ -190,9 +190,10 @@ constructors at the same time, with no opportunity to do anything else in
 between. For example, it is generally impossible to write something like:
 
 ```typescript
-var mySuperClass = SuperClass.constructor();
-print("Successfully invoked SuperClass part of constructor.");
-var mySubClass = SubClass.constructor(mySuperClass);
+var ollieAnimal = Animal.constructor("Ollie Parker");
+print("Successfully invoked Animal part of constructor.");
+var ollieCat = Cat.constructor(ollieAnimal, "Ollie");
+print("Successfully invoked Cat part of constructor.");
 ```
 
 Because the executions of the two constructors are inherently coupled it
@@ -201,15 +202,16 @@ factories hard to compose and often have to bend over backwards in order to work
 around this limitation, trying to present a nice API built on awkward
 constructor behaviors.
 
-Contrast this with JavaScript, which (while uncommon) can use its prototypical
-inheritance to decouple the creation of prototype objects. Note: I am not
-advocating for writing code this way, just using it to illustrate a point.
+Contrast this with JavaScript, which can use its prototypical inheritance to
+decouple the creation of prototype objects. Note: I am not advocating for
+writing code this way, just using it to illustrate a point.
 
 ```typescript
-const mySuperClass = { foo: "foo" };
-console.log("Successfully constructed SuperClass.");
-const mySubClass = { bar: "bar" };
-Object.setPrototypeOf(mySubClass, mySuperClass);
+const ollie = new Animal("Ollie Parker");
+console.log("Successfully invoked Animal part of constructor.");
+Cat.apply(ollie, [ "Ollie" ]); // Manually invoke Cat constructor.
+Object.setPrototypeOf(ollie, Cat.prototype); // Manually assign methods.
+console.log("Successfully invoked Cat part of constructor.");
 ```
 
 Based on these limitations, I believe **the modern concept of constructors is
@@ -247,34 +249,35 @@ the hood, so how might a developer use such a constructor? Consider the
 following TypeScript-like snippet for how this could work:
 
 ```typescript
-class Model {
-  public static create(): Model {
-    return new Model();
+class Cat {
+  public static create(): Cat {
+    return new Cat();
   }
 }
 ```
 
 In this example, there are no user-defined constructors, no `constructor`
-keyword. This works just like default constructors in TypeScript, except it is
-the **only** constructor. The `new` keyword is still used to actually invoke
-this auto-generated constructor, but it is actually closer to a C-style
-`malloc()` call. It really just allocates the memory necessary for `Model` and
+keyword. `new Cat()` works just like default constructors in TypeScript, except
+that is the **only** constructor. The `new` keyword is still used to actually
+invoke this auto-generated constructor, but it is actually closer to a C-style
+`malloc()` call. It really just allocates the memory necessary for `Cat` and
 type casts it to the relevant type. We can also restrict the `new` keyword to
 **only** be callback within its own class. Hence the following would **not**
 compile:
 
 ```typescript
-class Model { }
+class Cat { /* ... */ }
 
-// COMPILE ERR: `new Model` cannot be used outside the `Model` class.
-console.log(new Model().toString());
+// COMPILE ERR: `new Cat` cannot be used outside the `Cat` class.
+console.log(new Cat());
 ```
 
 This prevents the `new` keyword from leaking outside the class itself. It also
 means we must lean into the factory concept as a `public static` method is
-**required** to ever instantiate a class (of course, you probably should **not**
+**required** to ever instantiate a class. Of course, you probably should **not**
 name the factory `new()` or `create()` or else you will leak that implementation
-detail anyways).
+detail anyways. For this post, I will mostly use `from()` as a factory name as
+it does not imply a new object is created.
 
 All the logic that traditionally goes inside constructors can be handled by this
 factory instead. The constructor is only responsible for allocating memory and
@@ -282,14 +285,14 @@ assigning field members. This nicely separates concerns, as factories are
 responsible for validating and initializing the object's data.
 
 ```typescript
-class Model {
-  private readonly myFoo: number;
-  private readonly myBar: number;
+class Cat {
+  private readonly myFirstName: string;
+  private readonly myLastName: string;
 
-  public static from(foo: number, bar: number): Model {
-    return new Model({
-      myFoo: foo,
-      myBar: bar,
+  public static from(firstName: string, lastName: string): Cat {
+    return new Cat({
+      myFirstName: firstName,
+      myLastName: lastName,
     });
   }
 }
@@ -318,14 +321,15 @@ factory which avoids many of the syntactic problems found earlier. Consider
 any other construct:
 
 ```typescript
-class Model {
-  private readonly myItem?: Item;
-  public static from(items: Item[], id: number): Model {
-    for (const item of items) {
-      if (id === item.id) return new Model({ myItem: item });
+class Cat {
+  private readonly owner?: Person;
+
+  public static from(people: Person[], ownerName: string): Cat {
+    for (const person of people) {
+      if (ownerName === person.name) return new Cat({ owner: person });
     }
 
-    return new Model({ myItem: undefined });
+    return new Cat({ owner: undefined });
   }
 }
 ```
@@ -365,22 +369,23 @@ The first use case is the simplest, as `ctor<T>` has a `.construct()` method to
 create an actual instance of `T`.
 
 ```typescript
-class Model {
-  private myFoo: number;
-  public static from(foo: number): ctor<Model> {
-    return new ctor<Model>({ myFoo: foo });
+class Cat {
+  private myFirstName: string;
+
+  public static from(firstName: string): ctor<Cat> {
+    return new ctor<Cat>({ myFirstName: firstName });
   }
 
   public print(): void {
-    console.log(this.myFoo);
+    console.log(this.myFirstName);
   }
 }
 
-const myCtor: ctor<Model> = Model.from();
-myCtor.print(); // ERR: print() does not exist on ctor<Model>
+const ollieCtor: ctor<Cat> = Cat.from('Ollie');
+ollieCtor.print(); // ERR: print() does not exist on ctor<Cat>
 
-const model: Model = myCtor.construct();
-model.print(); // Success
+const ollie: Cat = ollieCtor.construct();
+ollie.print(); // 'Ollie'
 ```
 
 `ctor<T>` is a distinct type, so it does not have access to the methods of `T`;
@@ -394,41 +399,43 @@ be extended. Consider a `from` keyword that can be used in combination with
 superclass' `ctor<T>`.
 
 ```typescript
-abstract class SuperModel {
-  private myFoo: number;
-  public static from(foo: number): ctor<SuperModel> {
-    return new ctor<SuperModel>({ myFoo: foo });
+class Animal {
+  private myName: string;
+
+  public static from(name: string): ctor<Animal> {
+    return new ctor<Animal>({ myName: name });
   }
 
   public print(): void {
-    console.log(this.myFoo);
+    console.log(this.myName);
   }
 }
 
-class Model extends SuperModel {
-  private myBar: number;
-  public static createAndPrint(foo: number, bar: number): void {
-    const smCtor: ctor<SuperModel> = SuperModel.from(foo);
+class Cat extends Animal {
+  private myFirstName: string;
 
-    // Construct a new `Model` using the `SuperModel` from `smCtor`.
-    const model: Model = new Model({ myBar: bar }) from smCtor;
+  public static createAndPrint(firstName: string, lastName: string): void {
+    const animalCtor: ctor<Animal> = Animal.from(firstName + ' ' + lastName);
 
-    model.print(); // Success
+    // Construct a new `Cat` using the `Animal` from `animalCtor`.
+    const cat: Cat = new Cat({ myFirstName: firstName }) from animalCtor;
+
+    cat.print(); // Success
   }
 }
 ```
 
-In the above example, the superclass is not constructed directly, but rather
-made into a `ctor<SuperModel>` which simply holds the `myFoo` field as it was
-provided. Once `Model.create()` has the `ctor<SuperModel>` it constructs a
-`Model` on it using the `from` keyword.
+In the above example, the `Animal` is not constructed directly, but rather made
+into a `ctor<Animal>` which simply holds the `myName` field as it was provided.
+Once `Cat.create()` has the `ctor<Animal>` it constructs a `Cat` on it using the
+`from` keyword.
 
 This structure decouples superclass construction from subclass construction.
 Constructor parameters are nicely abstracted behind a factory and do not leak
 into the subclass. Any number of operations or function calls could be made
-between the `new` invocations. The `ctor<SuperModel>` could be passed in and out
-of functions, saved to a `Map`, retrieved at later time, and then finally
-instantiated into a `Model`.
+between the `new` invocations. The `ctor<Animal>` could be passed in and out of
+functions, saved to a `Map`, retrieved at later time, and then finally
+instantiated into a `Cat`.
 
 This also provides simple implementations of class
 modifiers. Using `new` on an `abstract` class can *only* create a `ctor<T>`
@@ -490,55 +497,57 @@ supported interface, not the implementation itself.**
 
 Take for example, the following TypeScript-like code:
 
+TODO: Can we get a better example here?
+
 ```typescript
-interface Foo {
-  foo(): string;
+interface Animal {
+  think(): string;
 }
 
-// We "extend" an interface. This can be thought of as `Child` extending an
-// unknown implementation of Foo. `Child` has no knowledge of what superclass it
-// actually has, it only knows that the superclass implements `Foo`.
-class Child extends Foo {
-  public bar(): string {
-    // Child can invoke `foo()` because it knows its superclass implements it.
-    return this.foo();
+// We "extend" an interface. This can be thought of as `Cat` extending an
+// unknown implementation of `Animal`. `Cat` has no knowledge of what superclass
+// it actually has, it only knows that the superclass implements `Animal`.
+class Cat extends Animal {
+  public say(): string {
+    // Child can invoke `think()` because it knows its superclass implements it.
+    return 'Meow... ' + this.think();
   }
 
-  // Constructs off some `ctor<Foo>`. Any implementation of `Foo` can be
-  // provided here and it will be extended to a `Child`.
-  public static from<TParent extends Foo>(parentCtor: ctor<TParent>): Child {
-    return new Child() from parentCtor;
+  // Constructs off some `ctor<Animal>`. Any implementation of `Animal` can be
+  // provided here and it will be extended to make a `Cat`.
+  public static from<TParent extends Animal>(parentCtor: ctor<TParent>): Cat {
+    return new Cat() from parentCtor;
   }
 }
 
-// Make an implementation of `Foo`.
-class Parent implements Foo {
+// Make an implementation of `Animal`.
+class AmericanAnimal implements Animal {
   // Satisfies the interface.
-  public foo(): string {
-    return 'foo';
+  public think(): string {
+    return 'USA! USA!';
   }
 
-  public static from(): ctor<Parent> {
-    return new ctor<Parent>();
+  public static from(): ctor<AmericanAnimal> {
+    return new ctor<AmericanAnimal>();
   }
 }
 
-// `Child` can now extend from `Parent`, despite having no knowledge of it.
-const parentCtor: ctor<Parent> = Parent.from();
-const child: Child = Child.from(parentCtor);
-console.log(child.foo()); // 'foo' - Satisfies the interface.
-console.log(child.bar()); // 'foo' - `Child` can call its superclass.
+// `Cat` can now extend from `AmericanAnimal`, without having knowledge of it.
+const americanCtor: ctor<AmericanAnimal> = AmericanAnimal.from();
+const cat: Cat = Cat.from(americanCtor);
+console.log(cat.think()); // 'USA! USA!' - Satisfies the interface.
+console.log(cat.say()); // 'Meow... USA! USA!' - `Cat` can call its superclass.
 ```
 
 The idea of "extending an unknown implementation of a known interface" provides
 much more power and flexibility to the traditional concept of interfaces. It
-still provides polymorphism, as `Child` and `Parent` can both be cast to `Foo`.
-It also allows `Child` to rely on its superclass to provide the `Foo` interface,
-meaning the implementation of `foo()` can be shared across multiple subclasses
-who extend the `Foo` interface. Both `Child` and `Parent` also own their own
-factories, meaning they can both declare their own fields and encapsulate their
-own relevant state. This is far more powerful than a traditional
-single-inheritance interface.
+still provides polymorphism, as `Cat` and `AmericanAnimal` can both be cast to
+`Animal`. It also allows `Cat` to rely on its superclass to provide the `Animal`
+interface, meaning the implementation of `think()` can be shared across multiple
+subclasses who extend the `Animal` interface. Both `Cat` and `AmericanAnimal`
+also own their own factories, meaning they can both declare their own fields and
+encapsulate their own relevant state. This is far more powerful than a
+traditional single-inheritance interface.
 
 ### Dynamic inheritance hierarchy
 
@@ -620,38 +629,38 @@ mixin behavior included.
 
 ```typescript
 type Constructor = new (...args: any[]) => {};
-function Mixin<TBase extends Constructor>(Base: TBase) {
+function American<TBase extends Constructor>(Base: TBase) {
   // Return a new class which extends the one provided.
   return class extends Base {
     // Add mixin functionality.
-    public mixin(): string {
-      return 'mixin';
+    public think(): string {
+      return 'USA! USA!';
     }
   };
 }
 ```
 
 While this works great for simple cases, it starts to break down with
-constructors. Consider changing this so the `'mixin'` string literal was
+constructors. Consider changing this so the `'USA! USA!'` string literal was
 provided as a constructor parameter.
 
 ```typescript
 type Constructor = new (...args: any[]) => {};
-function Mixin<TBase extends Constructor>(Base: TBase) {
+function American<TBase extends Constructor>(Base: TBase) {
   // Return a new class which extends the one provided.
   return class extends Base {
-    public str: string;
+    public myThought: string;
 
     // ERR: A mixin class must have a constructor with a single rest parameter
     // of type 'any[]'
-    public constructor(str: string, ...args: any[]) {
+    public constructor(thought: string, ...args: any[]) {
       super(...args);
-      this.str = str;
+      this.myThought = thought;
     }
 
     // Add mixin functionality.
     public mixin(): string {
-      return 'mixin';
+      return this.myThought;
     }
   };
 }
@@ -672,55 +681,60 @@ With `ctor<T>`, a mixin pattern works just like extending an interface:
 // A mixin simply extends an unknown type parameter. We do not need to know what
 // `TParent` is at compile-time, because we do not need a value reference to its
 // implementation. This is only used to type-check the `from` clause.
-class Mixin<TParent> extends TParent {
-  private readonly myStr: string;
+class American<TParent> extends TParent {
+  private readonly myThought: string;
 
-  public mixin(): string {
-    return this.myStr;
+  public think(): string {
+    return this.myThought;
   }
 
   // Construct from any given `ctor<T>`. Must use a function-specific generic
   // because as a static function, `TParent` is not in scope or known at this
   // time.
-  public static from<TSuper>(parentCtor: ctor<TSuper>, str: string): ctor<Mixin<TSuper>> {
-    return new ctor<Mixin<TSuper>>({ myStr: str }) from parentCtor;
+  public static from<TSuper>(parentCtor: ctor<TSuper>, thought: string):
+      ctor<American<TSuper>> {
+    return new ctor<American<TSuper>>({ myThought: thought }) from parentCtor;
   }
 }
 
 // Define a simple parent class, with no knowledge of `Mixin`.
-class Parent {
-  public parent(): string {
-    return 'parent';
+class Animal {
+  public move(): void {
+    // Moves...
   }
 
-  public static from(): ctor<Parent> {
-    return new ctor<Parent>();
+  public static from(): ctor<Animal> {
+    return new ctor<Animal>();
   }
 }
 
-// `Child` extends `Parent` mixed with `Mixin`.
-class Child extends Mixin<Parent> {
-  public child(): string {
-    // `Child` can reference both `Mixin` and `Parent` members.
-    return this.mixin() + this.parent(); // 'mixinparent'
+// `Cat` extends `Animal` mixed with `American`.
+class Cat extends American<Animal> {
+  public say(): string {
+    // `Cat` can reference both `American` and `Animal` members.
+    this.move();
+    return this.think() + ' Meow...';
   }
 
-  public static from(): Child {
-    // Call `Mixin` factory with the `ctor<Parent>`.
-    const parentCtor: ctor<Parent> = Parent.from();
-    const mixinCtor: ctor<Mixin<Parent>> = Mixin.from(parentCtor, 'mixin');
-    return new Child() from mixinCtor;
+  public static from(): Cat {
+    // Call `American` factory with a `ctor<Animal>`.
+    const animalCtor: ctor<Animal> = Animal.from();
+    const americanCtor: ctor<American<Animal>> =
+        American.from(animalCtor, 'USA! USA!');
+    return new Cat() from americanCtor;
   }
 }
+
+console.log(Cat.from().say()); // 'USA! USA! Meow...'
 ```
 
 With `ctor<T>`, we are able to define a mixin as simply a class that will extend
 any given superclass. This is done by simply allowing a class to extend its own
 type parameter, since all "extending" does is simply type check the `from`
 clause of a `new` expression. In a structural type system like TypeScript, this
-could be implemented by simply having `Mixin.from()` return `Mixin & TParent`,
-intersecting the types to merge their definitions, removing the need to extend a
-generic type parameter at the class level.
+could be implemented by simply having `American.from()` return
+`American & TParent`, intersecting the types to merge their definitions,
+removing the need to extend a generic type parameter at the class level.
 
 Using mixins with `ctor<T>` composes factories smoothly and allows each mixin to
 own its own constructor parameters. You can even introduce type constraints on
@@ -728,21 +742,22 @@ the classes that can be used with a given mixin simply by adding those
 constraints to the generic:
 
 ```typescript
-class Component { /* ... */ }
-class Mixin1<T extends Component> extends T { /* ... */ }
-class Mixin2<T extends Component> extends T { /* ... */ }
-class Child extends Mixin2<Mixin1<Component>> {
-  public static from(): Child {
-    const componentCtor: ctor<Component>
-        = Component.from(/* ... */);
+class Animal { /* ... */ }
+class American<T extends Animal> extends T { /* ... */ }
+class Bird<T extends Animal> extends T { /* ... */ }
 
-    const mixin1Ctor: ctor<Mixin1<Component>>
-        = Mixin1.from(componentCtor, /* ... */);
+class BaldEagle extends Bird<American<Animal>> {
+  public static from(): BaldEagle {
+    const animalCtor: ctor<Animal>
+        = Animal.from(/* ... */);
 
-    const mixin2Ctor: ctor<Mixin2<Mixin1<Component>>>
-        = Mixin2.from(mixin1Ctor, /* ... */);
+    const americanCtor: ctor<American<Animal>>
+        = American.from(animalCtor, /* ... */);
 
-    return new Child() from mixin2Ctor;
+    const birdCtor: ctor<Bird<American<Animal>>>
+        = Bird.from(americanCtor, /* ... */);
+
+    return new BaldEagle() from birdCtor;
   }
 }
 ```
@@ -770,39 +785,40 @@ but here is a rough translation with the idealized system described above:
 ```typescript
 import { ctor, from, Implementation } from 'ctor-exp';
 
-class Foo {
-  private readonly myFoo: string;
+class Animal {
+  private readonly myName: string;
 
   // Constructors must be hand-written and follow this format.
-  public constructor({ myFoo }: { myFoo: string }) {
-    this.myFoo = myFoo;
+  // Must be `public`, but should not be called outside the class.
+  public constructor({ myName }: { myName: string }) {
+    this.myName = myName;
   }
 
-  public static createFoo(foo: string): Foo {
-    // Equivalent to: `new Foo({ myFoo: foo })`.
-    return ctor.new(Foo, { myFoo: foo }).construct();
+  public static create(name: string): Animal {
+    // Equivalent to: `new Animal({ myName: name })`.
+    return ctor.new(Animal, { myName: name }).construct();
   }
 
-  public static extendFoo(foo: string): ctor<Foo> {
-    // Equivalent to: `new ctor<Foo>({ myFoo: foo })`.
-    return ctor.new(Foo, { myFoo: foo });
+  public static extend(name: string): ctor<Animal> {
+    // Equivalent to: `new ctor<Animal>({ myName: name })`.
+    return ctor.new(Animal, { myName: name });
   }
 }
 
 // Extend `Implementation<SuperClass>()` rather than `SuperClass` directly.
-class Bar extends Implementation<Foo>() {
-  private readonly myBar: string;
+class Cat extends Implementation<Animal>() {
+  private readonly myFirstName: string;
 
   // Subclass constructors are the same, but with an empty `super()` call.
-  public constructor({ myBar }: { myBar: string }) {
+  public constructor({ myFirstName }: { myFirstName: string }) {
     super();
-    this.myBar = myBar;
+    this.myFirstName = myFirstName;
   }
 
-  public static createBar(foo: string, bar: string): Bar {
-    // Equivalent to: `new Bar({ myBar: bar }) from Foo.extendFoo(foo)`.
-    return from(Foo.extendFoo(foo))
-        .new(Bar, { myBar: bar })
+  public static create(firstName: string, lastName: string): Cat {
+    // Equivalent to: `new Cat({ myFirstName: firstName }) from Animal.extend(firstName + ' ' + lastName)`.
+    return from(Animal.extend(firstName + ' ' + lastName))
+        .new(Cat, { myFirstName: firstName })
         .construct();
   }
 }
