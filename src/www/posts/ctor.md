@@ -2,24 +2,23 @@
 tags: posts
 layout: pages/post
 title: Construct Better
-date: 2020-10-30T12:00:00-07:00
+date: 2020-11-12T12:00:00-07:00
 excerpt: |
   Can programming languages design better constructors? Let us explore modern
-  constructor design, its flaws, and what can be done better.
+  constructor design, its flaws, and some potential improvements.
 ---
 
-* TODO: `ctor<T>` is the name of this implementation, X is a conceptual name?
 * TODO: Limitations of constructor interfaces vs a function that returns
   `ctor<T>`?
 * TODO: Don't use `Model`, give less abstract examples?
 * TODO: Does this break encapsulation too much? Is it reasonable to allow
   consumers to provide a superclass implementation?
-* TODO: Check misspellings of inheritance.
 * TODO: Choosing a parent class at construction time means there could be public
   symbol conflicts.
 * TODO: Extending a sibling class foot-gun.
 * TODO: Line length of code examples for mobile devices.
 * TODO: vtable challenges?
+* TODO: Language not required.
 
 # Construct Better
 
@@ -220,27 +219,32 @@ today.
 
 ## A Better Constructor
 
-So if modern constructors are so bad, then what might be a better system for
-serving the same purpose? There is one core philosophical difference from which
-everything else can follow:
+So if modern constructors are so bad and have such awkward limitations attached
+to them, then what might be a better system for serving the same purpose? Since
+constructors are so painful, the simple answer is: "Don't use them", or at
+least: "Use them as little as possible".
 
-TODO: Something more quotable? More pizazz?
+I call this philosophy: **minimal constructors**.
 
-> Minimize the work performed by constructors as much as possible.
+So what is the "minimal" usage of a constructor? While they serve many purposes,
+there is one thing constructors can do which (generally) nothing else can:
+allocate memory. As a result, we can define the term "minimal constructor":
 
-Since constructors have such awkward limitations attached to them, we should
-change the way we think about constructors. Rather than seeing them as a feature
-of classes to implemented and leveraged, constructors should be thought of as a
-core primitive in the language, much like built-in data types and operations.
+> A minimal constructor allocates memory and does nothing more.
 
-From this core principle, it follows that developers should not *implement*
-constructors, rather, devs should only *invoke* them.
+Instead of seeing constructors as a feature of classes to be implemented and
+leveraged, constructors should be thought of as a core primitive of a
+programming language, much like built-in data types and operations. Since
+constructors only allocate memory, it makes sense that developers should not
+*implement* constructors, but merely *invoke* them.
 
-This immediately removes 90% of the syntax problems from earlier. If developers
-do not write constructors, then there is no need for a coherent constructor
-syntax. This means that the compiler must generate constructors under the hood,
-so how might a developer use such a constructor? Consider the following
-TypeScript-like snippet for how this could work:
+From this core concept, we can build up to a equivalent feature set of modern
+constructors. Saving developers from authoring constructors immediately removes
+90% of the syntax problems from earlier. If developers do not write
+constructors, then there is no need for a coherent or consistent constructor
+syntax. However, this means that the compiler must generate constructors under
+the hood, so how might a developer use such a constructor? Consider the
+following TypeScript-like snippet for how this could work:
 
 ```typescript
 class Model {
@@ -273,9 +277,9 @@ name the factory `new()` or `create()` or else you will leak that implementation
 detail anyways).
 
 All the logic that traditionally goes inside constructors can be handled by this
-factory instead. This nicely separates concerns, as a constructor's only purpose
-is to allocate memory and assign values to class field members, while factories
-are responsible for validating and initializing the object's data.
+factory instead. The constructor is only responsible for allocating memory and
+assigning field members. This nicely separates concerns, as factories are
+responsible for validating and initializing the object's data.
 
 ```typescript
 class Model {
@@ -299,6 +303,14 @@ could fall back to its default primitive value or `null`/`undefined`. More
 `null`-safe languages might require *all* values to be provided as a constructor
 argument or include a field initializer.
 
+At this point we are somewhat stretching the definition of "minimal", as we are
+allocating memory, type casting the result, and arguably initializing the class
+all at once. However these simply follow from the conventions of modern
+memory-managed languages. In such languages, typically all values must have a
+type and data cannot be uninitialized. These two minor additions allow
+constructors to fit into the existing semantics of strongly-typed,
+memory-managed programming languages.
+
 The advantage of doing all initialization in a factory is that any logic you
 might want to put in a constructor is pulled out to a higher level in the
 factory which avoids many of the syntactic problems found earlier. Consider
@@ -320,30 +332,30 @@ class Model {
 
 This is much cleaner because `readonly` variables are initialized at the instant
 the object is constructed. There is no special case where
-`this.myReadonlyVar = // ...` can work. Instead, `readonly` variables can
-*never* be assigned to with no exceptions. No more need for ternary operators or
+`this.myReadonlyVar = ...` can work. Instead, `readonly` variables can *never*
+be assigned to with no exceptions. No more need for ternary operators or
 separate `static` functions just to work with `readonly`.
 
 ### Inheritance
 
 While these initial examples work quite well for simple cases, they do not
-handle inheritance, which brings its own set of requirements.
+handle
+[inheritance](https://en.wikipedia.org/wiki/Inheritance_(object-oriented_programming)),
+which brings its own set of requirements.
 
-The first issue with inheritance is that by calling a superclass' factory, the
-object has already been instantiated. This makes abstract classes impossible,
-and requires concrete superclasses to be extended *after* they have been
-constructed, which does not make a whole lot of sense. This problems comes from
-the tight coupling of subclass and superclass construction. Since the core rule
-is to do as little as possible in a constructor, they are currently defined as
-only allocating and assigning class fields. This implies that a subclass
-constructor should also only assign class fields, relying on factories to
-provide the meaningful initialization and validation logic.
+The immediate problem with using minimal constructors for inheritance is that
+invoking a constructor is considered a private implementation detail and is
+`private` to the class being constructed. This is great for creating an
+abstraction but makes inheritance impossible because a subclass does not know
+the parameters to provide to its superclass' constructor. Factories provide a
+public API for creating an object, however as we learned earlier, factories do
+not work well with inheritance.
 
 Since factories perform the actual business logic associated with creating an
 object, factories themselves must be *composable*, that is, a subclass factory
 should be able to wrap a superclass factory. Since a superclass factory cannot
-return an instance of the superclass, it must return some other type. We can
-call this type `ctor<T>`.
+return an instance of the superclass (or else it would already be constructed),
+it must return some other type. We can call this type `ctor<T>`.
 
 `ctor<T>` is a self-contained, primitive type which represents an object that
 can create an instance of type `T`. This has two core uses, it can defer the
@@ -371,14 +383,15 @@ const model: Model = myCtor.construct();
 model.print(); // Success
 ```
 
-`ctor<T>` is a distinct type, so it does not have access to the methods of `T`,
+`ctor<T>` is a distinct type, so it does not have access to the methods of `T`;
 after all `T` has not been constructed yet, so it does not make sense to call
-any methods on it. It only has one method `.construct()`, which creates and
-returns the instance of `T` from its existing data.
+any methods on it. `ctor<T>` has only one method, `.construct()`, which creates
+and returns the instance of `T` from its existing data.
 
-`ctor<T>` has one key feature, it can be extended. Consider a `from` keyword
-that can be used with `new`. This will allow a subclass to extend a particular
-instance of a superclass' `ctor<T>`.
+While deferred construction is nice, `ctor<T>` has one other key feature: it can
+be extended. Consider a `from` keyword that can be used in combination with
+`new`. This will allow a subclass to extend a particular instance of a
+superclass' `ctor<T>`.
 
 ```typescript
 abstract class SuperModel {
@@ -398,7 +411,7 @@ class Model extends SuperModel {
     const smCtor: ctor<SuperModel> = SuperModel.from(foo);
 
     // Construct a new `Model` using the `SuperModel` from `smCtor`.
-    const model: Model = new Model(myBar = bar) from smCtor;
+    const model: Model = new Model({ myBar: bar }) from smCtor;
 
     model.print(); // Success
   }
@@ -410,12 +423,20 @@ made into a `ctor<SuperModel>` which simply holds the `myFoo` field as it was
 provided. Once `Model.create()` has the `ctor<SuperModel>` it constructs a
 `Model` on it using the `from` keyword.
 
-This structure decouples superclass construction from subclass construction. Any
-number of operations or function calls could be made between the two. The
-`ctor<SuperModel>` could be passed in and out of functions, saved to a `Map`,
-retrieved at later time, and then instantiated into a `Model`. `abstract`
-classes can *only* become a `ctor<T>` and do not support a direct `.construct()`
-call, while `final` classes can *never* be used in a `from` expression.
+This structure decouples superclass construction from subclass construction.
+Constructor parameters are nicely abstracted behind a factory and do not leak
+into the subclass. Any number of operations or function calls could be made
+between the `new` invocations. The `ctor<SuperModel>` could be passed in and out
+of functions, saved to a `Map`, retrieved at later time, and then finally
+instantiated into a `Model`.
+
+This also provides simple implementations of class
+modifiers. Using `new` on an `abstract` class can *only* create a `ctor<T>`
+which does not support a direct `.construct()` call. While using `new` on a
+closed (`final`) creates a `ctor<T>` which can *never* be used in a `from`
+expression. These could be more accurate modeled with `abstractCtor<T>` or
+`closedCtor<T>` types, though for simplicity I will just use `ctor<T>` in this
+post.
 
 This decoupling also removes confusion around `this`. In TypeScript, `super()`
 must be executed before `this` comes into scope, because the object has not been
@@ -423,7 +444,8 @@ created until `super()` is invoked. This awkward foot gun is now impossible
 because a reference to `this` refers to the factory context, which is either a
 `static` method, a loose function, or an independent class instance. `this` in a
 factory will never refer to the constructed object, and it is impossible to get
-a reference to the constructed class until after it is properly constructed.
+a reference to the constructed object until after it is properly constructed
+and in a consistent state.
 
 Now at this point we have a system which is roughly equivalent to most
 object-oriented type systems like Java or C#. We can construct objects and
@@ -466,7 +488,7 @@ direct reference to its superclass. This has some unique implications regarding
 interfaces, most notably that **extending a class only requires knowledge of a
 supported interface, not the implementation itself.**
 
-Take for example, the follow TypeScript-like code:
+Take for example, the following TypeScript-like code:
 
 ```typescript
 interface Foo {
