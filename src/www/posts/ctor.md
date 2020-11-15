@@ -2,17 +2,16 @@
 tags: posts
 layout: pages/post
 title: Construct Better
-date: 2020-11-12T12:00:00-07:00
+date: 2020-11-14T12:00:00-07:00
 excerpt: |
   Can programming languages design better constructors? Let us explore modern
   constructor design, its flaws, and some potential improvements.
 ---
 
-* TODO: Limitations of constructor interfaces vs a function that returns
-  `ctor<T>`?
 * TODO: A better mixin example? Maybe Simpsons-based?
 * TODO: Line length of code examples for mobile devices.
-* TODO: Language not required.
+* TODO: Reduce blue in code examples.
+* TODO: Reduce header sizes (at least for mobile).
 
 # Construct Better
 
@@ -1054,165 +1053,22 @@ somewhat poorly.
 
 Looking at constructors in modern object-oriented languages, I see quite a few
 inconsistencies and unnecessary complexities which can be improved upon. What is
-presented here is one possible alternative implementation to consider. However,
-this is really an area that simply has not had much innovation for the last few
-decades. New languages experiment with lots of established systems, and I would
-love to see more innovation in the constructor space. I think there is a lot of
-room for growth and improvement in an area that has been largely static as long
-as I can remember. We can `.construct()` something better.
+presented here is a different paradigm for thinking and interacting with
+constructors with one possible alternative implementation to consider. There are
+likely other means of implementing minimal constructors without using `ctor<T>`,
+and a language designer should think of its constructor mechanisms within the
+context of the language as a whole rather than forcing a particular
+implementation or ideology onto a language it does not integrate with.
 
-## Mixin with known superclass
+It is actually possible to follow the minimal constructor concept in existing OO
+languages. All that is really necessary is to limit constructor definitions to
+merely assign local data and defer all other logic to a factory. Some languages
+make this easier or harder than others, particularly when inheritance comes into
+play.
 
-```java
-public class Parent {
-  public static ctor<Parent> from() {
-    return new ctor<Parent>();
-  }
-}
-
-// Could add `T implements Foo`.
-// Could add `T extends Bar`.
-public class Mixin<T> extends T {
-  public static ctor<Mixin<T>> from(ctor<T> parent) {
-    return new ctor<Mixin<T>> from parent;
-  }
-}
-
-public class Child extends Mixin<Parent> {
-  public static Child from() {
-    ctor<Parent> parentCtor = Parent.from();
-    ctor<Mixin<Parent>> mixinCtor = Mixin.from(parentCtor);
-    return new Child() from mixinCtor;
-  }
-}
-```
-
-## Mixin with interface
-
-```java
-public interface Actor {
-  public void act();
-}
-
-public class StageActor implements Actor {
-  private String myPlay;
-
-  public void act() {
-    System.out.println(myPlay + " by visionary directory William Shakespeare.");
-    System.out.println("Curtains");
-  }
-
-  public static ctor<StageActor> from(String play) {
-    return new ctor<StageActor>(myPlay = play);
-  }
-}
-
-public class MovieActor implements Actor {
-  private String myMovie;
-
-  public void act() {
-    System.out.println(myMovie + " - In theaters Friday.");
-    System.out.println("Credits");
-  }
-
-  public static ctor<MovieActor> fromMovie(String movie) {
-    return new ctor<MovieActor>(myMovie = movie);
-  }
-}
-
-public class TvActor implements Actor {
-  private String myNetwork;
-
-  public void act() {
-    System.out.println("This Sunday on " + myNetwork + ".");
-    System.out.println("Smile");
-  }
-
-  public static ctor<TvActor> fromNetwork(String network) {
-    return new ctor<TvActor>(myNetwork = network);
-  }
-}
-
-// `extends Interface` means "extends some implementation of the interface".
-public class Bob extends Actor {
-  public void audition() {
-    this.act();
-    System.out.println("Bow");
-  }
-
-  // Dynamically decide which to inherit from.
-  public static Bob fromBoolean(boolean movie) {
-    if (movie) {
-      return new Bob() from MovieActor.fromMovie("Terminator");
-    } else {
-      return new Bob() from StageActor.from("Romeo and Juliet");
-    }
-  }
-
-  // Inject an unknown actor.
-  public static Bob fromActor(ctor<Actor> actorCtor) {
-    return new Bob() from actorCtor;
-  }
-}
-
-public class Elsewhere {
-  public static void main() {
-    Bob stageBob = Bob.fromBoolean(false);
-    Bob movieBob = Bob.fromBoolean(true);
-    Bob tvBob = Bob.fromActor(TvActor.fromNetwork("CBSABCNBC"));
-  }
-}
-```
-
-## Mixin an unrelated class?
-
-```java
-public class Foo {
-  private String myFoo;
-
-  public void printFoo() {
-    System.out.println(this.myFoo);
-  }
-
-  public static ctor<Foo> from(String foo) {
-    return new ctor<Foo>(myFoo = foo);
-  }
-}
-
-public class Bar {
-  private String myBar;
-
-  public void printBar() {
-    System.out.println(this.myBar);
-  }
-
-  // Even explicit support in a class returns an non-expressible type.
-  public static Bar & T from<T>(ctor<T> base, String bar) {
-    return new Bar(myBar = bar) from base;
-  }
-}
-
-public class Elsewhere {
-  public static void main() {
-    ctor<Foo> fooCtor = Foo.from("foo");
-    ctor<Bar> barCtor = Bar.from("bar");
-
-    // This is an intersection of Foo & Bar, which is not expressible in Java.
-    ctor<Foo, Bar> mixed = mix(fooCtor, barCtor);
-    Foo foo = mixed.construct();
-    Bar bar = mixed.construct();
-  }
-}
-```
-
-Use cases for changing superclass at construction time:
-* Choosing between list implementations based on the initial size.
-  ```
-  if (items.length < 10) from(SpareList.from()).new({ items }).construct();
-  else from(CompactList.from()).new({ items }).construct();
-  ```
-  * Could then be re-extended by a `MutableList` to add mutability while
-    composing the superclass factory decision.
-* Adding a mixin of test/dev infra.
-    * ie. A `flush()` command.
-    * A `logger` meta-class?
+What I really want to bring up is that constructors as a concept have simply not
+had much innovation for the last few decades. New languages experiment with lots
+of established systems, and I would love to see more innovation in the
+constructor space. I think there is a lot of room for growth and improvement in
+an area that has been largely static as long as I can remember. We can
+`.construct()` something better.
