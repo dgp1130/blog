@@ -11,13 +11,7 @@ excerpt: |
 * TODO: Limitations of constructor interfaces vs a function that returns
   `ctor<T>`?
 * TODO: A better mixin example? Maybe Simpsons-based?
-* TODO: Does this break encapsulation too much? Is it reasonable to allow
-  consumers to provide a superclass implementation?
-* TODO: Choosing a parent class at construction time means there could be public
-  symbol conflicts.
-* TODO: Extending a sibling class foot-gun.
 * TODO: Line length of code examples for mobile devices.
-* TODO: vtable challenges?
 * TODO: Language not required.
 
 # Construct Better
@@ -831,16 +825,108 @@ to compare a `ctor<T>` approach with traditional constructors, including some of
 the more out-there features like dynamically choosing a superclass at runtime.
 Check it out and let me know how well some real world examples hold up!
 
+## What about builders?
+
+An astute reader may pose the question: "Isn't this just the builder pattern?
+`ctor<T>` is just a `Builder<T>` type." To which my response is: *Why yes it is
+Mr. and/or Ms. Smarty Pants, way to steal my thunder here.* More seriously,
+while a `ctor<T>` type (or something very similar to it) can be implemented with
+a traditional builder class, there are a few core differences with `ctor<T>`:
+
+* `ctor<T>` and "minimal constructors" is more about re-conceptualizing the
+  *concept* of a constructor, forcing developers to think more in terms of
+  factories. It decouples memory allocation (constructors) from initialization
+  and validation (factories). While this can be done with builders, it is not
+  inherent in the builder design pattern.
+* Composing builders throughout an inheritance hierarchy can be quite complex
+  (though not impossible) and requires coordination between different classes in
+  the hierarchy as well as adherence to custom API contracts, such as subclass
+  constructors propagating black-boxed data to the superclass. `ctor<T>`
+  provides a much cleaner and more uniform interface to this concept.
+* With `ctor<T>`, the compiler **requires** developers to always use this
+  pattern, preventing devs from cornering themselves into a bad design which is
+  difficult to get out of without breaking API contracts.
+* The compiler automatically generates all the required builder code, as this is
+  far too much boilerplate to be practical in most languages without direct
+  compiler support.
+
+So while the `ctor<T>` implementation of minimal constructors is *technically* a
+special case of the builder design pattern, "minimal constructors" refers to a
+more general paradigm of thinking and interacting with constructors which is
+much more clearly expressed via `ctor<T>`.
+
 ## Drawbacks
 
 While I definitely see this new concept of constructors as an improvement over
-existing methodologies, there are a few caveats to consider.
+existing methodologies, there are a few caveats to consider. Not all of these
+apply to the minimal implementation of `ctor<T>` and inheritance, so the extent
+to which a language uses the concepts described in this post will vary the kind
+and extent of these drawbacks it encounters.
+
+### Extending a sibling
+
+Consider the following class hierarchy:
+
+```typescript
+interface Animal { /* ... */ }
+
+class Dog extends Animal {
+  public static from(parentCtor: ctor<Animal>): ctor<Dog> {
+    return new ctor<Dog>() from parentCtor;
+  }
+
+  // ...
+}
+
+class Cat extends Animal {
+  public static from(parentCtor: ctor<Animal>): Cat {
+    return new Cat() from parentCtor;
+  }
+
+  // ...
+}
+```
+
+Because `Animal` is an interface, both `Cat` and `Dog` are capable of extending
+any class which satisfies the `Animal` interface. While this provides a lot of
+flexibility, it also means the following is possible:
+
+```typescript
+// `Dog` extends some `Animal` implementation.
+const animalCtor: ctor<Animal> = // ...
+const dogCtor: ctor<Dog> = Dog.from(animalCtor);
+
+// `Cat` extends `Dog`, which satisfies the `Animal` interface?!?!
+const cat: Cat = Cat.from(dogCtor);
+```
+
+Since `Dog` satisfies the `Animal` interface and `Cat` needs a `ctor<Animal>`,
+this is satisfied by `ctor<Dog>` and will compile successfully. We have now
+created a `Cat` which extends a `Dog` in a way the programmer definitely did not
+intend when they first authored the `Cat` and `Dog` classes. This was clearly
+intended to be a sibling relationship but has turned into a parent-child
+relationship and we have created [CatDog](https://en.wikipedia.org/wiki/CatDog).
+
+While this does speak to the flexibility and power of the concept of extending
+interfaces, it also shows a way it can be misused. Ultimately there is really no
+way for the language to know whether two classes are intended to be siblings or
+not. If `Dog` were declared as closed/`final`, then this would be compile-time
+error. However if there are other, legitimate uses of extending `Dog`, then
+there is no way to prevent `Cat` from incorrectly extending it.
+
+This is a significant foot-gun which developers would need to be aware of and
+watch out for. It also highlights the advantage of simply extending a known
+superclass, rather than an unknown implementation of a known interface. For this
+reason, it is likely better to extend a known superclass whenever the features
+of extending an interface are not required. This would restrict the class
+hierarchy and reduce the possibility of bugs. Devs should only extend an
+interface when there is an actual design need and benefit to doing so.
 
 ### Construction-time execution
 
-One possible concern is that superclasses do not have any hook which executes at
-construction-time (when the final concrete subclass invokes `new`). This means
-that superclasses cannot perform any initialization or validation at
+One possible concern with `ctor<T>` that superclasses do not have any hook which
+executes at construction-time (when the final concrete subclass invokes `new`).
+This means that superclasses cannot perform any initialization or validation at
 construction-time, only at factory-invocation-time.
 
 This has one positive side effect in that it is impossible for a superclass to
@@ -859,16 +945,23 @@ impractical to avoid in many use cases.
 
 ### Memory fragmentation
 
-This system would also be tricky to implement in compilers which colocate
-subclass and superclass memory together. Typically, `new` is only ever invoked
-on the concrete subclass of a given inheritance hierarchy. This means it is
-known at compile-time how large the class is and how much memory to allocate for
-any given `new` operation.
+In many natively compiled languages like C++, member fields of a subclass are
+colocated alongside member fields of a superclass, with a reference to the
+[virtual method table (vtable)](https://en.wikipedia.org/wiki/Virtual_method_table).
+In such languages, `new` can only be invoked on the concrete subclass being
+constructed, and because the inheritance hierarchy is statically known, the
+total size of the subclass is also known and the entire class can be allocated
+all at once.
 
-With this new construction model, a particular `new ctor<T>()` could be
-instantiated into any one of many different subclasses of `T` with no way of
-knowing which it will become. This would be an issue as the compiler would not
-know how much memory to allocate for the object in advance.
+A `ctor<T>`-based system would likely be impossible to implement this way due to
+the lack of a direct reference to a known, constant superclass. The total size
+of a given subclass simply is not known at compile-time. Even for uses that
+actually do extend a known, constant superclass would not be enough. A
+particular `new ctor<T>()` call for the superclass could eventually be
+instantiated into any one of many different subclasses of `T`, with no way of
+knowing which it will become, or how much memory to allocate. Even the vtable
+could encounter implementation hurdles due to the dynamic nature of the
+inheritance hierarchy.
 
 There are certainly ways around this issue. The compiler could separate the
 superclass' memory from the subclass, simply leaving pointers to get from one to
@@ -879,7 +972,64 @@ Alternatively, the compiler could use this indirection strategy for `ctor<T>`
 types and then copy them into a single contiguous space when `.construct()` is
 called. This means accessing fields of a parent class do not require pointer
 indirection or runtime type reflection, but additional copying would be
-necessary in the implementation of `.construct()`.
+necessary in the implementation of `.construct()`. There are also other means of
+method dispatch than vtables, though they come with their own costs.
+
+The real point here is that using `ctor<T>` as a drop-in replacement for a
+natively-compiled language like C++ would probably encounter a lot of
+implementation challenges. An interpreted language would likely have a much
+easier time implementing this model.
+
+### Symbol conflicts
+
+Mixing two unrelated classes together in an inheritance hierarchy also comes
+with the possibility of symbol conflicts. Take the following example:
+
+```typescript
+class Animal { /* ... */ }
+
+class Cat<T> extends T {
+  public say(): string {
+    return 'Meow...';
+  }
+
+  // ...
+}
+
+class American<T> extends T {
+  public say(): string {
+    return 'USA! USA!';
+  }
+
+  // ...
+}
+
+const americanCat: American<Cat<Animal>> = // ...
+americanCat.say(); // Returns what?
+```
+
+Since `ctor<T>`'s implementation of mixins does not actually break
+single-inheritance, there is a clear winner. The type `American<Cat<Animal>>`
+means that `American` extends `Cat` which extends `Animal`, and thus method
+dispatch would occur in that order, returning `'USA! USA!'`.
+
+If the user wanted to call the implementation on `Cat`, there would need to be a
+special syntax to allow it. Something like `americanCat.<Cat<Animal>>say()`
+could qualify the method invocation to use a specific type in the inheritance
+hierarchy.
+
+This also means that the order of inheritance does matter, as a
+`Cat<American<Animal>>` is a distinct type and calling `.say()` on it would
+return `'Meow...'`. Of course, if your usage of mixins depends on their
+ordering, it is quite likely to inheritance hierarchy has larger design
+problems.
+
+Public symbols can at least be resolved unambiguously due to single-inheritance,
+but there is still additional complexity and the possibility of bugs as a
+result. Fortunately, if the language is
+[nominally typed](https://en.wikipedia.org/wiki/Nominal_type_system), `private`
+symbols can always be resolved unambiguously, so this only really applies to
+`public` and `protected` symbols.
 
 ### Re-using a `ctor<T>`
 
@@ -899,30 +1049,6 @@ Relatedly, some users might reasonably ask to read or mutate the fields on a
 data, though immutability can be desirable. Again, a distinct `mutableCtor<T>`
 could be made, though composing it with `reusableCtor<T>` starts to scale
 somewhat poorly.
-
-## What about builders?
-
-An astute reader may pose the question: "Isn't this just the builder pattern?
-`ctor<T>` is just a `Builder<T>` type." To which my response is: *Why yes it is
-Mr. and/or Ms. Smarty Pants, way to steal my thunder here.* More seriously, a
-`ctor<T>` can be effectively implemented with a traditional builder class.
-There are a few core differences with `ctor<T>`:
-
-* `ctor<T>` is more about re-conceptualizing the *concept* of a constructor,
-  forcing developers to think more in terms of factories. It decouples memory
-  allocation (constructors) from initialization and validation (factories).
-  While this can be done with builders, it is not inherent in the builder design
-  pattern.
-* With `ctor<T>`, the compiler **requires** developers to always use this
-  pattern, preventing devs from cornering themselves into a bad design which is
-  difficult to get out of without breaking API contracts.
-* The language automatically generates all the required builder code, as this is
-  far too much boilerplate to be practical in most languages without direct
-  compiler support.
-
-So while the `ctor<T>` methodology is *technically* a special case of the
-builder design pattern, `ctor<T>` refers to a more general paradigm of thinking
-and interacting with constructors.
 
 ## Conclusion
 
