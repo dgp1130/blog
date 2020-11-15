@@ -9,7 +9,6 @@ excerpt: |
 ---
 
 * TODO: A better mixin example? Maybe Simpsons-based?
-* TODO: Line length of code examples for mobile devices.
 
 # Construct Better
 
@@ -253,13 +252,14 @@ that is the **only** constructor. The `new` keyword is still used to actually
 invoke this auto-generated constructor, but it is actually closer to a C-style
 `malloc()` call. It really just allocates the memory necessary for `Cat` and
 type casts it to the relevant type. We can also restrict the `new` keyword to
-**only** be callback within its own class. Hence the following would **not**
+**only** be callable within its own class. Hence the following would **not**
 compile:
 
 ```typescript
 class Cat { /* ... */ }
 
-// COMPILE ERR: `new Cat` cannot be used outside the `Cat` class.
+// COMPILE ERR: `new Cat` cannot be
+// used outside the `Cat` class.
 console.log(new Cat());
 ```
 
@@ -320,7 +320,9 @@ class Cat {
 
   public static create(people: Person[], ownerName: string): Cat {
     for (const person of people) {
-      if (ownerName === person.name) return new Cat({ owner: person });
+      if (ownerName === person.name) {
+        return new Cat({ owner: person });
+      }
     }
 
     return new Cat({ owner: undefined });
@@ -409,10 +411,12 @@ class Cat extends Animal {
   private myFirstName: string;
 
   public static createAndPrint(firstName: string, lastName: string): void {
-    const animalCtor: ctor<Animal> = Animal.create(firstName + ' ' + lastName);
+    const animalCtor: ctor<Animal> =
+        Animal.create(firstName + ' ' + lastName);
 
-    // Construct a new `Cat` using the `Animal` from `animalCtor`.
-    const cat: Cat = new Cat({ myFirstName: firstName }) from animalCtor;
+    // Construct a new `Cat` using the data from `animalCtor`.
+    const cat: Cat =
+        new Cat({ myFirstName: firstName }) from animalCtor;
 
     cat.print(); // Success
   }
@@ -434,7 +438,7 @@ instantiated into a `Cat`.
 This also provides simple implementations of class
 modifiers. Using `new` on an `abstract` class can *only* create a `ctor<T>`
 which does not support a direct `.construct()` call. While using `new` on a
-closed (`final`) creates a `ctor<T>` which can *never* be used in a `from`
+closed (`final`) class creates a `ctor<T>` which can *never* be used in a `from`
 expression. These could be more accurate modeled with `abstractCtor<T>` or
 `closedCtor<T>` types, though for simplicity I will just use `ctor<T>` in this
 post.
@@ -498,17 +502,20 @@ interface Animal {
   think(): string;
 }
 
-// We "extend" an interface. This can be thought of as `Cat` extending an
-// unknown implementation of `Animal`. `Cat` has no knowledge of what superclass
-// it actually has, it only knows that the superclass implements `Animal`.
+// We "extend" an interface. This can be thought of as `Cat`
+// extending an unknown implementation of `Animal`. `Cat`
+// has no knowledge of what superclass it actually has, it
+// only knows that the superclass implements `Animal`.
 class Cat extends Animal {
   public say(): string {
-    // Child can invoke `think()` because it knows its superclass implements it.
+    // `Cat` can invoke `think()` because it knows its
+    // superclass implements it.
     return 'Meow... ' + this.think();
   }
 
-  // Constructs off some `ctor<Animal>`. Any implementation of `Animal` can be
-  // provided here and it will be extended to make a `Cat`.
+  // Constructs off some `ctor<Animal>`. Any implementation
+  // of `Animal` can be provided here and it will be
+  // extended to make a `Cat`.
   public static create<TParent extends Animal>(parentCtor: ctor<TParent>): Cat {
     return new Cat() from parentCtor;
   }
@@ -526,8 +533,10 @@ class AmericanAnimal implements Animal {
   }
 }
 
-// `Cat` can now extend from `AmericanAnimal`, without having knowledge of it.
-const americanCtor: ctor<AmericanAnimal> = AmericanAnimal.create();
+// `Cat` can now extend from `AmericanAnimal`, without
+// having knowledge of it.
+const americanCtor: ctor<AmericanAnimal> =
+    AmericanAnimal.create();
 const cat: Cat = Cat.create(americanCtor);
 console.log(cat.think()); // 'USA! USA!' - Satisfies the interface.
 console.log(cat.say()); // 'Meow... USA! USA!' - `Cat` can call its superclass.
@@ -560,13 +569,13 @@ optimizations?
 ```typescript
 interface Set { /* ... */ }
 
-// Two implementations of Set, one optimized for a small set, and another for a
-// large set.
+// Two implementations of `Set`, one optimized for a small
+// set, and another for a large set.
 class SparseSet implements Set { /* ... */ }
 class DenseSet implements Set { /* ... */ }
 
-// A simple function to choose the ideal implementation of a Set based on the
-// size of its input.
+// A simple function to choose the ideal implementation of a
+// Set based on the size of its input.
 function createSet(items: number[]): ctor<Set> {
   if (items.length < 100) {
     return SparseSet.create(items);
@@ -578,7 +587,8 @@ function createSet(items: number[]): ctor<Set> {
 // Extend any implementation of `Set`.
 class MutableSet extends Set {
   public static create(items: number[]): MutableSet {
-    // Dynamically choose the optimal set implementation as a superclass.
+    // Dynamically choose the optimal `Set` implementation
+    // as a superclass.
     return new MutableSet() from createSet(items);
   }
 
@@ -645,8 +655,8 @@ function American<TBase extends Constructor>(Base: TBase) {
   return class extends Base {
     public myThought: string;
 
-    // ERR: A mixin class must have a constructor with a single rest parameter
-    // of type 'any[]'
+    // ERR: A mixin class must have a constructor with a
+    // single rest parameter of type 'any[]'
     public constructor(thought: string, ...args: any[]) {
       super(...args);
       this.myThought = thought;
@@ -672,9 +682,11 @@ near-impossible to pass in a value to a mixin through its constructor.
 With `ctor<T>`, a mixin pattern works just like extending an interface:
 
 ```typescript
-// A mixin simply extends an unknown type parameter. We do not need to know what
-// `TParent` is at compile-time, because we do not need a value reference to its
-// implementation. This is only used to type-check the `from` clause.
+// A mixin simply extends an unknown type parameter. We do
+// not need to know what `TParent` is at compile-time,
+// because we do not need a value reference to its
+// implementation. This is only used to type-check the
+// `from` clause.
 class American<TParent> extends TParent {
   private readonly myThought: string;
 
@@ -682,9 +694,9 @@ class American<TParent> extends TParent {
     return this.myThought;
   }
 
-  // Construct from any given `ctor<T>`. Must use a function-specific generic
-  // because as a static function, `TParent` is not in scope or known at this
-  // time.
+  // Construct from any given `ctor<T>`. Must use a
+  // function-specific generic because as a static function,
+  // `TParent` is not in scope or known at this time.
   public static create<TSuper>(parentCtor: ctor<TSuper>, thought: string):
       ctor<American<TSuper>> {
     return new ctor<American<TSuper>>({ myThought: thought }) from parentCtor;
@@ -782,8 +794,9 @@ import { ctor, from, Implementation } from 'ctor-exp';
 class Animal {
   private readonly myName: string;
 
-  // Constructors must be hand-written and follow this format.
-  // Must be `public`, but should not be called outside the class.
+  // Constructors must be hand-written in this format.
+  // Must be `public`, but should not be called outside the
+  // class.
   public constructor({ myName }: { myName: string }) {
     this.myName = myName;
   }
@@ -799,18 +812,22 @@ class Animal {
   }
 }
 
-// Extend `Implementation<SuperClass>()` rather than `SuperClass` directly.
+// Extend `Implementation<SuperClass>()` rather than
+// `SuperClass` directly.
 class Cat extends Implementation<Animal>() {
   private readonly myFirstName: string;
 
-  // Subclass constructors are the same, but with an empty `super()` call.
+  // Subclass constructors are the same, but with an empty
+  // `super()` call.
   public constructor({ myFirstName }: { myFirstName: string }) {
     super();
     this.myFirstName = myFirstName;
   }
 
   public static create(firstName: string, lastName: string): Cat {
-    // Equivalent to: `new Cat({ myFirstName: firstName }) from Animal.extend(firstName + ' ' + lastName)`.
+    // Equivalent to:
+    // new Cat({ myFirstName: firstName })
+    //     from Animal.extend(firstName + ' ' + lastName)
     return from(Animal.extend(firstName + ' ' + lastName))
         .new(Cat, { myFirstName: firstName })
         .construct();
@@ -896,7 +913,8 @@ flexibility, it also means the following is possible:
 const animalCtor: ctor<Animal> = // ...
 const dogCtor: ctor<Dog> = Dog.create(animalCtor);
 
-// `Cat` extends `Dog`, which satisfies the `Animal` interface?!?!
+// `Cat` extends `Dog`, which satisfies the
+// `Animal` interface?!?!
 const cat: Cat = Cat.create(dogCtor);
 ```
 
@@ -934,8 +952,8 @@ call an abstract method implemented by a subclass during construction. This is
 possible in TypeScript and Java, but heavily discouraged because it means the
 subclass' implementation of that abstract method will be invoked before its
 constructor has a chance to initialize it. That benefit makes me believe that
-the lack of construction-time execution in a superclass is actually an
-improvement rather than a drawback.
+the lack of construction-time execution in a superclass is actually a feature
+rather than a bug.
 
 However, if the lack of construction-time computations really became an issue,
 some kind of `onConstruct()` method could be called which would enable the class
@@ -955,8 +973,9 @@ all at once.
 
 A `ctor<T>`-based system would likely be impossible to implement this way due to
 the lack of a direct reference to a known, constant superclass. The total size
-of a given subclass simply is not known at compile-time. Even for uses that
-actually do extend a known, constant superclass would not be enough. A
+of a given subclass simply is not known at compile-time because we do not know
+the specific superclass implementation which will be used. Even for uses that
+actually do extend a known, constant superclass, it would not be enough. A
 particular `new ctor<T>()` call for the superclass could eventually be
 instantiated into any one of many different subclasses of `T`, with no way of
 knowing which it will become, or how much memory to allocate. Even the vtable
@@ -1018,11 +1037,11 @@ special syntax to allow it. Something like `americanCat.<Cat<Animal>>say()`
 could qualify the method invocation to use a specific type in the inheritance
 hierarchy.
 
-This also means that the order of inheritance does matter, as a
-`Cat<American<Animal>>` is a distinct type and calling `.say()` on it would
-return `'Meow...'`. Of course, if your usage of mixins depends on their
-ordering, it is quite likely to inheritance hierarchy has larger design
-problems.
+This also means that the order of inheritance does matter, as
+`Cat<American<Animal>>` is a distinct type from `American<Cat<Animal>>` because
+calling `.say()` would return `'Meow...'` and `'USA! USA!'` respectively. Of
+course, if your usage of mixins depends on their ordering, it is quite likely
+your inheritance hierarchy has larger design problems.
 
 Public symbols can at least be resolved unambiguously due to single-inheritance,
 but there is still additional complexity and the possibility of bugs as a
@@ -1047,8 +1066,10 @@ cognitive overhead.
 Relatedly, some users might reasonably ask to read or mutate the fields on a
 `ctor<T>` after it is created. I do not see any major concerns with reading the
 data, though immutability can be desirable. Again, a distinct `mutableCtor<T>`
-could be made, though composing it with `reusableCtor<T>` starts to scale
-somewhat poorly.
+could be made, though composing it with `reusableCtor<T>`, `closedCtor<T>`, and
+`abstractCtor<T>` starts to scale somewhat poorly. Clearly the solution is to
+model all these features as mixins to a base `ctor<T>` object! I'm joking here,
+but I'm also kind of not...
 
 ## Conclusion
 
