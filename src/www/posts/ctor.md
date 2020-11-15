@@ -10,8 +10,6 @@ excerpt: |
 
 * TODO: A better mixin example? Maybe Simpsons-based?
 * TODO: Line length of code examples for mobile devices.
-* TODO: Reduce blue in code examples.
-* TODO: Reduce header sizes (at least for mobile).
 
 # Construct Better
 
@@ -121,10 +119,10 @@ constructors in TypeScript:
     be used instead. It also means that calling `new Cat()` may not *actually*
     create a new `Cat`, so that keyword can just lie sometimes.
 
-Most of the restrictions have valid reasons for existing. It makes logical sense
-that `this` cannot be used before `super()` is called, or else it would not
-represent anything meaningful. However the language has to bend over backwards
-for a syntax that kinda-sorta makes sense with these restrictions.
+Most of these restrictions have valid reasons for existing. It makes logical
+sense that `this` cannot be used before `super()` is called, or else it would
+not represent anything meaningful. However the language has to bend over
+backwards for a syntax that kinda-sorta makes sense with these restrictions.
 
 Most developers just get used to these restrictions and do not really think
 about them, but recall when you first learned constructors, or if you have ever
@@ -269,8 +267,11 @@ This prevents the `new` keyword from leaking outside the class itself. It also
 means we must lean into the factory concept as a `public static` method is
 **required** to ever instantiate a class. Of course, you probably should **not**
 name the factory `new()` or `create()` or else you will leak that implementation
-detail anyways. For this post, I will mostly use `from()` as a factory name as
-it does not imply a new object is created.
+detail anyways. I generally recommend `of()` or `from()` to avoid implying that
+a new object is created, however
+[both of those are reserved keywords in TypeScript](https://github.com/microsoft/TypeScript/issues/2536#issuecomment-87194347-permalink:~:text=type-,from,of,-%F0%9F%91%8D),
+so for readability and simplicity I will use `create()`, even though you should
+probably not use that in real use cases.
 
 All the logic that traditionally goes inside constructors can be handled by this
 factory instead. The constructor is only responsible for allocating memory and
@@ -282,7 +283,7 @@ class Cat {
   private readonly myFirstName: string;
   private readonly myLastName: string;
 
-  public static from(firstName: string, lastName: string): Cat {
+  public static create(firstName: string, lastName: string): Cat {
     return new Cat({
       myFirstName: firstName,
       myLastName: lastName,
@@ -317,7 +318,7 @@ any other construct:
 class Cat {
   private readonly owner?: Person;
 
-  public static from(people: Person[], ownerName: string): Cat {
+  public static create(people: Person[], ownerName: string): Cat {
     for (const person of people) {
       if (ownerName === person.name) return new Cat({ owner: person });
     }
@@ -365,7 +366,7 @@ create an actual instance of `T`.
 class Cat {
   private myFirstName: string;
 
-  public static from(firstName: string): ctor<Cat> {
+  public static create(firstName: string): ctor<Cat> {
     return new ctor<Cat>({ myFirstName: firstName });
   }
 
@@ -374,7 +375,7 @@ class Cat {
   }
 }
 
-const ollieCtor: ctor<Cat> = Cat.from('Ollie');
+const ollieCtor: ctor<Cat> = Cat.create('Ollie');
 ollieCtor.print(); // ERR: print() does not exist on ctor<Cat>
 
 const ollie: Cat = ollieCtor.construct();
@@ -395,7 +396,7 @@ superclass' `ctor<T>`.
 class Animal {
   private myName: string;
 
-  public static from(name: string): ctor<Animal> {
+  public static create(name: string): ctor<Animal> {
     return new ctor<Animal>({ myName: name });
   }
 
@@ -408,7 +409,7 @@ class Cat extends Animal {
   private myFirstName: string;
 
   public static createAndPrint(firstName: string, lastName: string): void {
-    const animalCtor: ctor<Animal> = Animal.from(firstName + ' ' + lastName);
+    const animalCtor: ctor<Animal> = Animal.create(firstName + ' ' + lastName);
 
     // Construct a new `Cat` using the `Animal` from `animalCtor`.
     const cat: Cat = new Cat({ myFirstName: firstName }) from animalCtor;
@@ -508,7 +509,7 @@ class Cat extends Animal {
 
   // Constructs off some `ctor<Animal>`. Any implementation of `Animal` can be
   // provided here and it will be extended to make a `Cat`.
-  public static from<TParent extends Animal>(parentCtor: ctor<TParent>): Cat {
+  public static create<TParent extends Animal>(parentCtor: ctor<TParent>): Cat {
     return new Cat() from parentCtor;
   }
 }
@@ -520,14 +521,14 @@ class AmericanAnimal implements Animal {
     return 'USA! USA!';
   }
 
-  public static from(): ctor<AmericanAnimal> {
+  public static create(): ctor<AmericanAnimal> {
     return new ctor<AmericanAnimal>();
   }
 }
 
 // `Cat` can now extend from `AmericanAnimal`, without having knowledge of it.
-const americanCtor: ctor<AmericanAnimal> = AmericanAnimal.from();
-const cat: Cat = Cat.from(americanCtor);
+const americanCtor: ctor<AmericanAnimal> = AmericanAnimal.create();
+const cat: Cat = Cat.create(americanCtor);
 console.log(cat.think()); // 'USA! USA!' - Satisfies the interface.
 console.log(cat.say()); // 'Meow... USA! USA!' - `Cat` can call its superclass.
 ```
@@ -568,15 +569,15 @@ class DenseSet implements Set { /* ... */ }
 // size of its input.
 function createSet(items: number[]): ctor<Set> {
   if (items.length < 100) {
-    return SparseSet.from(items);
+    return SparseSet.create(items);
   } else {
-    return DenseSet.from(items);
+    return DenseSet.create(items);
   }
 }
 
 // Extend any implementation of `Set`.
 class MutableSet extends Set {
-  public static from(items: number[]): MutableSet {
+  public static create(items: number[]): MutableSet {
     // Dynamically choose the optimal set implementation as a superclass.
     return new MutableSet() from createSet(items);
   }
@@ -684,7 +685,7 @@ class American<TParent> extends TParent {
   // Construct from any given `ctor<T>`. Must use a function-specific generic
   // because as a static function, `TParent` is not in scope or known at this
   // time.
-  public static from<TSuper>(parentCtor: ctor<TSuper>, thought: string):
+  public static create<TSuper>(parentCtor: ctor<TSuper>, thought: string):
       ctor<American<TSuper>> {
     return new ctor<American<TSuper>>({ myThought: thought }) from parentCtor;
   }
@@ -696,7 +697,7 @@ class Animal {
     // Moves...
   }
 
-  public static from(): ctor<Animal> {
+  public static create(): ctor<Animal> {
     return new ctor<Animal>();
   }
 }
@@ -709,23 +710,23 @@ class Cat extends American<Animal> {
     return this.think() + ' Meow...';
   }
 
-  public static from(): Cat {
+  public static create(): Cat {
     // Call `American` factory with a `ctor<Animal>`.
-    const animalCtor: ctor<Animal> = Animal.from();
+    const animalCtor: ctor<Animal> = Animal.create();
     const americanCtor: ctor<American<Animal>> =
-        American.from(animalCtor, 'USA! USA!');
+        American.create(animalCtor, 'USA! USA!');
     return new Cat() from americanCtor;
   }
 }
 
-console.log(Cat.from().say()); // 'USA! USA! Meow...'
+console.log(Cat.create().say()); // 'USA! USA! Meow...'
 ```
 
 With `ctor<T>`, we are able to define a mixin as simply a class that will extend
 any given superclass. This is done by simply allowing a class to extend its own
 type parameter, since all "extending" does is simply type check the `from`
 clause of a `new` expression. In a structural type system like TypeScript, this
-could be implemented by simply having `American.from()` return
+could be implemented by simply having `American.create()` return
 `American & TParent`, intersecting the types to merge their definitions,
 removing the need to extend a generic type parameter at the class level.
 
@@ -740,15 +741,15 @@ class American<T extends Animal> extends T { /* ... */ }
 class Bird<T extends Animal> extends T { /* ... */ }
 
 class BaldEagle extends Bird<American<Animal>> {
-  public static from(): BaldEagle {
+  public static create(): BaldEagle {
     const animalCtor: ctor<Animal>
-        = Animal.from(/* ... */);
+        = Animal.create(/* ... */);
 
     const americanCtor: ctor<American<Animal>>
-        = American.from(animalCtor, /* ... */);
+        = American.create(animalCtor, /* ... */);
 
     const birdCtor: ctor<Bird<American<Animal>>>
-        = Bird.from(americanCtor, /* ... */);
+        = Bird.create(americanCtor, /* ... */);
 
     return new BaldEagle() from birdCtor;
   }
@@ -870,7 +871,7 @@ Consider the following class hierarchy:
 interface Animal { /* ... */ }
 
 class Dog extends Animal {
-  public static from(parentCtor: ctor<Animal>): ctor<Dog> {
+  public static create(parentCtor: ctor<Animal>): ctor<Dog> {
     return new ctor<Dog>() from parentCtor;
   }
 
@@ -878,7 +879,7 @@ class Dog extends Animal {
 }
 
 class Cat extends Animal {
-  public static from(parentCtor: ctor<Animal>): Cat {
+  public static create(parentCtor: ctor<Animal>): Cat {
     return new Cat() from parentCtor;
   }
 
@@ -893,10 +894,10 @@ flexibility, it also means the following is possible:
 ```typescript
 // `Dog` extends some `Animal` implementation.
 const animalCtor: ctor<Animal> = // ...
-const dogCtor: ctor<Dog> = Dog.from(animalCtor);
+const dogCtor: ctor<Dog> = Dog.create(animalCtor);
 
 // `Cat` extends `Dog`, which satisfies the `Animal` interface?!?!
-const cat: Cat = Cat.from(dogCtor);
+const cat: Cat = Cat.create(dogCtor);
 ```
 
 Since `Dog` satisfies the `Animal` interface and `Cat` needs a `ctor<Animal>`,
