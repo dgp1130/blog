@@ -18,7 +18,7 @@ code.language-typescript .template-string > .interpolation {
 }
 
 code.language-typescript .string {
-    color: #a55828;
+    color: #405d40;
 }
 
 code.language-typescript .class-name {
@@ -46,7 +46,7 @@ code.language-typescript .function {
 }
 
 code.language-typescript .number {
-    color: #006800;
+    color: #405d40;
 }
 
 code.language-typescript .operator {
