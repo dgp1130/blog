@@ -14,20 +14,34 @@ import { createHash } from 'crypto';
  * 
  * @param html The HTML content to extract a policy from.
  * @param scriptSrc Custom sources to add to the `script-src` policy.
+ * @param styleSrc Custom sources to add to the `style-src` policy.
+ * @param extractStyles Whether or not to extract styles from the given HTML and
+ *     add them to the returned page. Defaults to `true`.
  * @returns The HTML content given, with a CSP `<meta />` tag injected into it.
  * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP
  */
-export function injectCsp(html: string, { scriptSrc = [] }: {
+export function injectCsp(html: string, {
+    scriptSrc = [],
+    styleSrc = [],
+    extractStyles = true,
+}: {
     scriptSrc?: string[],
+    styleSrc?: string[],
+    extractStyles?: boolean,
 } = {}): string {
     // Parse the HTML into a manipulatable document.
     const dom = new JsDom(html);
     const document = dom.window.document;
 
     // Extract sources from the document.
-    const scriptSources = Array.from(normalize(
-            scriptSrc.concat(Array.from(genScriptSources(document)))));
-    const styleSources = Array.from(normalize(genStyleSources(document)));
+    const scriptSources = Array.from(normalize([
+        ...scriptSrc,
+        ...genScriptSources(document),
+    ]));
+    const styleSources = Array.from(normalize([
+        ...styleSrc,
+        ...(extractStyles ? genStyleSources(document) : []),
+    ]));
     const imageSources = Array.from(normalize(genImageSources(document)));
 
     // Generate a minimal policy string.
@@ -138,6 +152,12 @@ function* normalizeSelf(sources: Iterable<string>): Iterable<string> {
             continue;
         }
 
+        if (source === 'http:' || source === 'https:') {
+            // Ignore protocol sources.
+            yield source;
+            continue;
+        }
+
         // Check if the URL does not have a domain by giving it a base. If the
         // base is used, then the URL must not have a domain and must be
         // self-hosted.
@@ -158,6 +178,12 @@ function* normalizeUrls(sources: Iterable<string>): Iterable<string> {
     for (const source of sources) {
         if (source.startsWith(`'`)) {
             // Quoted sources are not URLs, ignore them.
+            yield source;
+            continue;
+        }
+
+        if (source === 'http:' || source === 'https:') {
+            // Just a protocol, pass through.
             yield source;
             continue;
         }

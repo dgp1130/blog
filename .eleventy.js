@@ -99,6 +99,21 @@ module.exports = function (config) {
         // Generate and inject a content security policy.
         return injectCsp(minified, {
             scriptSrc: getEnv() === Environment.DEV ? liveReloadCspSources : [],
+
+            // Just use 'unsafe-inline' for styles because Firefox doesn't
+            // support adopted style sheets, meaning that inlined CSS in Lit
+            // Element falls back to appending a `<style />` tag.
+            // `strict-dynamic` could handle this, but isn't supported broadly
+            // enough. We also can't do `style-src 'unsafe-inline' ${hosts}`
+            // because modern browsers ignore the 'unsafe-inline' part for
+            // backwards compatibility. Most we can do is restrict to `https:`
+            // hosts.
+            //
+            // TL;DR: Firefox (and probably Safari) don't support adopted style
+            // sheets or enough CSP to do anything more specific than
+            // 'unsafe-inline'.
+            styleSrc: [`'unsafe-inline'`, 'https:'],
+            extractStyles: false,
         });
     });
 

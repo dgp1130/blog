@@ -95,6 +95,18 @@ describe('csp', () => {
             expect(csp).toBe(`script-src http://example1.com/js https://example2.com/js http://example3.com:8080/js; object-src 'none';`);
         });
 
+        it('allowlists protocol script sources', () => {
+            const csp = getInjectedCsp(injectCsp(`
+                <!DOCTYPE html>
+                <html>
+                    <head></head>
+                    <body></body>
+                </html>
+            `, { scriptSrc: ['http:', 'https:'] }));
+
+            expect(csp).toBe(`script-src http: https:; object-src 'none';`);
+        });
+
         it('appends provided script sources', () => {
             const csp = getInjectedCsp(injectCsp(`
                 <!DOCTYPE html>
@@ -180,6 +192,46 @@ describe('csp', () => {
             `));
 
             expect(csp).toBe(`style-src http://example1.com/css https://example2.com/css http://example3.com:8080/css; object-src 'none';`);
+        });
+
+        it('allowlists protocol style sources', () => {
+            const csp = getInjectedCsp(injectCsp(`
+                <!DOCTYPE html>
+                <html>
+                    <head></head>
+                    <body></body>
+                </html>
+            `, { styleSrc: ['http:', 'https:'] }));
+
+            expect(csp).toBe(`style-src http: https:; object-src 'none';`);
+        });
+
+        it('appends provided style sources', () => {
+            const csp = getInjectedCsp(injectCsp(`
+                <!DOCTYPE html>
+                <html>
+                    <head>
+                        <link rel="stylesheet" href="http://example2.com/css">
+                    </head>
+                    <body></body>
+                </html>
+            `, { styleSrc: ['http://example1.com/css', `'sha256-abc123'`] }));
+
+            expect(csp).toBe(`style-src http://example1.com/css 'sha256-abc123' http://example2.com/css; object-src 'none';`)
+        });
+
+        it('skips style extraction when `extractStyles` is `false`', () => {
+            const csp = getInjectedCsp(injectCsp(`
+                <!DOCTYPE html>
+                <html>
+                    <head>
+                        <link rel="stylesheet" href="http://example2.com/css">
+                    </head>
+                    <body></body>
+                </html>
+            `, { styleSrc: [`'unsafe-inline'`], extractStyles: false }));
+
+            expect(csp).toBe(`style-src 'unsafe-inline'; object-src 'none';`);
         });
 
         it('allowlists self-hosted, relative URL image sources', () => {
