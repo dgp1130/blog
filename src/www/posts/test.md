@@ -97,33 +97,6 @@ class Bar<T extends Foo<number>> extends mixin(LitElement) {
 }
 ```
 
-```java
-// Some Java code.
-
-package com.develwithoutacause.blog;
-
-import java.lang.Qualifier;
-
-@Qualifier
-@RetentionPolicy(Runtime)
-@interface MyAnnotation { }
-
-public final class Foo<T extends Something> extends Bar {
-  private static final String myString = "Hello World!";
-  private static final String multiLineString = """
-    This is a multi-line string!
-  """;
-
-  private boolean isEnabled = true;
-
-  @Provide
-  @MyAnnotation
-  private int provideValue() {
-    return 100;
-  }
-}
-```
-
 All hail Yaktocat!
 
 ![Image of Yaktocat](https://octodex.github.com/images/yaktocat.png)
