@@ -3,6 +3,7 @@
  * @see https://www.11ty.dev/docs/config/
  */
 
+const { createHash } = require('crypto');
 const { promises: fs } = require('fs');
 
 const { minify: minifyHtml } = require('html-minifier-terser');
@@ -143,11 +144,26 @@ module.exports = function (config) {
     };
 };
 
+// Copy of the inline script tag contents injected by browser-sync. Likely needs
+// to be changed whenever browser-sync is updated.
+const browserSyncScript = `//<![CDATA[
+    document.write("<script async src='/browser-sync/browser-sync-client.js?v=2.26.14'><\\/script>".replace("HOST", location.hostname));
+//]]>`;
+
 // CSP sources for 11ty live reload functionality.
 const liveReloadCspSources = [
     // Live reload inlined script for browser sync 2.26.13.
-    `'sha256-ktarjbJmNtF8IylbwgjSQoKrcQSdXJkqf60bj4nusHA='`,
+    `'sha256-${hash(browserSyncScript)}'`,
     // The inlined script creates another script that loads browser sync as a
     // self-hosted script.
     `'self'`,
 ];
+
+/**
+ * Calculates the CSP hash source for the given string.
+ * @param {string} text Text content to hash.
+ * @return {string} The hashed content.
+ */
+function hash(text) {
+    return createHash('sha256').update(text).digest('base64');
+}
