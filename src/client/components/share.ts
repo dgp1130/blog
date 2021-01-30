@@ -110,7 +110,7 @@ export class Share extends LitElement {
                 ${ifDefined(navigator.share && html`
                     <li>
                         <button id="share" @click="${this.onShare.bind(this)}"
-                                class="unstyled" title="Share">
+                                class="unstyled" title="Share link">
                             ${shareIcon}
                         </button>
                     </li>
@@ -118,7 +118,7 @@ export class Share extends LitElement {
                 ${ifDefined(navigator.clipboard?.writeText && html`
                     <li>
                         <button id="copy" @click="${this.onCopy.bind(this)}"
-                                class="unstyled" title="Copy to clipboard">
+                                class="unstyled" title="Copy link to clipboard">
                             ${copyIcon}
                         </button>
                     </li>
@@ -130,7 +130,7 @@ export class Share extends LitElement {
                                         this.target.toString()}`)}"
                             target="_blank"
                             rel="noopener"
-                            title="Share on Twitter">
+                            title="Share link on Twitter">
                         ${twitterIcon}
                     </a>
                 </li>
