@@ -15,7 +15,7 @@
 
 .frag-header h1 {
     display: inline-block;
-    color: var(--dwac-theme-color-secondary);
+    color: var(--dwac-theme-color-highlight);
     font-size: var(--dwac-theme-font-size-title);
     margin: 0;
     padding: 0;
