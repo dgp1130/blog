@@ -46,9 +46,10 @@ Factories solve a lot of these problems, and countless engineers have written
 "best practices" docs and books espousing the factory pattern. However factories
 have their own limitations. They do not play well with subclassing and
 inheritance in general, because subclasses cannot extend an object returned by
-another factory, they simply do not compose as one would hope. Factories also do
-not work well with frameworks which often need hooks into constructors or need
-to own them entirely and have to implement their own lifecycle methods instead.
+another factory, they simply do not compose in a useful fashion. Factories also
+do not work well with frameworks which often need hooks into constructors or
+need to own them entirely and have to implement their own lifecycle methods
+instead (looking at you, [`ngOnInit()`](https://angular.io/api/core/OnInit)).
 
 ## Syntactical Exceptions
 
@@ -72,6 +73,8 @@ class Cat extends Animal {
 Let me list out of the exceptions developers need to keep in mind when writing
 constructors in TypeScript:
 
+TODO: Simplify this list?
+
 * Constructors do *not* have a declared return type, it is implied to be the
   same class.
   * When else do you not specify a return type to what is clearly a function?
@@ -87,8 +90,8 @@ constructors in TypeScript:
   [cannot use field initializers, parameter properties, or native private fields](https://github.com/microsoft/TypeScript/issues/945#issuecomment-60419937).
   * If you want those features, `super()` **must** be the first statement of
     your constructor.
-  * This means that the following is not ok, despite the fact that it would
-    compile to the exact same thing!
+  * This means that the following is not ok, despite the fact that it is
+    effectively the same thing!
     ```typescript
     class Cat extends Animal {
       private readonly firstName: string;
@@ -186,7 +189,7 @@ var ollieCat = Cat.constructor(ollieAnimal, "Ollie");
 print("Successfully invoked Cat part of constructor.");
 ```
 
-Because the executions of the two constructors are inherently coupled it
+Because the executions of the two constructors are inherently coupled, it
 fundamentally limits the flexibility of constructors as a concept. It also makes
 factories hard to compose and often have to bend over backwards in order to work
 around this limitation, trying to present a nice API built on awkward
@@ -248,7 +251,7 @@ class Cat {
 
 In this example, there are no user-defined constructors, no `constructor`
 keyword. `new Cat()` works just like default constructors in TypeScript, except
-that is the **only** constructor. The `new` keyword is still used to actually
+you *cannot* define your own implementation. The `new` keyword is still used to
 invoke this auto-generated constructor, but it is actually closer to a C-style
 `malloc()` call. It really just allocates the memory necessary for `Cat` and
 type casts it to the relevant type. We can also restrict the `new` keyword to
@@ -269,19 +272,21 @@ means we must lean into the factory concept as a `public static` method is
 name the factory `new()` or `create()` or else you will leak that implementation
 detail anyways. I generally recommend `of()` or `from()` to avoid implying that
 a new object is created, however
-[both of those are reserved keywords in TypeScript](https://github.com/microsoft/TypeScript/issues/2536#issuecomment-87194347-permalink:~:text=type-,from,of,-%F0%9F%91%8D),
-so for readability and simplicity I will use `create()`, even though you should
-probably not use that in real use cases.
+[both of those are reserved keywords in TypeScript](https://github.com/microsoft/TypeScript/issues/2536#issuecomment-87194347-permalink:~:text=type-,from,of,-%F0%9F%91%8D).
+For the purposes of readability and simplicity in this blog post I will use
+`create()`, even though you should probably not use that in real use cases.
 
 All the logic that traditionally goes inside constructors can be handled by this
 factory instead. The constructor is only responsible for allocating memory and
 assigning field members. This nicely separates concerns, as factories are
-responsible for validating and initializing the object's data.
+responsible for validating and initializing the object's data, simply passing
+the data as inputs to the constructor which get directly assigned to class
+fields.
 
 ```typescript
 class Cat {
-  private readonly myFirstName: string;
-  private readonly myLastName: string;
+  public readonly myFirstName: string;
+  public readonly myLastName: string;
 
   public static create(firstName: string, lastName: string): Cat {
     return new Cat({
@@ -290,15 +295,11 @@ class Cat {
     });
   }
 }
-```
 
-The auto-generated constructor accepts its class fields as parameters, setting
-the initial value. Depending on the language, this structure can be tweaked as
-well; if a field is omitted, then it could be set to a default value specified
-by the initializer for that field. If no initializer is present either, then it
-could fall back to its default primitive value or `null`/`undefined`. More
-`null`-safe languages might require *all* values to be provided as a constructor
-argument or include a field initializer.
+const ollie = Cat.create('Ollie', 'Parker');
+console.log(ollie.myFirstName); // 'Ollie'
+console.log(ollie.myLastName); // 'Parker'
+```
 
 At this point we are somewhat stretching the definition of "minimal", as we are
 allocating memory, type casting the result, and arguably initializing the class
@@ -308,11 +309,12 @@ type and data cannot be uninitialized. These two minor additions allow
 constructors to fit into the existing semantics of strongly-typed,
 memory-managed programming languages.
 
-The advantage of doing all initialization in a factory is that any logic you
-might want to put in a constructor is pulled out to a higher level in the
-factory which avoids many of the syntactic problems found earlier. Consider
-`readonly` variables, which "just work" with `if` statements, `for` loops, or
-any other construct:
+The main takeaway here is that the constructor merely assigns its inputs to
+class fields, with no application logic applied. This means all initialization
+work is done in a factory, pulling out these operations to a higher level which
+avoids many of the syntactic problems identified earlier. Consider `readonly`
+variables, which "just work" with `if` statements, `for` loops, or any other
+construct:
 
 ```typescript
 class Cat {
@@ -332,9 +334,9 @@ class Cat {
 
 This is much cleaner because `readonly` variables are initialized at the instant
 the object is constructed. There is no special case where
-`this.myReadonlyVar = ...` can work. Instead, `readonly` variables can *never*
-be assigned to with no exceptions. No more need for ternary operators or
-separate `static` functions just to work with `readonly`.
+`this.owner = ...` will work. Instead, `readonly` variables can *never* be
+assigned to with no exceptions. No more need for ternary operators or separate
+`static` functions just to work with `readonly`.
 
 ### Inheritance
 
@@ -349,7 +351,8 @@ invoking a constructor is considered a private implementation detail and is
 abstraction but makes inheritance impossible because a subclass does not know
 the parameters to provide to its superclass' constructor. Factories provide a
 public API for creating an object, however as we learned earlier, factories do
-not work well with inheritance.
+not work well with inheritance because they return an already constructed
+object!
 
 Since factories perform the actual business logic associated with creating an
 object, factories themselves must be *composable*, that is, a subclass factory
@@ -368,7 +371,8 @@ create an actual instance of `T`.
 class Cat {
   private myFirstName: string;
 
-  public static create(firstName: string): ctor<Cat> {
+  // Return a `ctor<Cat>`, rather than a `Cat` directly.
+  public static createCtor(firstName: string): ctor<Cat> {
     return new ctor<Cat>({ myFirstName: firstName });
   }
 
@@ -398,6 +402,7 @@ superclass' `ctor<T>`.
 class Animal {
   private myName: string;
 
+  // Return a `ctor<Animal>` so it can be extended.
   public static create(name: string): ctor<Animal> {
     return new ctor<Animal>({ myName: name });
   }
@@ -410,17 +415,17 @@ class Animal {
 class Cat extends Animal {
   private myFirstName: string;
 
-  public static createAndPrint(firstName: string, lastName: string): void {
+  public static create(firstName: string, lastName: string): void {
     const animalCtor: ctor<Animal> =
         Animal.create(firstName + ' ' + lastName);
 
     // Construct a new `Cat` using the data from `animalCtor`.
-    const cat: Cat =
-        new Cat({ myFirstName: firstName }) from animalCtor;
-
-    cat.print(); // Success
+    return new Cat({ myFirstName: firstName }) from animalCtor;
   }
 }
+
+const ollie = Cat.create('Ollie', 'Parker');
+cat.print(); // Success
 ```
 
 In the above example, the `Animal` is not constructed directly, but rather made
@@ -435,13 +440,12 @@ between the `new` invocations. The `ctor<Animal>` could be passed in and out of
 functions, saved to a `Map`, retrieved at later time, and then finally
 instantiated into a `Cat`.
 
-This also provides simple implementations of class
-modifiers. Using `new` on an `abstract` class can *only* create a `ctor<T>`
-which does not support a direct `.construct()` call. While using `new` on a
-closed (`final`) class creates a `ctor<T>` which can *never* be used in a `from`
-expression. These could be more accurate modeled with `abstractCtor<T>` or
-`closedCtor<T>` types, though for simplicity I will just use `ctor<T>` in this
-post.
+This also provides simple implementations of class modifiers. Using `new` on an
+`abstract` class can *only* create a `ctor<T>` which does not support a direct
+`.construct()` call. While using `new` on a closed (`final`) class creates a
+`ctor<T>` which can *never* be used in a `from` expression. These could be more
+accurate modeled with `abstractCtor<T>` or `closedCtor<T>` types, though for
+simplicity I will just use `ctor<T>` in this post.
 
 This decoupling also removes confusion around `this`. In TypeScript, `super()`
 must be executed before `this` comes into scope, because the object has not been
@@ -458,10 +462,10 @@ inherit from other classes using `ctor<T>`. With a few tweaks in how developers
 design their code using `ctor<T>`, it can be used as a mostly drop-in
 replacement of modern constructors. However, there are a few interesting
 "features" this system can provide which are worth discussing. These certainly
-are not required to gain the benefits of `ctor<T>` and I am not totally
-convinced these are good ideas to begin with. However, I do believe they are at
-least *interesting*, and it would be a disservice not to talk about them. With
-that disclaimer out of the way...
+are not required to gain the benefits of `ctor<T>` and minimal constructors. I
+am also not totally convinced these are good ideas to begin with. However, I do
+believe they are at least *interesting*, and it would be a disservice not to
+talk about them. With that disclaimer out of the way...
 
 ### Extending interfaces
 
@@ -523,7 +527,7 @@ class Cat extends Animal {
 
 // Make an implementation of `Animal`.
 class AmericanAnimal implements Animal {
-  // Satisfies the interface.
+  // Satisfies the `Animal` interface.
   public think(): string {
     return 'USA! USA!';
   }
@@ -555,16 +559,17 @@ traditional single-inheritance interface.
 ### Dynamic inheritance hierarchy
 
 There is an interesting consequence of allowing a class to extend an unknown
-implementation of an interface, that a class can extend multiple superclasses,
-chosen dynamically at runtime. This has a few, far-reaching effects.
+implementation of an interface: a class can actually extend from a set of
+multiple superclasses, chosen dynamically at runtime. This has a few,
+far-reaching effects.
 
 On the one hand, it means that a class can dynamically choose its superclass at
 runtime, via its own condition or having that superclass provided as an input to
 a factory. Take for example a simple `Set` use case. Here, we want two
 implementations, one optimized for very small sets, and another optimized for
 very large sets. Then, we want to have a `MutableSet` that provides some
-mutability features on top of this. How can we design this to reuse the size
-optimizations?
+mutability features on top of this. How can we design the `MutableSet` class to
+reuse the size optimizations?
 
 ```typescript
 interface Set { /* ... */ }
@@ -627,8 +632,8 @@ superclass.
 The idea of "extending an unknown implementation" is basically the definition of
 a [mixin](https://en.wikipedia.org/wiki/Mixin). Languages vary widely in their
 support of a mixin mechanism, and those that do often have their own problems
-with constructors. Take a TypeScript example, which often implements mixins as
-a function which converts a class definition into an anonymous class with the
+with constructors. Take a TypeScript example, where mixins are often implemented
+as a function which converts a class definition into an anonymous class with the
 mixin behavior included.
 
 ```typescript
@@ -655,8 +660,8 @@ function American<TBase extends Constructor>(Base: TBase) {
   return class extends Base {
     public myThought: string;
 
-    // ERR: A mixin class must have a constructor with a
-    // single rest parameter of type 'any[]'
+    // COMPILE ERR: A mixin class must have a constructor
+    // with a single rest parameter of type 'any[]'
     public constructor(thought: string, ...args: any[]) {
       super(...args);
       this.myThought = thought;
@@ -737,10 +742,7 @@ console.log(Cat.create().say()); // 'USA! USA! Meow...'
 With `ctor<T>`, we are able to define a mixin as simply a class that will extend
 any given superclass. This is done by simply allowing a class to extend its own
 type parameter, since all "extending" does is simply type check the `from`
-clause of a `new` expression. In a structural type system like TypeScript, this
-could be implemented by simply having `American.create()` return
-`American & TParent`, intersecting the types to merge their definitions,
-removing the need to extend a generic type parameter at the class level.
+clause of a `new` expression.
 
 Using mixins with `ctor<T>` composes factories smoothly and allows each mixin to
 own its own constructor parameters. You can even introduce type constraints on
@@ -769,9 +771,9 @@ class BaldEagle extends Bird<American<Animal>> {
 ```
 
 Note that not much needs to change to support mixins, as they mostly "just
-work"ᵗᵐ. This shows the power and flexibility of `ctor<T>` and decoupling a
-superclass from its subclasses, which is all enabled with the use of minimal
-constructors.
+work"ᵗᵐ. This shows the power and flexibility of `ctor<T>` which comes from
+decoupling a superclass from its subclasses, which is all enabled with the use
+of minimal constructors.
 
 ## Experimental implementation
 
@@ -782,11 +784,12 @@ a custom compiler, or at least a compiler plugin, however a library could be
 [`ctor-exp`](https://github.com/dgp1130/ctor-exp), a simple TypeScript library
 which implements many of the ideas here.
 
-TypeScript has a powerful enough type system to emulate a lot of the core
-concepts without strictly requiring a compiler plugin. This library is able to
-implement most of the critical features, just with less-than-ideal syntax and
-only a 3-star safety rating. The repository explains how to use it in detail,
-but here is a rough translation with the idealized system described above:
+TypeScript has an ~~abusable~~ powerful enough type system to emulate a lot of
+the core concepts without strictly requiring a compiler plugin. This library is
+able to implement most of the critical features, just with less-than-ideal
+syntax and only a 3-star safety rating. The repository explains how to use it in
+detail, but here is a rough translation with the idealized system described
+above:
 
 ```typescript
 import { ctor, from, Implementation } from 'ctor-exp';
@@ -923,7 +926,7 @@ this is satisfied by `ctor<Dog>` and will compile successfully. We have now
 created a `Cat` which extends a `Dog` in a way the programmer definitely did not
 intend when they first authored the `Cat` and `Dog` classes. This was clearly
 intended to be a sibling relationship but has turned into a parent-child
-relationship and we have created [CatDog](https://en.wikipedia.org/wiki/CatDog).
+relationship, resulting in [CatDog](https://en.wikipedia.org/wiki/CatDog).
 
 While this does speak to the flexibility and power of the concept of extending
 interfaces, it also shows a way it can be misused. Ultimately there is really no
