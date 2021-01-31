@@ -73,53 +73,59 @@ class Cat extends Animal {
 Let me list out of the exceptions developers need to keep in mind when writing
 constructors in TypeScript:
 
-TODO: Simplify this list?
+First, constructors do *not* have a declared return type, it is implied to be
+the same class. When else do you not specify a return type to what is clearly a
+function?
 
-* Constructors do *not* have a declared return type, it is implied to be the
-  same class.
-  * When else do you not specify a return type to what is clearly a function?
-* Constructors are declared with the special keyword `constructor()`. Other
-  languages commonly use the same name as their class.
-  * When else does the name of something affect its behavior?
-* `super()` *must* be executed before `this` can be used.
-  * You also cannot use `this` in the `super()` expression itself.
-  * When else does a particular named binding come into scope part way through a
-    block?
-* Code which does not reference `this` can come before `super()`, but doing so
-  means you
-  [cannot use field initializers, parameter properties, or native private fields](https://github.com/microsoft/TypeScript/issues/945#issuecomment-60419937).
-  * If you want those features, `super()` **must** be the first statement of
-    your constructor.
-  * This means that the following is not ok, despite the fact that it is
-    effectively the same thing!
-    ```typescript
-    class Cat extends Animal {
-      private readonly firstName: string;
-      // Any field initializer means `super()` must come first!
-      private readonly age: number|null = null;
+Second, constructors are declared with the special name `constructor()`. Other
+languages commonly use the same name as their class.  When else does the name of
+something affect its behavior?
 
-      public constructor(firstName: string, lastName: string) {
-        const fullName = firstName + ' ' + lastName;
-        super(fullName); // ERR: `super()` must be the first statement.
-        this.firstName = firstName;
-      }
-    }
-    ```
-  * How often have you made a `static` function just to perform some arbitrary
-    computation in order to inline it into a `super()` call?
-* Normally you cannot assign to a `readonly` variable, but in constructors you
-  can. However this can only be done if the compiler is sure that the variable
-  is only assigned once.
-  * How often have you turned an `if` statement into a ternary expression or a
-    `static` function call in order to get things to compile?
-* Constructors do not require a `return;` statement, because a `return this;` is
-  implied. However, if you wish to return early, you should use `return;`
-  without `this`, as if it were a `void` function. Wat?
-  * JavaScript throws another wrench into this because `return 'foo';` will
-    actually use `'foo'` instead of the constructed class. Except
-    `return undefined;` is the same as `return;`, so the constructed class will
-    be used instead. It also means that calling `new Cat()` may not *actually*
-    create a new `Cat`, so that keyword can just lie sometimes.
+Third, `super()` *must* be executed before `this` can be used. You also cannot
+use `this` in the `super()` expression itself. When else does a particular
+variable come into scope part way through a block?
+
+Fourth, Code which does not reference `this` *can* come before `super()` (unlike
+many other languages), but doing so means you [cannot use field initializers,
+parameter properties, or native private
+fields](https://github.com/microsoft/TypeScript/issues/945#issuecomment-60419937).
+If you want those features, `super()` **must** be the first statement of your
+constructor. This means that the following is not ok, despite the fact that it
+is effectively the same thing!
+
+```typescript
+class Cat extends Animal {
+  private readonly firstName: string;
+  // Any field initializer means `super()` must come first!
+  private readonly age: number|null = null;
+
+  public constructor(firstName: string, lastName: string) {
+    const fullName = firstName + ' ' + lastName;
+    super(fullName); // ERR: `super()` must be the first statement.
+    this.firstName = firstName;
+  }
+}
+```
+
+How often have you made a `static` function just to perform some arbitrary
+computation in order to inline it into a `super()` call?
+
+Fifth, you normally cannot assign to a `readonly` variable, but in constructors
+you can! However this can only be done if the compiler is sure that the variable
+is only assigned once. How often have you turned an `if` statement into a
+ternary expression or a `static` function call in order to get things to
+compile?
+
+Finally, constructors do not require a `return;` statement, because a
+`return this;` is implied. However, if you wish to return early, you should use
+`return;` without `this`, as if it were a `void` function, but it is not a
+`void` function because it implicitly returns a new class instance. Wat?
+
+JavaScript throws another wrench into this because `return 'foo';` will actually
+use `'foo'` instead of the constructed class. Except `return undefined;` is the
+same as `return;`, so the constructed class will be used instead. It also means
+that calling `new Cat()` may not *actually* create a new `Cat`, so that keyword
+can just lie sometimes.
 
 Most of these restrictions have valid reasons for existing. It makes logical
 sense that `this` cannot be used before `super()` is called, or else it would
