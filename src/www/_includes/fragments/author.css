@@ -1,3 +1,9 @@
+@import '../../styles/theme.css';
+
+.frag-author {
+    color: var(--dwac-theme-text-color-primary);
+}
+
 .frag-author h3 {
     margin-top: 0;
 }
