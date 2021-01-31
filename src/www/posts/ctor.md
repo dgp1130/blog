@@ -2,13 +2,11 @@
 tags: posts
 layout: pages/post
 title: Construct Better
-date: 2020-11-14T12:00:00-07:00
+date: 2021-01-30T12:00:00-07:00
 excerpt: |
   Can programming languages design better constructors? Let us explore modern
   constructor design, its flaws, and some potential improvements.
 ---
-
-* TODO: A better mixin example? Maybe Simpsons-based?
 
 # Construct Better
 
@@ -55,16 +53,17 @@ instead (looking at you, [`ngOnInit()`](https://angular.io/api/core/OnInit)).
 
 Beyond the feature limitations of constructors, consider all the syntactical
 exceptions programming languages make to support this system. Consider this
-trivial [TypeScript](https://www.typescriptlang.org/) class (while I am picking
-on TypeScript here and languages do vary, many of these points apply to *most*
-general purpose object-oriented languages):
+trivial [TypeScript](https://www.typescriptlang.org/) class modeling everyone's
+[favorite dysfunctional family](https://en.wikipedia.org/wiki/The_Simpsons).
+Note that while I am picking on TypeScript here and languages do vary, many of
+these points apply to *most* general purpose object-oriented languages:
 
 ```typescript
-class Cat extends Animal {
+class Simpson extends Person {
   private readonly firstName: string;
 
-  public constructor(firstName: string, lastName: string) {
-    super(firstName + ' ' + lastName);
+  public constructor(firstName: string) {
+    super(firstName + ' Simpson');
     this.firstName = firstName;
   }
 }
@@ -90,17 +89,18 @@ many other languages), but doing so means you [cannot use field initializers,
 parameter properties, or native private
 fields](https://github.com/microsoft/TypeScript/issues/945#issuecomment-60419937).
 If you want those features, `super()` **must** be the first statement of your
-constructor. This means that the following is not ok, despite the fact that it
-is effectively the same thing!
+constructor. This means that the following is not ok, despite the fact that the
+only meaningful change is introducing a temporary variable, it is effectively
+the same thing!
 
 ```typescript
-class Cat extends Animal {
+class Simpson extends Person {
   private readonly firstName: string;
   // Any field initializer means `super()` must come first!
   private readonly age: number|null = null;
 
-  public constructor(firstName: string, lastName: string) {
-    const fullName = firstName + ' ' + lastName;
+  public constructor(firstName: string) {
+    const fullName = firstName + ' Simpson';
     super(fullName); // ERR: `super()` must be the first statement.
     this.firstName = firstName;
   }
@@ -124,8 +124,8 @@ Finally, constructors do not require a `return;` statement, because a
 JavaScript throws another wrench into this because `return 'foo';` will actually
 use `'foo'` instead of the constructed class. Except `return undefined;` is the
 same as `return;`, so the constructed class will be used instead. It also means
-that calling `new Cat()` may not *actually* create a new `Cat`, so that keyword
-can just lie sometimes.
+that calling `new Simpson()` may not *actually* create a new `Simpson`, so that
+keyword can just lie sometimes.
 
 Most of these restrictions have valid reasons for existing. It makes logical
 sense that `this` cannot be used before `super()` is called, or else it would
@@ -189,10 +189,10 @@ constructors at the same time, with no opportunity to do anything else in
 between. For example, it is generally impossible to write something like:
 
 ```typescript
-var ollieAnimal = Animal.constructor("Ollie Parker");
-print("Successfully invoked Animal part of constructor.");
-var ollieCat = Cat.constructor(ollieAnimal, "Ollie");
-print("Successfully invoked Cat part of constructor.");
+var homerPerson = Person.constructor('Homer Simpson');
+print('Successfully invoked Person part of constructor.');
+var homerSimpson = Simpson.constructor(homerPerson, 'Homer');
+print('Successfully invoked Simpson part of constructor.');
 ```
 
 Because the executions of the two constructors are inherently coupled, it
@@ -206,11 +206,11 @@ decouple the creation of prototype objects. Note: I am not advocating for
 writing code this way, just using it to illustrate a point.
 
 ```typescript
-const ollie = new Animal("Ollie Parker");
-console.log("Successfully invoked Animal part of constructor.");
-Cat.apply(ollie, [ "Ollie" ]); // Manually invoke Cat constructor.
-Object.setPrototypeOf(ollie, Cat.prototype); // Manually assign methods.
-console.log("Successfully invoked Cat part of constructor.");
+const homer = new Person('Homer Simpson');
+console.log('Successfully invoked Person part of constructor.');
+Simpson.apply(homer, [ 'Homer' ]); // Manually invoke Simpson constructor.
+Object.setPrototypeOf(homer, Simpson.prototype); // Manually assign methods.
+console.log('Successfully invoked Simpson part of constructor.');
 ```
 
 Based on these limitations, I believe **the modern concept of constructors is
@@ -248,28 +248,28 @@ the hood, so how might a developer use such a constructor? Consider the
 following TypeScript-like snippet for how this could work:
 
 ```typescript
-class Cat {
-  public static create(): Cat {
-    return new Cat();
+class Person {
+  public static create(): Person {
+    return new Person();
   }
 }
 ```
 
 In this example, there are no user-defined constructors, no `constructor`
-keyword. `new Cat()` works just like default constructors in TypeScript, except
-you *cannot* define your own implementation. The `new` keyword is still used to
-invoke this auto-generated constructor, but it is actually closer to a C-style
-`malloc()` call. It really just allocates the memory necessary for `Cat` and
-type casts it to the relevant type. We can also restrict the `new` keyword to
-**only** be callable within its own class. Hence the following would **not**
-compile:
+keyword. `new Person()` works just like default constructors in TypeScript,
+except you *cannot* define your own implementation. The `new` keyword is still
+used to invoke this auto-generated constructor, but it is actually closer to a
+C-style `malloc()` call. It really just allocates the memory necessary for
+`Person` and type casts it to the relevant type. We can also restrict the `new`
+keyword to **only** be callable within its own class. Hence the following would
+**not** compile:
 
 ```typescript
-class Cat { /* ... */ }
+class Person { /* ... */ }
 
-// COMPILE ERR: `new Cat` cannot be
-// used outside the `Cat` class.
-console.log(new Cat());
+// COMPILE ERR: `new Person` cannot be
+// used outside the `Person` class.
+console.log(new Person());
 ```
 
 This prevents the `new` keyword from leaking outside the class itself. It also
@@ -290,21 +290,21 @@ the data as inputs to the constructor which get directly assigned to class
 fields.
 
 ```typescript
-class Cat {
+class Person {
   public readonly myFirstName: string;
   public readonly myLastName: string;
 
-  public static create(firstName: string, lastName: string): Cat {
-    return new Cat({
+  public static create(firstName: string, lastName: string): Person {
+    return new Person({
       myFirstName: firstName,
       myLastName: lastName,
     });
   }
 }
 
-const ollie = Cat.create('Ollie', 'Parker');
-console.log(ollie.myFirstName); // 'Ollie'
-console.log(ollie.myLastName); // 'Parker'
+const homer = Person.create('Homer', 'Simpson');
+console.log(homer.myFirstName); // 'Homer'
+console.log(homer.myLastName); // 'Simpson'
 ```
 
 At this point we are somewhat stretching the definition of "minimal", as we are
@@ -323,24 +323,27 @@ variables, which "just work" with `if` statements, `for` loops, or any other
 construct:
 
 ```typescript
-class Cat {
-  private readonly owner?: Person;
+class Person {
+  private readonly myHome?: Address;
 
-  public static create(people: Person[], ownerName: string): Cat {
-    for (const person of people) {
-      if (ownerName === person.name) {
-        return new Cat({ owner: person });
+  public static create(homes: Address[], streetAddress: string): Person {
+    for (const home of homes) {
+      if (home.streetAddress === streetAddress) {
+        return new Person({ myHome: home });
       }
     }
 
-    return new Cat({ owner: undefined });
+    return new Person({ myHome: undefined });
   }
 }
+
+const homes: Address[] = /* ... */;
+const homer = Person.create(homes, '742 Evergreen Terrace');
 ```
 
 This is much cleaner because `readonly` variables are initialized at the instant
 the object is constructed. There is no special case where
-`this.owner = ...` will work. Instead, `readonly` variables can *never* be
+`this.myHome = ...` will work. Instead, `readonly` variables can *never* be
 assigned to with no exceptions. No more need for ternary operators or separate
 `static` functions just to work with `readonly`.
 
@@ -374,24 +377,25 @@ The first use case is the simplest, as `ctor<T>` has a `.construct()` method to
 create an actual instance of `T`.
 
 ```typescript
-class Cat {
-  private myFirstName: string;
+class Person {
+  private myName: string;
 
-  // Return a `ctor<Cat>`, rather than a `Cat` directly.
-  public static createCtor(firstName: string): ctor<Cat> {
-    return new ctor<Cat>({ myFirstName: firstName });
+  // Return a `ctor<Person>`, rather than a `Person` directly.
+  public static createCtor(name: string): ctor<Person> {
+    return new ctor<Person>({ myName: name });
   }
 
   public print(): void {
-    console.log(this.myFirstName);
+    console.log(this.myName);
   }
 }
 
-const ollieCtor: ctor<Cat> = Cat.create('Ollie');
-ollieCtor.print(); // ERR: print() does not exist on ctor<Cat>
+const homerCtor: ctor<Person> =
+    Person.create('Homer Simpson');
+homerCtor.print(); // COMPILE ERR: print() does not exist on ctor<Person>
 
-const ollie: Cat = ollieCtor.construct();
-ollie.print(); // 'Ollie'
+const homer: Person = homerCtor.construct();
+homer.print(); // 'Homer Simpson'
 ```
 
 `ctor<T>` is a distinct type, so it does not have access to the methods of `T`;
@@ -405,46 +409,43 @@ be extended. Consider a `from` keyword that can be used in combination with
 superclass' `ctor<T>`.
 
 ```typescript
-class Animal {
-  private myName: string;
+class Person {
+  public myLastName: string;
 
-  // Return a `ctor<Animal>` so it can be extended.
-  public static create(name: string): ctor<Animal> {
-    return new ctor<Animal>({ myName: name });
-  }
-
-  public print(): void {
-    console.log(this.myName);
+  // Return a `ctor<Person>` so it can be extended.
+  public static create(lastName: string): ctor<Person> {
+    return new ctor<Person>({ myLastName: lastName });
   }
 }
 
-class Cat extends Animal {
-  private myFirstName: string;
+class Simpson extends Person {
+  public myFirstName: string;
 
-  public static create(firstName: string, lastName: string): void {
-    const animalCtor: ctor<Animal> =
-        Animal.create(firstName + ' ' + lastName);
+  public static create(firstName: string): Simpson {
+    const personCtor: ctor<Person> = Person.create('Simpson');
 
-    // Construct a new `Cat` using the data from `animalCtor`.
-    return new Cat({ myFirstName: firstName }) from animalCtor;
+    // Construct a new `Simpson` using the data from `personCtor`.
+    return new Simpson({ myFirstName: firstName })
+        from personCtor;
   }
 }
 
-const ollie = Cat.create('Ollie', 'Parker');
-cat.print(); // Success
+const homer = Simpson.create('Homer');
+console.log(homer.myFirstName); // 'Homer'
+console.log(homer.myLastName); // 'Simpson'
 ```
 
-In the above example, the `Animal` is not constructed directly, but rather made
-into a `ctor<Animal>` which simply holds the `myName` field as it was provided.
-Once `Cat.create()` has the `ctor<Animal>` it constructs a `Cat` on it using the
-`from` keyword.
+In the above example, the `Person` is not constructed directly, but rather made
+into a `ctor<Person>` which simply holds the `myLastName` field as it was
+provided. Once `Simpson.create()` has the `ctor<Person>` it constructs a
+`Simpson` based on it using the `from` keyword.
 
 This structure decouples superclass construction from subclass construction.
 Constructor parameters are nicely abstracted behind a factory and do not leak
 into the subclass. Any number of operations or function calls could be made
-between the `new` invocations. The `ctor<Animal>` could be passed in and out of
+between the `new` invocations. The `ctor<Person>` could be passed in and out of
 functions, saved to a `Map`, retrieved at later time, and then finally
-instantiated into a `Cat`.
+instantiated into a `Simpson`, or maybe even a `Flanders`.
 
 This also provides simple implementations of class modifiers. Using `new` on an
 `abstract` class can *only* create a `ctor<T>` which does not support a direct
@@ -503,64 +504,77 @@ direct reference to its superclass. This has some unique implications regarding
 interfaces, most notably that **extending a class only requires knowledge of a
 supported interface, not the implementation itself.**
 
-Take for example, the following TypeScript-like code:
-
-TODO: Can we get a better example here?
+Take for example, the following TypeScript-like code modeling Simpsons who also
+happen to be students:
 
 ```typescript
-interface Animal {
+interface Person {
   think(): string;
 }
 
-// We "extend" an interface. This can be thought of as `Cat`
-// extending an unknown implementation of `Animal`. `Cat`
-// has no knowledge of what superclass it actually has, it
-// only knows that the superclass implements `Animal`.
-class Cat extends Animal {
-  public say(): string {
-    // `Cat` can invoke `think()` because it knows its
-    // superclass implements it.
-    return 'Meow... ' + this.think();
-  }
-
-  // Constructs off some `ctor<Animal>`. Any implementation
-  // of `Animal` can be provided here and it will be
-  // extended to make a `Cat`.
-  public static create<TParent extends Animal>(parentCtor: ctor<TParent>): Cat {
-    return new Cat() from parentCtor;
-  }
-}
-
-// Make an implementation of `Animal`.
-class AmericanAnimal implements Animal {
-  // Satisfies the `Animal` interface.
+// Make an implementation of `Person`.
+class Student implements Person {
+  // Satisfies the `Person` interface.
   public think(): string {
-    return 'USA! USA!';
+    return 'What time is recess?';
   }
 
-  public static create(): ctor<AmericanAnimal> {
-    return new ctor<AmericanAnimal>();
+  public static create(): ctor<Student> {
+    return new ctor<Student>();
   }
 }
 
-// `Cat` can now extend from `AmericanAnimal`, without
-// having knowledge of it.
-const americanCtor: ctor<AmericanAnimal> =
-    AmericanAnimal.create();
-const cat: Cat = Cat.create(americanCtor);
-console.log(cat.think()); // 'USA! USA!' - Satisfies the interface.
-console.log(cat.say()); // 'Meow... USA! USA!' - `Cat` can call its superclass.
+// `Simpson` "extends" the `Person` interface. This can be
+// thought of as `Simpson` extending an *unknown
+// implementation* of `Person`. `Simpson` has no knowledge
+// of what superclass it actually has, it only knows that
+// the superclass implements `Person`.
+class Simpson extends Person {
+  private myCatchphrase: string;
+
+  public say(): string {
+    // `Simpson` can invoke `think()` because it knows its
+    // superclass implements it. Simpsons are known for
+    // blurting out whatever they are thinking.
+    return this.think() + ' ' + this.myCatchphrase;
+  }
+
+  // Constructs off some `ctor<Person>`. Any implementation
+  // of `Person` can be provided here and it will be
+  // extended to make a `Simpson`.
+  public static create<TParent extends Person>(
+      parentCtor: ctor<TParent>, catchphrase: string): Simpson {
+    return new Simpson({
+      myCatchphrase: catchphrase,
+    }) from parentCtor;
+  }
+}
+
+// `Simpson` can now extend from `Student`, without having
+// knowledge of it. Bart is one particular Simpson who also
+// happens to be a student.
+const studentCtor: ctor<Student> = Student.create();
+const bart: Simpson =
+    Simpson.create(studentCtor, 'Eat my shorts!');
+
+// `Student` satisfies the `Person` interface.
+console.log(bart.think()); // 'What time is recess?'
+
+// `Simpson` can also call its superclass.
+console.log(bart.say()); // 'What time is recess? Eat my shorts!'
 ```
 
 The idea of "extending an unknown implementation of a known interface" provides
 much more power and flexibility to the traditional concept of interfaces. It
-still provides polymorphism, as `Cat` and `AmericanAnimal` can both be cast to
-`Animal`. It also allows `Cat` to rely on its superclass to provide the `Animal`
-interface, meaning the implementation of `think()` can be shared across multiple
-subclasses who extend the `Animal` interface. Both `Cat` and `AmericanAnimal`
-also own their own factories, meaning they can both declare their own fields and
-encapsulate their own relevant state. This is far more powerful than a
-traditional single-inheritance interface.
+still provides polymorphism, as `Student` and `Simpson` can both be cast to
+`Person`. It also allows `Simpson` to rely on its superclass to provide the
+`Person` interface, meaning the implementation of `think()` can be shared across
+multiple subclasses who extend the `Person` interface but may not be Simpsons,
+like [Milhouse](https://simpsons.fandom.com/wiki/Milhouse_Van_Houten) or
+[Ralph](https://simpsons.fandom.com/wiki/Ralph_Wiggum). Both `Simpson` and
+`Student` also own their own factories, meaning they can both declare their own
+fields and encapsulate their own relevant state. This is far more powerful than
+a traditional single-inheritance interface.
 
 ### Dynamic inheritance hierarchy
 
@@ -571,52 +585,59 @@ far-reaching effects.
 
 On the one hand, it means that a class can dynamically choose its superclass at
 runtime, via its own condition or having that superclass provided as an input to
-a factory. Take for example a simple `Set` use case. Here, we want two
-implementations, one optimized for very small sets, and another optimized for
-very large sets. Then, we want to have a `MutableSet` that provides some
-mutability features on top of this. How can we design the `MutableSet` class to
-reuse the size optimizations?
+a factory. Take for example a simple `Student` use case. Here, we want two
+implementations, one for good students and another for bad students. Then, we
+want to have a `FourthGrader` that applies specifically to 4th graders like
+Bart. How can we design the `FourthGrader` class to reuse our good/bad
+distinction?
 
 ```typescript
-interface Set { /* ... */ }
+interface Student { /* ... */ }
 
-// Two implementations of `Set`, one optimized for a small
-// set, and another for a large set.
-class SparseSet implements Set { /* ... */ }
-class DenseSet implements Set { /* ... */ }
+// Two implementations of `Student`, one with good grades
+// who studies hard, and another for Bart.
+class GoodStudent implements Student { /* ... */ }
+class BadStudent implements Student { /* ... */ }
 
 // A simple function to choose the ideal implementation of a
-// Set based on the size of its input.
-function createSet(items: number[]): ctor<Set> {
-  if (items.length < 100) {
-    return SparseSet.create(items);
+// `Student` based on their grades.
+function createStudent(grade: string): ctor<Student> {
+  if (grade === 'A' || grade === 'B') {
+    return GoodStudent.create();
   } else {
-    return DenseSet.create(items);
+    return BadStudent.create();
   }
 }
 
-// Extend any implementation of `Set`.
-class MutableSet extends Set {
-  public static create(items: number[]): MutableSet {
-    // Dynamically choose the optimal `Set` implementation
-    // as a superclass.
-    return new MutableSet() from createSet(items);
+// Extend any implementation of `Student`.
+class FourthGrader extends Student {
+  // Springfield Elementary only has one 4th grade teacher.
+  private teacher: string = 'Krabappel';
+
+  public static create(grade: string): MutableSet {
+    // Dynamically choose the appropriate `Student`
+    // implementation as a superclass.
+    return new FourthGrader() from createStudent(grade);
   }
 
   // ...
 }
+
+const bart = FourthGrader.create('D'); // is `BadStudent`
+const martin = FourthGrader.create('A'); // is `GoodStudent`
 ```
 
-Here, `MutableSet` is dynamically choosing at runtime whether to extend a
-`SparseSet` or a `DenseSet`, implicitly taking advantage of any optimizations
-they provide for the size of the input. Since `MutableSet` extends an unknown
-implementation of `Set`, it is not intrinsically bound to any particular
-superclass. This reduces overall coupling between the classes and nicely reuses
-the existing optimizations.
+Here, `FourthGrader` is dynamically choosing at runtime whether to extend a
+`GoodStudent` or a `BadStudent`, reusing any functionality they may provide.
+Since `FourthGrader` extends an unknown implementation of `Student`, it is not
+intrinsically bound to any particular superclass. This reduces overall coupling
+between the classes and nicely reuses the existing optimizations. Lisa could be
+an instance of a `SecondGrader` class which shares functionality with
+`GoodStudent` and `BadStudent`.
 
 This is a really useful feature, as this same design would be quite difficult to
 achieve with traditional class hierarchies. You would either need a
-`MutableSparseSet` and a `MutableDenseSet` as distinct subclasses with
+`GoodFourthGrader` and a `BadFourthGrader` as distinct subclasses with
 duplicated functionality or you would need to refactor the whole thing to use a
 mixin or trait system, if you are lucky enough to use a language which supports
 them.
@@ -626,12 +647,12 @@ compile-time. Any open implementation of a particular interface could
 potentially be used as a superclass which extends that interface. While
 everything is still reasonably typed and can be checked at compile-time, the
 precise class hierarchy may vary at runtime, and could even differ between
-different instances of the same class. A `MutableSet` with 10 items will extend
-`SparseSet`, while a different `MutableSet` with 1000 items will extend
-`DenseSet` and could exist in the same program and even interact with each
-other. This makes reasoning about `MutableSet` a bit harder, as any
-`super.method()` could refer to any implementation of `Set` rather than a fixed
-superclass.
+different instances of the same class. A `FourthGrader` with an A grade will
+extend `GoodStudent`, while a different `FourthGrader` with a D grade will
+extend `BadStudent` and could exist in the same program and even interact with
+each other. This makes reasoning about `FourthGrader` a bit harder, as any
+`super.study()` call could refer to any implementation of `Student` rather than
+a fixed superclass.
 
 ### Mixins
 
@@ -644,38 +665,38 @@ mixin behavior included.
 
 ```typescript
 type Constructor = new (...args: any[]) => {};
-function American<TBase extends Constructor>(Base: TBase) {
+function Simpson<TBase extends Constructor>(Base: TBase) {
   // Return a new class which extends the one provided.
   return class extends Base {
     // Add mixin functionality.
-    public think(): string {
-      return 'USA! USA!';
+    public say(): string {
+      return `D'oh!`;
     }
   };
 }
 ```
 
 While this works great for simple cases, it starts to break down with
-constructors. Consider changing this so the `'USA! USA!'` string literal was
-provided as a constructor parameter.
+constructors. Consider changing this so the `D'oh!` string literal was provided
+as a constructor parameter.
 
 ```typescript
 type Constructor = new (...args: any[]) => {};
-function American<TBase extends Constructor>(Base: TBase) {
+function Simpson<TBase extends Constructor>(Base: TBase) {
   // Return a new class which extends the one provided.
   return class extends Base {
-    public myThought: string;
+    public myCatchphrase: string;
 
     // COMPILE ERR: A mixin class must have a constructor
     // with a single rest parameter of type 'any[]'
-    public constructor(thought: string, ...args: any[]) {
+    public constructor(catchphrase: string, ...args: any[]) {
       super(...args);
-      this.myThought = thought;
+      this.myCatchphrase = catchphrase;
     }
 
     // Add mixin functionality.
-    public mixin(): string {
-      return this.myThought;
+    public say(): string {
+      return this.myCatchphrase;
     }
   };
 }
@@ -690,7 +711,11 @@ make it very difficult to extract the first argument as the mixin string and
 pass through the rest to the superclass. The end result here, is that it is
 near-impossible to pass in a value to a mixin through its constructor.
 
-With `ctor<T>`, a mixin pattern works just like extending an interface:
+With `ctor<T>`, a mixin pattern works just like extending an interface which we
+can use to model the
+[many cats of the Simpsons](https://simpsons.fandom.com/wiki/I,_(Annoyed_Grunt)-Bot):
+
+TODO: This relies too much on knowledge of that one Simpson's episode.
 
 ```typescript
 // A mixin simply extends an unknown type parameter. We do
@@ -698,56 +723,68 @@ With `ctor<T>`, a mixin pattern works just like extending an interface:
 // because we do not need a value reference to its
 // implementation. This is only used to type-check the
 // `from` clause.
-class American<TParent> extends TParent {
-  private readonly myThought: string;
+//
+// Simpsons say their catchphrase.
+class Simpson<TParent> extends TParent {
+  private readonly myCatchphrase: string;
 
-  public think(): string {
-    return this.myThought;
+  public say(): string {
+    return this.myCatchphrase;
   }
 
   // Construct from any given `ctor<T>`. Must use a
   // function-specific generic because as a static function,
   // `TParent` is not in scope or known at this time.
-  public static create<TSuper>(parentCtor: ctor<TSuper>, thought: string):
+  public static create<TSuper>(parentCtor: ctor<TSuper>, catchphrase: string):
       ctor<American<TSuper>> {
-    return new ctor<American<TSuper>>({ myThought: thought }) from parentCtor;
+    return new ctor<American<TSuper>>({
+      myCatchphrase: catchphrase,
+    }) from parentCtor;
   }
 }
 
-// Define a simple parent class, with no knowledge of `Mixin`.
-class Animal {
-  public move(): void {
-    // Moves...
-  }
+// Define a simple parent class, with no knowledge of `Simpson`.
+// Cats have a color.
+class Cat {
+  public myColor: string;
 
-  public static create(): ctor<Animal> {
-    return new ctor<Animal>();
-  }
-}
-
-// `Cat` extends `Animal` mixed with `American`.
-class Cat extends American<Animal> {
-  public say(): string {
-    // `Cat` can reference both `American` and `Animal` members.
-    this.move();
-    return this.think() + ' Meow...';
-  }
-
-  public static create(): Cat {
-    // Call `American` factory with a `ctor<Animal>`.
-    const animalCtor: ctor<Animal> = Animal.create();
-    const americanCtor: ctor<American<Animal>> =
-        American.create(animalCtor, 'USA! USA!');
-    return new Cat() from americanCtor;
+  public static create(color: string): ctor<Cat> {
+    return new ctor<Cat>({ myColor: color });
   }
 }
 
-console.log(Cat.create().say()); // 'USA! USA! Meow...'
+// `Snowball` extends `Cat` mixed with `Simpson`.
+class Snowball extends Simpson<Cat> {
+  private myIteration: number;
+
+  public act(): string {
+    // `Snowball` can reference both `Simpson` and `Cat` members.
+    // It has color and catchphrase functionality from each.
+    return 'The ' + this.myColor + ' Snowball '
+        + this.myIteration + ' says ' + this.say();
+  }
+
+  public static create(iteration: number, color: string): Cat {
+    // Call `Simpson` factory with a `ctor<Cat>`.
+    const catCtor: ctor<Cat> = Cat.create();
+    const simpsonCtor: ctor<Simpson<Cat>> =
+        Simpson.create(catCtor, 'Meow...');
+    return new Snowball({
+      myIteration: iteration,
+    }) from catCtor;
+  }
+}
+
+Snowball.create(1, 'white').act(); // 'The white Snowball 1 says Meow...'
+Snowball.create(2, 'black').act(); // 'The black Snowball 2 says Meow...'
+Snowball.create(3, 'brown').act(); // 'The brown Snowball 3 says Meow...'
+Snowball.create(4, 'gray').act();  // 'The gray Snowball 4 says Meow...'
+Snowball.create(5, 'black').act(); // 'The black Snowball 5 says Meow...'
 ```
 
-With `ctor<T>`, we are able to define a mixin as simply a class that will extend
-any given superclass. This is done by simply allowing a class to extend its own
-type parameter, since all "extending" does is simply type check the `from`
+With `ctor<T>`, we are able to define a mixin as a class that will extend any
+given superclass. This is done by simply allowing a class to extend its own type
+parameter, since all "extending" does is simply type check the `from`
 clause of a `new` expression.
 
 Using mixins with `ctor<T>` composes factories smoothly and allows each mixin to
@@ -756,23 +793,24 @@ the classes that can be used with a given mixin simply by adding those
 constraints to the generic:
 
 ```typescript
-class Animal { /* ... */ }
-class American<T extends Animal> extends T { /* ... */ }
-class Bird<T extends Animal> extends T { /* ... */ }
+class Person { /* ... */ }
+class Simpson<T> extends T { /* ... */ }
 
-class BaldEagle extends Bird<American<Animal>> {
-  public static create(): BaldEagle {
-    const animalCtor: ctor<Animal>
-        = Animal.create(/* ... */);
+// All students are people, so we constrain `Student` to
+// `Person`.
+class Student<T extends Person> extends T { /* ... */ }
 
-    const americanCtor: ctor<American<Animal>>
-        = American.create(animalCtor, /* ... */);
+// `Simpson<Person>` satisfies the `Student` type constraint.
+class SimpsonChild extends Student<Simpson<Person>> {
+  // ...
+}
 
-    const birdCtor: ctor<Bird<American<Animal>>>
-        = Bird.create(americanCtor, /* ... */);
+class Cat { /* ... */ }
 
-    return new BaldEagle() from birdCtor;
-  }
+// COMPILE ERR: Type parameter of `Student` must extend
+// `Person`.
+class SimpsonPet extends Student<Simpson<Cat>> {
+  // ...
 }
 ```
 
@@ -800,7 +838,7 @@ above:
 ```typescript
 import { ctor, from, Implementation } from 'ctor-exp';
 
-class Animal {
+class Person {
   private readonly myName: string;
 
   // Constructors must be hand-written in this format.
@@ -810,20 +848,20 @@ class Animal {
     this.myName = myName;
   }
 
-  public static create(name: string): Animal {
-    // Equivalent to: `new Animal({ myName: name })`.
-    return ctor.new(Animal, { myName: name }).construct();
+  public static create(name: string): Person {
+    // Equivalent to: `new Person({ myName: name })`.
+    return ctor.new(Person, { myName: name }).construct();
   }
 
-  public static extend(name: string): ctor<Animal> {
-    // Equivalent to: `new ctor<Animal>({ myName: name })`.
-    return ctor.new(Animal, { myName: name });
+  public static extend(name: string): ctor<Person> {
+    // Equivalent to: `new ctor<Person>({ myName: name })`.
+    return ctor.new(Person, { myName: name });
   }
 }
 
 // Extend `Implementation<SuperClass>()` rather than
 // `SuperClass` directly.
-class Cat extends Implementation<Animal>() {
+class Simpson extends Implementation<Person>() {
   private readonly myFirstName: string;
 
   // Subclass constructors are the same, but with an empty
@@ -833,12 +871,12 @@ class Cat extends Implementation<Animal>() {
     this.myFirstName = myFirstName;
   }
 
-  public static create(firstName: string, lastName: string): Cat {
+  public static create(firstName: string): Simpson {
     // Equivalent to:
-    // new Cat({ myFirstName: firstName })
-    //     from Animal.extend(firstName + ' ' + lastName)
-    return from(Animal.extend(firstName + ' ' + lastName))
-        .new(Cat, { myFirstName: firstName })
+    // new Simpson({ myFirstName: firstName })
+    //     from Person.extend(firstName + ' Simpson')
+    return from(Person.extend(firstName + ' Simpson'))
+        .new(Simpson, { myFirstName: firstName })
         .construct();
   }
 }
@@ -894,52 +932,54 @@ and extent of these drawbacks it encounters.
 Consider the following class hierarchy:
 
 ```typescript
-interface Animal { /* ... */ }
+interface Person { /* ... */ }
 
-class Dog extends Animal {
-  public static create(parentCtor: ctor<Animal>): ctor<Dog> {
-    return new ctor<Dog>() from parentCtor;
+class Simpson extends Person {
+  public static create(parentCtor: ctor<Person>): ctor<Simpson> {
+    return new ctor<Simpson>() from parentCtor;
   }
 
   // ...
 }
 
-class Cat extends Animal {
-  public static create(parentCtor: ctor<Animal>): Cat {
-    return new Cat() from parentCtor;
+class VanHouten extends Person {
+  public static create(parentCtor: ctor<Person>): VanHouten {
+    return new VanHouten() from parentCtor;
   }
 
   // ...
 }
 ```
 
-Because `Animal` is an interface, both `Cat` and `Dog` are capable of extending
-any class which satisfies the `Animal` interface. While this provides a lot of
-flexibility, it also means the following is possible:
+Because `Person` is an interface, both `Simpson` and `VanHouten` are capable of
+extending any class which satisfies the `Person` interface. While this provides
+a lot of flexibility, it also means the following is possible:
 
 ```typescript
-// `Dog` extends some `Animal` implementation.
-const animalCtor: ctor<Animal> = // ...
-const dogCtor: ctor<Dog> = Dog.create(animalCtor);
+// `Simpson` extends some `Person` implementation.
+const personCtor: ctor<Person> = // ...
+const simpsonCtor: ctor<Simpson> = Simpson.create(personCtor);
 
-// `Cat` extends `Dog`, which satisfies the
-// `Animal` interface?!?!
-const cat: Cat = Cat.create(dogCtor);
+// `VanHouten` extends `Simpson`, which satisfies the
+// `Person` interface?!?!
+const zia: VanHouten = VanHouten.create(simpsonCtor);
 ```
 
-Since `Dog` satisfies the `Animal` interface and `Cat` needs a `ctor<Animal>`,
-this is satisfied by `ctor<Dog>` and will compile successfully. We have now
-created a `Cat` which extends a `Dog` in a way the programmer definitely did not
-intend when they first authored the `Cat` and `Dog` classes. This was clearly
-intended to be a sibling relationship but has turned into a parent-child
-relationship, resulting in [CatDog](https://en.wikipedia.org/wiki/CatDog).
+Since `Simpson` satisfies the `Person` interface and `VanHouten` only needs a
+`ctor<Person>`, this is satisfied by `ctor<Simpson>` and will compile
+successfully. We have now created a `VanHouten` which extends a `Simpson` in a
+way the programmer definitely did not intend when they first authored those
+classes. This was clearly intended to be a sibling relationship but has turned
+into a parent-child relationship, resulting in
+[Zia Simpson-Van Houten](https://simpsons.fandom.com/wiki/Zia_Simpson-Van_Houten).
 
 While this does speak to the flexibility and power of the concept of extending
 interfaces, it also shows a way it can be misused. Ultimately there is really no
 way for the language to know whether two classes are intended to be siblings or
-not. If `Dog` were declared as closed/`final`, then this would be compile-time
-error. However if there are other, legitimate uses of extending `Dog`, then
-there is no way to prevent `Cat` from incorrectly extending it.
+not. If `Simpson` were declared as closed/`final`, then this would be
+compile-time error. However if there are other, legitimate uses of extending
+`Simpson`, then there is no way to prevent `VanHouten` from incorrectly
+extending it.
 
 This is a significant foot-gun which developers would need to be aware of and
 watch out for. It also highlights the advantage of simply extending a known
@@ -1014,43 +1054,43 @@ Mixing two unrelated classes together in an inheritance hierarchy also comes
 with the possibility of symbol conflicts. Take the following example:
 
 ```typescript
-class Animal { /* ... */ }
+class Person { /* ... */ }
 
-class Cat<T> extends T {
+class Simpson<T> extends T {
   public say(): string {
-    return 'Meow...';
+    return `D'oh!`;
   }
 
   // ...
 }
 
-class American<T> extends T {
+class Student<T> extends T {
   public say(): string {
-    return 'USA! USA!';
+    return 'What time is recess?';
   }
 
   // ...
 }
 
-const americanCat: American<Cat<Animal>> = // ...
-americanCat.say(); // Returns what?
+const bart: Simpson<Student<Person>> = // ...
+bart.say(); // Returns what?
 ```
 
 Since `ctor<T>`'s implementation of mixins does not actually break
-single-inheritance, there is a clear winner. The type `American<Cat<Animal>>`
-means that `American` extends `Cat` which extends `Animal`, and thus method
-dispatch would occur in that order, returning `'USA! USA!'`.
+single-inheritance, there is a clear winner. The type `Simpson<Student<Person>>`
+means that `Simpson` extends `Student` which extends `Person`, and thus method
+dispatch would occur in that order, returning `D'oh!`.
 
-If the user wanted to call the implementation on `Cat`, there would need to be a
-special syntax to allow it. Something like `americanCat.<Cat<Animal>>say()`
+If the user wanted to call the implementation on `Student`, there would need to
+be a special syntax to allow it. Something like `bart.<Student<Person>>say()`
 could qualify the method invocation to use a specific type in the inheritance
 hierarchy.
 
 This also means that the order of inheritance does matter, as
-`Cat<American<Animal>>` is a distinct type from `American<Cat<Animal>>` because
-calling `.say()` would return `'Meow...'` and `'USA! USA!'` respectively. Of
-course, if your usage of mixins depends on their ordering, it is quite likely
-your inheritance hierarchy has larger design problems.
+`Simpson<Student<Person>>` is a distinct type from `Student<Simpson<Person>>`
+because calling `.say()` returns `D'oh!` and `What time is recess?`
+respectively. Of course, if your usage of mixins depends on their ordering, it
+is quite likely your inheritance hierarchy has larger design problems.
 
 Public symbols can at least be resolved unambiguously due to single-inheritance,
 but there is still additional complexity and the possibility of bugs as a
