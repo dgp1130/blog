@@ -24,8 +24,9 @@ with them via unnecessary workarounds?
 
 ## Limitations of Constructors
 
-While this varies across languages, consider the number of things constructors
-generally cannot do:
+Constructors, by design, have a number of restrictions and constraints which are
+applied to them. While this varies across languages, consider the number of
+things constructors generally *cannot* do:
 
 * Return `null`.
 * Be asynchronous.
@@ -35,25 +36,30 @@ generally cannot do:
 Many languages also use the `new` keyword as an operator to invoke a
 constructor, however the act of constructing a new object is entirely an
 implementation detail. Whether a function returns a new instance of an object or
-an existing one is mostly irrelevant to callers, but if it is implemented as a
-public constructor, then it leaks the implementation detail of constructing a
-new object. It means the function is now forced into the above restrictions and
-cannot opt-out of them without breaking its API contract.
+an existing one is mostly irrelevant to callers. However, if that function is
+implemented as a public constructor, then it leaks the implementation detail of
+constructing a new object. It means the function is now forced into the above
+restrictions and cannot opt-out of them without breaking its API contract.
 
 Factories solve a lot of these problems, and countless engineers have written
 "best practices" docs and books espousing the factory pattern. However factories
 have their own limitations. They do not play well with subclassing and
 inheritance in general, because subclasses cannot extend an object returned by
-another factory, they simply do not compose in a useful fashion. Factories also
-do not work well with frameworks which often need hooks into constructors or
-need to own them entirely and have to implement their own lifecycle methods
-instead (looking at you, [`ngOnInit()`](https://angular.io/api/core/OnInit)).
+another factory. Factories simply can not compose each other in a useful
+fashion. Factories also do not work well with frameworks which often need hooks
+into constructors or need to own them entirely and have to implement their own
+lifecycle methods instead (looking at you,
+[`ngOnInit()`](https://angular.io/api/core/OnInit)).
+
+These limitations introduce awkward constraints on code which limit options
+available to developers when they inevitably need to change that code. Beyond
+these feature limitations, there are a number of syntactical exceptions required
+to support constructors.
 
 ## Syntactical Exceptions
 
-Beyond the feature limitations of constructors, consider all the syntactical
-exceptions programming languages make to support this system. Consider this
-trivial [TypeScript](https://www.typescriptlang.org/) class modeling everyone's
+Consider this trivial [TypeScript](https://www.typescriptlang.org/) class
+modeling everyone's
 [favorite dysfunctional family](https://en.wikipedia.org/wiki/The_Simpsons).
 Note that while I am picking on TypeScript here and languages do vary, many of
 these points apply to *most* general purpose object-oriented languages:
@@ -84,7 +90,7 @@ Third, `super()` *must* be executed before `this` can be used. You also cannot
 use `this` in the `super()` expression itself. When else does a particular
 variable come into scope part way through a block?
 
-Fourth, Code which does not reference `this` *can* come before `super()` (unlike
+Fourth, code which does not reference `this` *can* come before `super()` (unlike
 many other languages), but doing so means you [cannot use field initializers,
 parameter properties, or native private
 fields](https://github.com/microsoft/TypeScript/issues/945#issuecomment-60419937).
@@ -124,8 +130,8 @@ Finally, constructors do not require a `return;` statement, because a
 JavaScript throws another wrench into this because `return 'foo';` will actually
 use `'foo'` instead of the constructed class. Except `return undefined;` is the
 same as `return;`, so the constructed class will be used instead. It also means
-that calling `new Simpson()` may not *actually* create a new `Simpson`, so that
-keyword can just lie sometimes.
+that calling `new Simpson()` may not *actually* create a new `Simpson` object,
+so that keyword can just lie sometimes.
 
 Most of these restrictions have valid reasons for existing. It makes logical
 sense that `this` cannot be used before `super()` is called, or else it would
@@ -186,8 +192,9 @@ returning in a simplistic form of a constructor.
 ### A superclass and a subclass are constructed at the same time
 
 Calling `new` on a subclass which extends a separate superclass will invoke both
-constructors at the same time, with no opportunity to do anything else in
-between. For example, it is generally impossible to write something like:
+constructors immediately after each other, with no opportunity to do anything
+else in between. For example, it is generally impossible to write something
+like:
 
 ```typescript
 var homerPerson = Person.constructor('Homer Simpson');
@@ -210,12 +217,12 @@ writing code this way, just using it to illustrate a point.
 const homer = new Person('Homer Simpson');
 console.log('Successfully invoked Person part of constructor.');
 Simpson.apply(homer, [ 'Homer' ]); // Manually invoke Simpson constructor.
-Object.setPrototypeOf(homer, Simpson.prototype); // Manually assign methods.
+Object.setPrototypeOf(homer, Simpson.prototype); // Manually assign prototype.
 console.log('Successfully invoked Simpson part of constructor.');
 ```
 
 Based on these limitations, I believe **the modern concept of constructors is
-fundamentally flawed**. I believe we can design languages which provides more
+fundamentally flawed**. I believe we can design languages which provide more
 flexibility and in a much simpler conceptual model that what we currently have
 today.
 
@@ -228,9 +235,9 @@ least: "Use them as little as possible".
 
 I call this philosophy: **minimal constructors**.
 
-So what is the "minimal" usage of a constructor? While they serve many purposes,
-there is one thing constructors can do which (generally) nothing else can:
-allocate memory. As a result, we can define the term "minimal constructor":
+So what is a "minimal constructor"? While they serve many purposes, there is one
+thing constructors can do which (generally) nothing else can: allocate memory.
+As a result, we can define the term "minimal constructor":
 
 > A minimal constructor allocates memory and does nothing more.
 
@@ -256,7 +263,7 @@ class Person {
 }
 ```
 
-In this example, there are no user-defined constructors, no `constructor`
+In this example, there are no user-defined constructors and no `constructor`
 keyword. `new Person()` works just like default constructors in TypeScript,
 except you *cannot* define your own implementation. The `new` keyword is still
 used to invoke this auto-generated constructor, but it is actually closer to a
@@ -363,9 +370,9 @@ is that invoking a constructor is considered a private implementation detail and
 is `private` to the class being constructed. This is great for creating an
 abstraction but makes inheritance impossible because a subclass does not know
 the parameters to provide to its superclass' constructor. Factories provide a
-public API for creating an object, however as we learned earlier, factories do
-not work well with inheritance because they return an already constructed
-object!
+public API for creating an object, however they do not work well with
+inheritance because they return an already constructed object! What we need is a
+factory which returns an *extendable* object.
 
 Since factories perform the actual business logic associated with creating an
 object, factories themselves must be *composable*, that is, a subclass factory
@@ -374,7 +381,7 @@ return an instance of the superclass (or else it would already be constructed),
 it must return some other type. We can call this type `ctor<T>`.
 
 `ctor<T>` is a self-contained, primitive type which represents an object that
-can create an instance of type `T`. This has two core uses, it can defer the
+can create an instance of type `T`. This has two core uses: it can defer the
 construction of an object to a later time, or it can be extended by a subclass.
 
 The first use case is the simplest, as `ctor<T>` has a `.construct()` method to
@@ -395,7 +402,7 @@ class Person {
 }
 
 const homerCtor: ctor<Person> =
-    Person.create('Homer Simpson');
+    Person.createCtor('Homer Simpson');
 homerCtor.print(); // COMPILE ERR: print() does not exist on ctor<Person>
 
 const homer: Person = homerCtor.construct();
@@ -417,7 +424,7 @@ class Person {
   public myLastName: string;
 
   // Return a `ctor<Person>` so it can be extended.
-  public static create(lastName: string): ctor<Person> {
+  public static createCtor(lastName: string): ctor<Person> {
     return new ctor<Person>({ myLastName: lastName });
   }
 }
@@ -426,7 +433,8 @@ class Simpson extends Person {
   public myFirstName: string;
 
   public static create(firstName: string): Simpson {
-    const personCtor: ctor<Person> = Person.create('Simpson');
+    const personCtor: ctor<Person> =
+        Person.createCtor('Simpson');
 
     // Construct a new `Simpson` using the data from `personCtor`.
     return new Simpson({ myFirstName: firstName })
@@ -439,8 +447,8 @@ console.log(homer.myFirstName); // 'Homer'
 console.log(homer.myLastName); // 'Simpson'
 ```
 
-In the above example, the `Person` is not constructed directly, but rather made
-into a `ctor<Person>` which simply holds the `myLastName` field as it was
+In the above example, the `Person` class is not constructed directly, but rather
+made into a `ctor<Person>` which simply holds the `myLastName` field as it was
 provided. Once `Simpson.create()` has the `ctor<Person>` it constructs a
 `Simpson` based on it using the `from` keyword.
 
@@ -449,14 +457,15 @@ Constructor parameters are nicely abstracted behind a factory and do not leak
 into the subclass. Any number of operations or function calls could be made
 between the `new` invocations. The `ctor<Person>` could be passed in and out of
 functions, saved to a `Map`, retrieved at later time, and then finally
-instantiated into a `Simpson`, or maybe even a `Flanders`.
+instantiated into a `Simpson`, or maybe even a
+[`Flanders`](https://simpsons.fandom.com/wiki/Flanders_family).
 
 This also provides simple implementations of class modifiers. Using `new` on an
 `abstract` class can *only* create a `ctor<T>` which does not support a direct
-`.construct()` call. While using `new` on a closed (`final`) class creates a
-`ctor<T>` which can *never* be used in a `from` expression. These could be more
-accurate modeled with `abstractCtor<T>` or `closedCtor<T>` types, though for
-simplicity I will just use `ctor<T>` in this post.
+`.construct()` call. By contrast, using `new` on a closed (`final`) class
+creates a `ctor<T>` which can *never* be used in a `from` expression. These
+could be more accurately modeled with `abstractCtor<T>` or `closedCtor<T>`
+types, though for simplicity I will just use `ctor<T>` in this post.
 
 This decoupling also removes confusion around `this`. In TypeScript, `super()`
 must be executed before `this` comes into scope, because the object has not been
@@ -494,17 +503,17 @@ satisfy all the use cases for multiple-inheritance. Interfaces provide
 [polymorphism](https://en.wikipedia.org/wiki/Polymorphism_(computer_science)),
 enabling one class to "masquerade" as another. However interfaces generally do
 not enable multiple implementations of an interface to share code, nor do they
-allow defining local data on an implementation. An interface is an API contract,
-not a feature or functionality which is shared between many classes. Some
+allow defining fields on an implementation. An interface is an API contract, not
+a feature or piece of functionality which is shared between many classes. Some
 languages fill in this gap via a trait (ex. Rust) or mixin (ex. Dart) system.
 
 However, `ctor<T>` has some interesting implications regarding interfaces. A
 core property of using `ctor<T>`, is that a subclass is no longer responsible
-for invoking the superclass constructor via `super()`. The chained `ctor<T>`
-objects are responsible for holding class fields and setting them on the final
-constructed object. One interesting side effect of not relying on a subclass to
-invoke its superclass' constructor, is that the subclass does *not* require a
-direct reference to its superclass. This has some unique implications regarding
+for invoking the superclass constructor via `super()`. The `ctor<T>` object is
+responsible for holding class fields and setting them on the final constructed
+object. One interesting side effect of not relying on a subclass to invoke its
+superclass' constructor, is that the subclass does *not* require a direct
+reference to its superclass. This has some unique implications regarding
 interfaces, most notably that **extending a class only requires knowledge of a
 supported interface, not the implementation itself.**
 
@@ -591,8 +600,8 @@ On the one hand, it means that a class can dynamically choose its superclass at
 runtime, via its own condition or having that superclass provided as an input to
 a factory. Take for example a simple `Student` use case. Here, we want two
 implementations, one for good students and another for bad students. Then, we
-want to have a `FourthGrader` that applies specifically to 4th graders like
-Bart. How can we design the `FourthGrader` class to reuse our good/bad
+want to have a `FourthGrader` class that applies specifically to 4th graders
+like Bart. How can we design the `FourthGrader` class to reuse our good/bad
 distinction?
 
 ```typescript
@@ -615,10 +624,10 @@ function createStudent(grade: string): ctor<Student> {
 
 // Extend any implementation of `Student`.
 class FourthGrader extends Student {
-  // Springfield Elementary only has one 4th grade teacher.
+  // Springfield Elementary seems to have only one 4th grade teacher.
   private teacher: string = 'Krabappel';
 
-  public static create(grade: string): MutableSet {
+  public static create(grade: string): FourthGrader {
     // Dynamically choose the appropriate `Student`
     // implementation as a superclass.
     return new FourthGrader() from createStudent(grade);
@@ -709,7 +718,8 @@ function Simpson<TBase extends Constructor>(Base: TBase) {
 We run into a problem with constructor arguments. This is because a mixin, by
 definition, does not have knowledge of its superclass and has no way of knowing
 what to provide. TypeScript actually requires that mixins like this declare
-their constructors with `...args: any[]` specifically for this reason. Other
+their constructors with `...args: any[]` specifically for this reason (though
+IMHO this is overly strict and I do not understand why it is necessary). Other
 limitations of constructors from the `super()` syntax further complicate this to
 make it very difficult to extract the first argument as the mixin string and
 pass through the rest to the superclass. The end result here, is that it is
@@ -718,8 +728,6 @@ near-impossible to pass in a value to a mixin through its constructor.
 With `ctor<T>`, a mixin pattern works just like extending an interface which we
 can use to model the
 [many cats of the Simpsons](https://simpsons.fandom.com/wiki/I,_(Annoyed_Grunt)-Bot):
-
-TODO: This relies too much on knowledge of that one Simpson's episode.
 
 ```typescript
 // A mixin simply extends an unknown type parameter. We do
@@ -740,15 +748,15 @@ class Simpson<TParent> extends TParent {
   // function-specific generic because as a static function,
   // `TParent` is not in scope or known at this time.
   public static create<TSuper>(parentCtor: ctor<TSuper>, catchphrase: string):
-      ctor<American<TSuper>> {
-    return new ctor<American<TSuper>>({
+      ctor<Simpson<TSuper>> {
+    return new ctor<Simpson<TSuper>>({
       myCatchphrase: catchphrase,
     }) from parentCtor;
   }
 }
 
 // Define a simple parent class, with no knowledge of `Simpson`.
-// Cats have a color.
+// Cats simply have a color provided as an input.
 class Cat {
   public myColor: string;
 
@@ -770,7 +778,7 @@ class Snowball extends Simpson<Cat> {
 
   public static create(iteration: number, color: string): Cat {
     // Call `Simpson` factory with a `ctor<Cat>`.
-    const catCtor: ctor<Cat> = Cat.create();
+    const catCtor: ctor<Cat> = Cat.create(color);
     const simpsonCtor: ctor<Simpson<Cat>> =
         Simpson.create(catCtor, 'Meow...');
     return new Snowball({
@@ -908,9 +916,8 @@ a traditional builder class, there are a few core differences with `ctor<T>`:
   inherent in the builder design pattern.
 * Composing builders throughout an inheritance hierarchy can be quite complex
   (though not impossible) and requires coordination between different classes in
-  the hierarchy as well as adherence to custom API contracts, such as subclass
-  constructors propagating black-boxed data to the superclass. `ctor<T>`
-  provides a much cleaner and more uniform interface to this concept.
+  the hierarchy as well as adherence to custom API contracts. `ctor<T>` provides
+  a much cleaner and more uniform interface to this concept.
 * With `ctor<T>`, the compiler **requires** developers to always use this
   pattern, preventing devs from cornering themselves into a bad design which is
   difficult to get out of without breaking API contracts.
@@ -983,7 +990,8 @@ way for the language to know whether two classes are intended to be siblings or
 not. If `Simpson` were declared as closed/`final`, then this would be
 compile-time error. However if there are other, legitimate uses of extending
 `Simpson`, then there is no way to prevent `VanHouten` from incorrectly
-extending it.
+extending it. You could even make a `Simpson` extend *another* `Simpson` and
+destroy the space-time continuum!
 
 This is a significant foot-gun which developers would need to be aware of and
 watch out for. It also highlights the advantage of simply extending a known
@@ -1021,7 +1029,7 @@ colocated alongside member fields of a superclass, with a reference to the
 [virtual method table (vtable)](https://en.wikipedia.org/wiki/Virtual_method_table).
 In such languages, `new` can only be invoked on the concrete subclass being
 constructed, and because the inheritance hierarchy is statically known, the
-total size of the subclass is also known and the entire class can be allocated
+total size of the subclass is also known and the entire object can be allocated
 all at once.
 
 A `ctor<T>`-based system would likely be impossible to implement this way due to
@@ -1090,7 +1098,7 @@ be a special syntax to allow it. Something like `bart.<Student<Person>>say()`
 could qualify the method invocation to use a specific type in the inheritance
 hierarchy.
 
-This also means that the order of inheritance does matter, as
+This also means that *order of inheritance matters*, as
 `Simpson<Student<Person>>` is a distinct type from `Student<Simpson<Person>>`
 because calling `.say()` returns `D'oh!` and `What time is recess?`
 respectively. Of course, if your usage of mixins depends on their ordering, it
@@ -1106,10 +1114,9 @@ symbols can always be resolved unambiguously, so this only really applies to
 ### Re-using a `ctor<T>`
 
 There is also the question of whether or not it is possible to reuse a `ctor<T>`
-to construct multiple subclasses. I would argue that conceptually it is fine, as
-there is nothing semantically wrong with that idea, but it might take extra work
-in the compiler to support that depending on how it is implemented under the
-hood.
+to construct multiple subclasses. Conceptually this seems reasonable as there is
+nothing semantically wrong with that idea, but it might take extra work in the
+compiler to support that depending on how it is implemented under the hood.
 
 Being able to reuse a `ctor<T>` would mean the compiler could not construct the
 object in-place which may impact optimizations. It could also be possible to
@@ -1128,7 +1135,7 @@ but I'm also kind of not...
 
 Looking at constructors in modern object-oriented languages, I see quite a few
 inconsistencies and unnecessary complexities which can be improved upon. What is
-presented here is a different paradigm for thinking and interacting with
+presented here is a different paradigm for thinking of and interacting with
 constructors with one possible alternative implementation to consider. There are
 likely other means of implementing minimal constructors without using `ctor<T>`,
 and a language designer should think of its constructor mechanisms within the
@@ -1143,8 +1150,8 @@ play. If you are using Go or Rust, you are already following this pattern, just
 sacrificing some traditional object-oriented features as a result.
 
 I mainly wanted to explore what the concept of "minimal constructors" means to a
-programming language and present a model for how it could be leveraged enforce
-best practices without sacrificing some traditional object-oriented features. In
+programming language and present a model for how it could be leveraged to
+enforce best practices without dropping existing object-oriented features. In
 the process I found a few other "interesting" consequences of the design which I
 wanted to share. Try out the [`ctor-exp`](https://github.com/dgp1130/ctor-exp)
 package yourself and see what crazy patterns you can come up with.
