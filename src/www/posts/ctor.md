@@ -2,7 +2,7 @@
 tags: posts
 layout: pages/post
 title: Construct Better
-date: 2021-01-30T12:00:00-07:00
+date: 2021-02-12T12:00:00-07:00
 excerpt: |
   Can programming languages design better constructors? Let us explore modern
   constructor design, its flaws, and some potential improvements.
@@ -160,10 +160,11 @@ they own. Some languages provide default constructors or auto-generate them, but
 almost universally developers have hooks to create their own constructors when
 necessary.
 
-Contrast this with Smalltalk, which has no explicit concept of a "constructor".
-Instead, a "constructor" is simply a method that returns an object. The language
-generates one with the name `new` by default, developers just wrap that as
-necessary using the existing features of the language.
+Contrast this with Rust or Go, both of which have no explicit concept of a
+user-authored "constructor". Instead, both languages have built-in functionality
+to create a new object with some initial data. A "constructor" is simply a
+standard function that happens to call this built-in. Developers simply wrap it
+as necessary using the existing features of the language.
 
 ### Constructors couple data allocation with initialization
 
@@ -347,16 +348,19 @@ the object is constructed. There is no special case where
 assigned to with no exceptions. No more need for ternary operators or separate
 `static` functions just to work with `readonly`.
 
+At this point, we have a system for creating objects without carrying the burden
+of an overcomplicated constructor mechanism. This is fairly equivalent to what
+Go and Rust have out of the box, and they are great models for this concept.
+However, both languages sacrifice one of the more significant features of
+object-oriented programming: inheritance. Is there any way this kind of
+constructor system could support inheritance?
+
 ### Inheritance
 
-While these initial examples work quite well for simple cases, they do not
-handle
-[inheritance](https://en.wikipedia.org/wiki/Inheritance_(object-oriented_programming)),
-which brings its own set of requirements.
-
-The immediate problem with using minimal constructors for inheritance is that
-invoking a constructor is considered a private implementation detail and is
-`private` to the class being constructed. This is great for creating an
+The immediate problem with using minimal constructors for
+[inheritance](https://en.wikipedia.org/wiki/Inheritance_(object-oriented_programming))
+is that invoking a constructor is considered a private implementation detail and
+is `private` to the class being constructed. This is great for creating an
 abstraction but makes inheritance impossible because a subclass does not know
 the parameters to provide to its superclass' constructor. Factories provide a
 public API for creating an object, however as we learned earlier, factories do
@@ -398,10 +402,10 @@ const homer: Person = homerCtor.construct();
 homer.print(); // 'Homer Simpson'
 ```
 
-`ctor<T>` is a distinct type, so it does not have access to the methods of `T`;
-after all `T` has not been constructed yet, so it does not make sense to call
-any methods on it. `ctor<T>` has only one method, `.construct()`, which creates
-and returns the instance of `T` from its existing data.
+`ctor<T>` is a distinct type, so it does not have access to the methods of `T`.
+`T` has not been constructed yet, so it does not make sense to call any methods
+on it. `ctor<T>` has only one method, `.construct()`, which creates and returns
+the instance of `T` from its existing data.
 
 While deferred construction is nice, `ctor<T>` has one other key feature: it can
 be extended. Consider a `from` keyword that can be used in combination with
@@ -1135,11 +1139,14 @@ It is actually possible to follow the minimal constructor concept in existing OO
 languages. All that is really necessary is to limit constructor definitions to
 merely assign local data and defer all other logic to a factory. Some languages
 make this easier or harder than others, particularly when inheritance comes into
-play.
+play. If you are using Go or Rust, you are already following this pattern, just
+sacrificing some traditional object-oriented features as a result.
 
-What I really want to bring up is that constructors as a concept have simply not
-had much innovation for the last few decades. New languages experiment with lots
-of established systems, and I would love to see more innovation in the
-constructor space. I think there is a lot of room for growth and improvement in
-an area that has been largely static as long as I can remember. We can
-`.construct()` something better.
+I mainly wanted to explore what the concept of "minimal constructors" means to a
+programming language and present a model for how it could be leveraged enforce
+best practices without sacrificing some traditional object-oriented features. In
+the process I found a few other "interesting" consequences of the design which I
+wanted to share. Try out the [`ctor-exp`](https://github.com/dgp1130/ctor-exp)
+package yourself and see what crazy patterns you can come up with.
+
+I believe we can `.construct()` something better.
