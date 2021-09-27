@@ -27,6 +27,10 @@
     "deploy-test": "npm run -s netlify -- deploy -m \"Test deployment\" --alias",
     "netlify": "netlify"
   },
+  "engines": {
+    "node": "16.10.0",
+    "npm": "7.24.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dgp1130/blog.git"

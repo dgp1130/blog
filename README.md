@@ -8,6 +8,10 @@ My personal blog, hosted at [https://blog.dwac.dev/](https://blog.dwac.dev/).
 
 ## Local Builds
 
+This project uses [NodeJS](https://nodejs.org/) and must be installed. You can
+install it directly or install [`nvm`](https://github.com/nvm-sh/nvm) and run
+`nvm use` to switch to the version of Node supported in this project.
+
 Run a hot-reloading server with `npm start`. Open
 [`http://localhost:8080/`](http://localhost:8080/) to view the local site.
 
