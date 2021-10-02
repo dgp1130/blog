@@ -108,7 +108,7 @@ export class Share extends LitElement {
                 <span>${this.prompt}</span>
             `)}
             <ul>
-                ${ifDefined(navigator.share && html`
+                ${ifDefined(!!navigator.share && html`
                     <li>
                         <button id="share" @click="${this.onShare.bind(this)}"
                                 class="unstyled" title="Share link">
@@ -116,7 +116,7 @@ export class Share extends LitElement {
                         </button>
                     </li>
                 `)}
-                ${ifDefined(navigator.clipboard?.writeText && html`
+                ${ifDefined(!!navigator.clipboard?.writeText && html`
                     <li>
                         <button id="copy" @click="${this.onCopy.bind(this)}"
                                 class="unstyled" title="Copy link to clipboard">
