@@ -6,8 +6,20 @@ import { getCleanCss } from '../clean_css';
 import { AsyncFilter, asyncFilter } from './utils';
 
 /**
- * Generates a filter to minify the CSS at a provided file path with the given
- * options.
+ * Generates a filter to concatenate and minify the CSS at the given file paths
+ * separated by a newline and with the given options. All files are treated as
+ * relative to `src/www/`.
+ * 
+ * Usage:
+ * ```nunjucks
+ * {{ filter css }}
+ *   foo/bar.css
+ *   hello/world.css
+ * {{ endfilter }}
+ * ```
+ * 
+ * This example reads the files from `src/www/foo/bar.css` and
+ * `src/www/hello/world.css`, concatenates them, and minifies the result.
  */
 export function bundleStyles({
     cleanCssOptions = {},
@@ -23,21 +35,22 @@ export function bundleStyles({
         returnPromise: true,
     });
 
-    return asyncFilter(async (root) => {
-        const rootPath = path.normalize(path.join('src/www/', root));
-        const output = await minifier.minify([ rootPath ]);
+    return asyncFilter(async (paths) => {
+        const rootedPaths = paths.split('\n')
+            .map((p) => path.join('src/www', p.trim()));
+        const output = await minifier.minify(rootedPaths);
 
         const actualWarnings = output.warnings.filter((warning) => {
             return ignoredWarnings.every((regex) => !regex.test(warning));
         });
 
         if (output.errors.length > 0) {
-            throw new Error(`Failed to minify src/www/${root}:\n${
+            throw new Error(`Failed to minify [${rootedPaths.join(', ')}]:\n${
                     output.errors.join('\n')}`);
         }
         if (actualWarnings.length > 0) {
-            console.warn(`Got warnings while minifying src/www/${root}:\n${
-                    actualWarnings.join('\n')}`);
+            console.warn(`Got warnings while minifying [${
+                rootedPaths.join(', ')}]:\n${actualWarnings.join('\n')}`);
         }
 
         return output.styles;

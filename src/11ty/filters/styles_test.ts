@@ -4,7 +4,7 @@ import { bundleStyles } from './styles';
 
 describe('styles', () => {
     describe('minifyStyles', () => {
-        it('minifies the given CSS file', async () => {
+        it('minifies the given CSS files', async () => {
             const constructorSpy = jasmine.createSpy('CleanCss Constructor');
             const minifySpy = jasmine.createSpy('minify').and.returnValue(
                 Promise.resolve({
@@ -32,9 +32,12 @@ describe('styles', () => {
                 returnPromise: true,
             });
 
-            const minified = await execFilter(minifyFilter, 'foo.css');
+            const minified = await execFilter(minifyFilter, 'foo.css\nbar.css');
             expect(minifySpy).toHaveBeenCalledTimes(1);
-            expect(minifySpy).toHaveBeenCalledWith([ 'src/www/foo.css' ]);
+            expect(minifySpy).toHaveBeenCalledWith([
+                'src/www/foo.css',
+                'src/www/bar.css',
+            ]);
             expect(minified).toBe('/* minified! */');
         });
 
@@ -51,7 +54,10 @@ describe('styles', () => {
 
             const minifyFilter = bundleStyles();
             await expectAsync(execFilter(minifyFilter, 'foo.css'))
-                    .toBeRejectedWithError(Error, `Failed to minify src/www/foo.css:\nStyles are too ugly to minify.`);
+                    .toBeRejectedWithError(Error, `
+Failed to minify [src/www/foo.css]:
+Styles are too ugly to minify.
+                    `.trim());
         });
 
         it('logs minification warnings', async () => {
@@ -68,8 +74,10 @@ describe('styles', () => {
 
             await execFilter(bundleStyles(), 'foo.css');
 
-            expect(console.warn).toHaveBeenCalledWith(
-                    'Got warnings while minifying src/www/foo.css:\nStyles are looking very ugly...');
+            expect(console.warn).toHaveBeenCalledWith(`
+Got warnings while minifying [src/www/foo.css]:
+Styles are looking very ugly...
+            `.trim());
         });
 
         it('ignores undesired warnings', async () => {
@@ -91,8 +99,10 @@ describe('styles', () => {
                 ignoredWarnings: [ /^Some useless warning.$/ ],
             }), 'foo.css');
 
-            expect(console.warn).toHaveBeenCalledWith(
-                    'Got warnings while minifying src/www/foo.css:\nStyles are looking very ugly...');
+            expect(console.warn).toHaveBeenCalledWith(`
+Got warnings while minifying [src/www/foo.css]:
+Styles are looking very ugly...
+            `.trim());
         });
     });
 });
