@@ -6,7 +6,7 @@
     text-decoration: none;
 
     display: block;
-    border: 3px solid var(--dwac-theme-color-primary);
+    border: 3px solid var(--dwac-color-primary);
     border-radius: 10px;
     box-shadow: 6px 6px 6px 0px rgba(0, 0, 0, 0.5);
 
@@ -15,20 +15,20 @@
 
 /* Re-apply link styling on the card's children. */
 .frag-card a {
-    color: var(--dwac-theme-link-color);
+    color: var(--dwac-link-color);
 }
 .frag-card a:visited {
-    color: var(--dwac-theme-link-color-visited);
+    color: var(--dwac-link-color-visited);
 }
 
 .frag-card .card-title {
-    color: var(--dwac-theme-link-color);
+    color: var(--dwac-link-color);
     text-decoration: underline;
     margin: 0;
 }
 
 .frag-card:visited .card-title {
-    color: var(--dwac-theme-link-color-visited);
+    color: var(--dwac-link-color-visited);
 }
 
 .frag-card .card-content {

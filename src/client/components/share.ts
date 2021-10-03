@@ -11,7 +11,7 @@ export class Share extends LitElement {
             --dwac-share-twitter-blue: rgb(29, 161, 242);
 
             display: block;
-            color: var(--dwac-theme-text-color-primary);
+            color: var(--dwac-text-color-primary);
         }
 
         ul {

@@ -1,15 +1,27 @@
-/** @fileoverview Base styles for every page of the blog.  */
+/**
+ * @fileoverview Base styles for every page of the blog.
+ * 
+ * We use `:where()` in all of these styles because it has *zero* specificity,
+ * meaning any style applied to an element will override it, making this very
+ * useful for defaults that don't block other styles.
+ */
 
+ /*
+  * Styles which are inherited by every element. Note that some user-agent
+  * styles can override these values if they apply directly to a specific
+  * element, since directly targeted styles have higher priority than inherited
+  * styles: https://developer.mozilla.org/en-US/docs/Web/CSS/Specificity#directly_targeted_elements_vs._inherited_styles.
+  */
 :where(body) {
     /* No implicit padding on the page. */
     margin: 0;
     padding: 0;
 
     /* Default sizing and color information. */
-    font-family: var(--dwac-theme-font-primary);
-    font-size: var(--dwac-theme-font-size-medium);
+    font-family: var(--dwac-font-primary);
+    font-size: var(--dwac-font-size-medium);
     line-height: 1.5em;
-    color: var(--dwac-theme-text-color-primary);
+    color: var(--dwac-text-color-primary);
 }
 
 /*
@@ -24,8 +36,8 @@
 }
 
 :where(a) {
-    color: var(--dwac-theme-link-color);
+    color: var(--dwac-link-color);
 }
 :where(a:visited) {
-    color: var(--dwac-theme-link-color-visited);
+    color: var(--dwac-link-color-visited);
 }

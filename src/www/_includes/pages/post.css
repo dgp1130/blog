@@ -20,7 +20,7 @@
     /* Fill available space. */
     flex: 1;
 
-    background-color: var(--dwac-theme-color-bg);
+    background-color: var(--dwac-color-bg);
 }
 
 .md {

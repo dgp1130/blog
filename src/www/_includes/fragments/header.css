@@ -2,21 +2,21 @@
 
 .frag-header {
     text-align: center;
-    background-color: var(--dwac-theme-color-primary);
+    background-color: var(--dwac-color-primary);
     padding: 0.5rem;
 }
 
 .frag-header img {
     height: 1em;
-    font-size: var(--dwac-theme-font-size-title);
+    font-size: var(--dwac-font-size-title);
     vertical-align: text-bottom;
     margin-right: 0.5rem;
 }
 
 .frag-header h1 {
     display: inline-block;
-    color: var(--dwac-theme-color-highlight);
-    font-size: var(--dwac-theme-font-size-title);
+    color: var(--dwac-color-highlight);
+    font-size: var(--dwac-font-size-title);
     margin: 0;
     padding: 0;
 }

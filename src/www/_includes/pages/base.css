@@ -27,7 +27,7 @@ h2 {
 
 main {
     flex: 1;
-    background-color: var(--dwac-theme-color-bg);
+    background-color: var(--dwac-color-bg);
     padding: var(--dwac-base-padding);
     width: calc(min(100%, 1024px) - (2 * var(--dwac-base-padding)));
     margin: 0 auto; /* Center text content. */

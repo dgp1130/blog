@@ -4,18 +4,18 @@
 @import url(../../styles/theme.css);
 
 .frag-footer {
-    color: var(--dwac-theme-text-color-secondary);
+    color: var(--dwac-text-color-secondary);
 
-    background-color: var(--dwac-theme-color-primary);
+    background-color: var(--dwac-color-primary);
     padding: 0.75rem;
 }
 
 .frag-footer a {
-    color: var(--dwac-theme-link-alt-color);
+    color: var(--dwac-link-alt-color);
 }
 
 .frag-footer a:visited {
-    color: var(--dwac-theme-link-alt-color-visited);
+    color: var(--dwac-link-alt-color-visited);
 }
 
 .frag-footer > .content {
@@ -24,7 +24,7 @@
 }
 
 .frag-footer {
-    font-size: var(--dwac-theme-font-size-small);
+    font-size: var(--dwac-font-size-small);
 }
 
 .frag-footer p:not(:first-child):not(:last-child) {
