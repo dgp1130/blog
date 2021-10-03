@@ -1,6 +1,5 @@
 {% import "fragments/card.njk" as card %}
 {% import "fragments/favicon.njk" as favicon %}
-{% import "fragments/font.njk" as font %}
 {% import "fragments/footer.njk" as footer %}
 {% import "fragments/header.njk" as header %}
 
@@ -22,6 +21,7 @@
     {% endfilter %}
 {% endset %}
 {% set styles %}
+    res/fonts/lora/lora.css
     {% block styles %}{% endblock %}
 {% endset %}
 {% set content %}
@@ -37,7 +37,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="{{ desc }}">
 
-        {{ font.font("Lora") }}
+        <link rel="preload" href="/res/fonts/lora/latin.woff2" as="font"
+            crossorigin="anonymous">
         {{ favicon.favicon() }}
 
         <style>{{ styles | trim | css | safe }}</style>
