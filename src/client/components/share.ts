@@ -6,7 +6,7 @@ import { makeShareable } from '../share';
 /** Displays a share UI to allow users to easily share the given URL. */
 @customElement('dwac-share')
 export class Share extends LitElement {
-    static styles = css`
+    static override styles = css`
         :host {
             --dwac-share-twitter-blue: rgb(29, 161, 242);
 
@@ -99,7 +99,7 @@ export class Share extends LitElement {
     // Required.
     @property({ attribute: 'article-title' }) public articleTitle?: string;
 
-    render(): TemplateResult|void {
+    override render(): TemplateResult|void {
         assertDefined(this.target);
         assertDefined(this.articleTitle);
 

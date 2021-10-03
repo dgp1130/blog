@@ -6,7 +6,7 @@ export enum Environment {
 
 /** Returns the environment the build is running in. */
 export function getEnv(): Environment {
-    const env = process.env.DWAC_ENV;
+    const env = process.env['DWAC_ENV'];
     switch (env) {
         case undefined:
         case 'dev':

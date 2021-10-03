@@ -37,8 +37,12 @@
     /* Additional Checks */
     // "noUnusedLocals": true,                /* Report errors on unused locals. */
     // "noUnusedParameters": true,            /* Report errors on unused parameters. */
-    // "noImplicitReturns": true,             /* Report error when not all code paths in function return a value. */
-    // "noFallthroughCasesInSwitch": true,    /* Report errors for fallthrough cases in switch statement. */
+    "allowUnusedLabels": false,               /* Reports errors on unused labels, typically a failed attempt to write an object literal. */
+    "noImplicitReturns": true,                /* Report error when not all code paths in function return a value. */
+    "noFallthroughCasesInSwitch": true,       /* Report errors for fallthrough cases in switch statement. */
+    "noImplicitOverride": true,               /* Report errors when overriding a function without the `override` keyword. */
+    "noPropertyAccessFromIndexSignature": true, /* Report errors when using dot syntax to read an index property (`{[key: string]: string}`). */
+    "noUncheckedIndexedAccess": true,         /* Report `undefined` in the value of index types (`{[key: string]: string}`) */
 
     /* Module Resolution Options */
     "moduleResolution": "node",               /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */

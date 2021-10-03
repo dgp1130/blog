@@ -304,7 +304,7 @@ describe('csp', () => {
                 </html>
             `)).window;
 
-            const firstChild = document.head.children[0];
+            const firstChild = document.head.children[0]!;
             expect(firstChild.tagName).toBe('META');
             expect(firstChild.getAttribute('http-equiv'))
                     .toBe('Content-Security-Policy');

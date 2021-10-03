@@ -15,8 +15,11 @@ export function addMdTimestampPlugin(md: MarkdownIt): void {
             // `env` is the 11ty context. Read the `date` value from the page
             // front matter.
             const timestamp = getPageDate(env);
+            if (idx >= tokens.length) {
+                throw new Error(`Expected index ${idx} to be within the list of tokens (length ${tokens.length}).`);
+            }
 
-            const token = tokens[idx];
+            const token = tokens[idx]!;
             if (token.nesting === 1) {
                 // Opening `::: timestamp` tag, generate the markup.
                 const datetime = `${timestamp.getUTCFullYear()}-${
@@ -42,8 +45,8 @@ export function addMdTimestampPlugin(md: MarkdownIt): void {
 
 /** Reads the page date from the context passed in by 11ty. */
 function getPageDate(environment: unknown): Date {
-    const env = (environment || {}) as Record<string, unknown>;
-    const page = (env.page || {}) as Record<string, unknown>;
+    const env = (environment ?? {}) as Record<string, unknown>;
+    const page = (env['page'] ?? {}) as Record<string, unknown>;
     const { date, inputPath: pageInputPath } = page;
 
     // Get the `inputPath` to use for debugging purposes.
