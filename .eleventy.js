@@ -13,6 +13,7 @@ const syntaxHighlight = require('@11ty/eleventy-plugin-syntaxhighlight');
 
 const { cleanCssConfig, cleanCssConfigDev } = require('./configs/clean_css');
 const { htmlMinifierConfig } = require('./configs/html_minifier');
+const { addMdAnchorPlugin } = require('./src/11ty/anchor');
 const { injectCsp } = require('./src/11ty/csp');
 const { Environment, getEnv } = require('./src/11ty/environment');
 const { format: formatDate } = require('./src/11ty/filters/dates');
@@ -26,6 +27,7 @@ module.exports = function (config) {
 
     // Explicitly provide the Markdown library to set an explicit configuration.
     const md = mdLib();
+    addMdAnchorPlugin(md);
     addMdTimestampPlugin(md);
     config.setLibrary('md', md);
 
