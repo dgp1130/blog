@@ -52,6 +52,9 @@ module.exports = function (config) {
     config.addPassthroughCopy('src/www/**/*.svg');
     config.addPassthroughCopy('src/www/**/*.webp');
 
+    // Copy font resources to the output directory.
+    config.addPassthroughCopy('src/www/**/*.woff2');
+
     // Live reload on CSS file changes.
     config.addWatchTarget('src/www/**/*.css');
 
@@ -113,7 +116,7 @@ module.exports = function (config) {
             // TL;DR: Firefox (and probably Safari) don't support adopted style
             // sheets or enough CSP to do anything more specific than
             // 'unsafe-inline'.
-            styleSrc: [`'unsafe-inline'`, 'https:'],
+            styleSrc: [`'self'`, `'unsafe-inline'`, 'https:'],
             extractStyles: false,
         });
     });
