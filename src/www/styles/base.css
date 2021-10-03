@@ -20,7 +20,6 @@
     /* Default sizing and color information. */
     font-family: var(--dwac-font-primary);
     font-size: var(--dwac-font-size-medium);
-    line-height: 1.5em;
     color: var(--dwac-text-color-primary);
 }
 

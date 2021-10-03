@@ -254,41 +254,45 @@
 .md h1, .md h2, .md h3, .md h4, .md h5, .md h6 {
   font: inherit;
   font-weight: bold;
+  cursor: pointer;
+}
+
+.md :is(h1, h2, h3, h4, h5, h6):hover::after {
+  content: ' 🔗';
+  cursor: pointer;
+  font-size: 0.75em;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .md h1 {
   font-size: 2em;
-  line-height: 1.11111em;
   margin: 0 0 0.66667em 0;
 }
 
 .md h2 {
   font-size: 1.5em;
-  line-height: 1.33333em;
   margin: 1.06667em 0 0.53333em 0;
 }
 
 .md h3 {
   font-size: 1.375em;
-  line-height: 1.45455em;
   margin: 1.45455em 0 0.72727em 0;
 }
 
 .md h4 {
   font-size: 1.25em;
-  line-height: 1.2em;
   margin: 0 0 0.4em 0;
 }
 
 .md h5 {
   font-size: 1.125em;
-  line-height: 1.33333em;
   margin: 0 0 0.44444em 0;
 }
 
 .md h6 {
   font-size: 1.0em;
-  line-height: 1.5em;
   margin: 0 0 0.5em 0;
 }
 
