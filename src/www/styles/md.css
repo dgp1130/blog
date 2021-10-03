@@ -287,19 +287,19 @@
 }
 
 .md h6 {
-  font-size: var(--dwac-font-size-medium);
+  font-size: 1.0em;
   line-height: 1.5em;
   margin: 0 0 0.5em 0;
 }
 
 .md p, .md pre, .md label {
-  font-size: var(--dwac-font-size-medium);
+  font-size: 1.0em;
   line-height: 1.5em;
   margin: 0 0 1em 0;
 }
 
 .md ol, .md ul {
-  font-size: var(--dwac-font-size-medium);
+  font-size: 1.0em;
   line-height: 1.5em;
 }
 

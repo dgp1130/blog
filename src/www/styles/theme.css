@@ -28,7 +28,7 @@
 
     /* Font sizes. */
     --dwac-theme-font-size-small: 0.8em;
-    --dwac-theme-font-size-medium: 1em;
+    --dwac-theme-font-size-medium: 1.25em;
     --dwac-theme-font-size-title: 32px;
 
     /* Link theme colors. Should not be changed on any elements. */
@@ -36,9 +36,4 @@
     --dwac-theme-link-color-visited: purple;
     --dwac-theme-link-alt-color: var(--dwac-theme-color-secondary);
     --dwac-theme-link-alt-color-visited: #ffa6df;
-
-    /* Used colors, can be changed on elements to alter the color. */
-    --dwac-text-color: var(--dwac-theme-text-color-primary);
-    --dwac-link-color: var(--dwac-theme-link-color);
-    --dwac-link-color-visited: var(--dwac-theme-link-color-visited);
 }

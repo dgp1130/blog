@@ -3,10 +3,6 @@
 @import url(./_includes/pages/base.css);
 @import url(./styles/theme.css);
 
-li {
-    color: var(--dwac-text-color);
-}
-
 main li + li {
     margin-top: 0.75rem;
 }

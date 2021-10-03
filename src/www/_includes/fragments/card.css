@@ -2,8 +2,7 @@
 
 .frag-card {
     /* Disable link styling on the card itself. */
-    --dwac-link-color: /**/;
-    --dwac-link-color-visited: /**/;
+    color: unset;
     text-decoration: none;
 
     display: block;
@@ -14,10 +13,12 @@
     padding: 0.75rem;
 }
 
-.frag-card > * {
-    /* Re-apply link styling on the card's children. */
-    --dwac-link-color: var(--dwac-theme-link-color);
-    --dwac-link-color-visited: var(--dwac-theme-link-color-visited);
+/* Re-apply link styling on the card's children. */
+.frag-card a {
+    color: var(--dwac-theme-link-color);
+}
+.frag-card a:visited {
+    color: var(--dwac-theme-link-color-visited);
 }
 
 .frag-card .card-title {

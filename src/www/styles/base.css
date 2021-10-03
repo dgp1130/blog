@@ -1,46 +1,31 @@
 /** @fileoverview Base styles for every page of the blog.  */
 
-/* No implicit padding on the page. */
-body {
+:where(body) {
+    /* No implicit padding on the page. */
     margin: 0;
     padding: 0;
-    font-family: var(--dwac-theme-font-primary);
-    font-size: 1.25em;
-}
 
-p {
-    /*
-     * Override this color by setting --dwac-text-color to the desired value for
-     * a particular element.
-     */
-    color: var(--dwac-text-color);
-    font-size: var(--dwac-font-size-medium);
+    /* Default sizing and color information. */
+    font-family: var(--dwac-theme-font-primary);
+    font-size: var(--dwac-theme-font-size-medium);
     line-height: 1.5em;
+    color: var(--dwac-theme-text-color-primary);
 }
 
 /*
  * The first and last paragraph in a sequence should not extend margins past
  * their container.
  */
-p:first-child {
+:where(p:first-child) {
     margin-top: 0;
 }
-p:last-child {
+:where(p:last-child) {
     margin-bottom: 0;
 }
 
-a {
-    /*
-     * Override this color by setting --dwac-link-color to the desired value for
-     * a particular element.
-     */
-    color: var(--dwac-link-color);
+:where(a) {
+    color: var(--dwac-theme-link-color);
 }
-
-a:visited {
-    /*
-     * Override this color by setting --dwac-link-color-visited to the desired
-     * value for a particular element.
-     */
-    color: var(--dwac-link-color-visited);
+:where(a:visited) {
+    color: var(--dwac-theme-link-color-visited);
 }
