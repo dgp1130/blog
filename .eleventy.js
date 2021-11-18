@@ -20,6 +20,7 @@ const { format: formatDate } = require('./src/11ty/filters/dates');
 const { short } = require('./src/11ty/filters/git');
 const { bundleStyles } = require('./src/11ty/filters/styles');
 const { addMdTimestampPlugin } = require('./src/11ty/timestamp');
+const { addMdTargetBlankPlugin } = require('./src/11ty/target_blank');
 
 module.exports = function (config) {
     // Process markdown and Nunjucks templates.
@@ -29,6 +30,7 @@ module.exports = function (config) {
     const md = mdLib();
     addMdAnchorPlugin(md);
     addMdTimestampPlugin(md);
+    addMdTargetBlankPlugin(md);
     config.setLibrary('md', md);
 
     // Explicitly provide the Nunjucks library to set an explicit configuration.
