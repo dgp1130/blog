@@ -16,6 +16,12 @@ The front matter **must** contain the following values:
   and more than 158 will be truncated on desktop. Ideally, this should be
   shorter than 120, and will almost certainly be truncated beyond 160.
 
+It **may** also contain:
+
+* `languages` - A list of languages with syntax highlighting support under
+  [src/www/styles/syntax-highlighting](/src/www/styles/syntax-highlighting/)
+  used by the post.
+
 ## Special tags
 
 Adding `::: timestamp :::` will insert a formatted value from the `date` front

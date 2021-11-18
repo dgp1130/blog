@@ -12,6 +12,9 @@
 
 {% block styles %}
     _includes/pages/post.css
+    {% for language in languages %}
+        styles/syntax-highlighting/{{ language }}.css
+    {% endfor %}
 {% endblock %}
 
 {% block head %}

@@ -8,3 +8,6 @@ The markup is generated via [PrismJs](https://prismjs.com/). See
 [their FAQ](https://prismjs.com/faq.html#how-do-i-know-which-tokens-i-can-style-for)
 to understand what classes are generated for a particular language in order to
 know what needs to be styled.
+
+These styles are enabled for a post by adding `languages: [ ${lang} ]` to the
+front matter. See the posts [README](/src/www/posts/README.md).
