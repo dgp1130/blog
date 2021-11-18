@@ -1,0 +1,21 @@
+/** @fileoverview Styles for syntax highlighting of HTML code. */
+
+code.language-html {
+    color: #405d40;
+}
+
+code.language-html .punctuation {
+    color: black;
+}
+
+code.language-html .tag {
+    color: blue;
+}
+
+code.language-html .attr-name {
+    color: #0073dd;
+}
+
+code.language-html .attr-value {
+    color: #a55828;
+}
