@@ -86,6 +86,9 @@ module.exports = function (config) {
         cleanCssOptions: cssConfig,
     }));
 
+    // Debug filter for viewing available keys on an object in a template.
+    config.addFilter('keys', (obj) => Object.keys(obj).join(', '));
+
     // Print the given data to the console for debugging purposes.
     config.addFilter('debug', (data) => {
         console.log(data);
