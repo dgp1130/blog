@@ -26,7 +26,10 @@ function linkOpenRule(
     const token = tokens[idx];
     if (!token) throw new Error(`No token at index ${idx}.`);
 
-    token.attrSet('target', '_blank');
+    const href = token.attrGet('href');
+    if (href && !href.startsWith('#')) { // Ignore self-links.
+        token.attrSet('target', '_blank');
+    }
 
     return self.renderToken(tokens, idx, options);
 }
