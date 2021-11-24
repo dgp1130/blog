@@ -19,6 +19,7 @@ const { Environment, getEnv } = require('./src/11ty/environment');
 const { format: formatDate } = require('./src/11ty/filters/dates');
 const { short } = require('./src/11ty/filters/git');
 const { bundleStyles } = require('./src/11ty/filters/styles');
+const { addMdPicturePlugin } = require('./src/11ty/picture');
 const { addMdTimestampPlugin } = require('./src/11ty/timestamp');
 const { addMdTargetBlankPlugin } = require('./src/11ty/target_blank');
 
@@ -29,6 +30,7 @@ module.exports = function (config) {
     // Explicitly provide the Markdown library to set an explicit configuration.
     const md = mdLib();
     addMdAnchorPlugin(md);
+    addMdPicturePlugin(md);
     addMdTimestampPlugin(md);
     addMdTargetBlankPlugin(md);
     config.setLibrary('md', md);
