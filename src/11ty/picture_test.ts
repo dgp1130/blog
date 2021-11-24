@@ -23,5 +23,13 @@ describe('picture', () => {
 <picture><img srcset="bar.jpg" alt="foo"></picture>
             `.trim());
         });
+
+        it('renders multiline alt text as a single line', () => {
+            const md = mdLib();
+            addMdPicturePlugin(md);
+
+            const rendered = md.render('![foo\nbar\ntest](baz.jpg)');
+            expect(rendered).toContain('alt="foo bar test"');
+        });
     });
 });

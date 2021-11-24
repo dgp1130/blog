@@ -106,7 +106,7 @@ function rule(state, silent) {
     if (!silent && sources.length) {
         const primary = sources.shift()
         const title = media.shift()
-        const alt = state.src.slice(labelStart, labelEnd)
+        const alt = state.src.slice(labelStart, labelEnd).replace(/\n/g, ' ')
 
         let token = state.push('picture_open', 'picture', 1)
 
