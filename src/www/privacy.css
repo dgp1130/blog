@@ -1,0 +1,4 @@
+/** Style sheet for the privacy policy page. */
+
+@import url(./styles/theme.css);
+@import url(./_includes/pages/base.css);

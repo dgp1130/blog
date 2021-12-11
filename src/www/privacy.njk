@@ -1,0 +1,49 @@
+{% extends "pages/base.njk" %}
+
+{% block title %}
+    Privacy Policy - Devel without a Cause
+{% endblock %}
+
+{% block description %}
+    Privacy policy for the blog.dwac.dev domain.
+{% endblock %}
+
+{% block styles %}
+    ./privacy.css
+{% endblock %}
+
+{% block content %}
+    <section>
+        <h2>Privacy Policy</h2>
+
+        <p>Short version: This blog does <strong>not</strong> track you.</p>
+
+        <p>Long version: This blog respects user privacy and does
+        <strong>not</strong> track any personally identifiable information
+        (PII) and does not use any cookies to track users. This is just a blog,
+        not a social media app. You should be able to read it without
+        sacrificing your personal privacy and I make every effort as a developer
+        to respect that privacy.</p>
+        <p>Site analytics are captured via
+        <a href="https://plausible.io/" target="_blank">Plausible</a>, which
+        does not use cookies, does not track personal information, and does not
+        use any kind of persistent identifier. For example, visiting this site
+        once and then returning the next day, or using two different devices
+        will be attributed as two distinct users, with no means of associating
+        the two users are actually the same person. Plausible is
+        <a href="https://plausible.io/data-policy" target="_blank">fully GDPR
+        and CCPA-compliant</a>. I actually pay directly for Plausible because of
+        its <a href="https://plausible.io/privacy-focused-web-analytics" target="_blank">privacy-first design</a>
+        and avoid free services like Google Analytics which share user
+        information with third parties or advertisers, even though it would be
+        cheaper for me to do so.</p>
+        <p>These analytics are used to measure interest in
+        particular blog posts and overall site performance. They are
+        <strong>not</strong> used for advertisements or individual user
+        tracking. This site is not intended to make money, it is not monetized,
+        and it does not abuse user privacy for financial benefit. I also
+        personally hate popups and will do everything in my power to make this
+        site protect your privacy and avoid keeping user information such that
+        it does not need a permission prompt in the first place.</p>
+    </section>
+{% endblock %}
