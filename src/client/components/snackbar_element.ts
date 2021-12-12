@@ -47,7 +47,7 @@ export class Snackbar extends LitElement {
             animation-name: fadeIn;
             animation-iteration-count: 1;
             animation-timing-function: ease-in;
-            animation-duration: ${fadeInTimeoutMs}ms;
+            animation-duration: var(--dwac-snackbar-fade-in-duration);
             opacity: 1; /* End fade-in by staying visible. */
         }
 
@@ -61,7 +61,7 @@ export class Snackbar extends LitElement {
             animation-name: fadeOut;
             animation-iteration-count: 1;
             animation-timing-function: ease-out;
-            animation-duration: ${fadeOutTimeoutMs}ms;
+            animation-duration: var(--dwac-snackbar-fade-out-duration);
             opacity: 0; /* End fade-out by staying invisible. */
         }
 
@@ -82,6 +82,15 @@ export class Snackbar extends LitElement {
 
     public override connectedCallback(): void {
         super.connectedCallback();
+
+        // Bind fade-in and fade-out durations to CSS properties for styles to
+        // use. Ideally this would be inlined in the `styles` static property,
+        // but doing so would break `minify-html-literals`, so this is the next
+        // best way. See: https://github.com/asyncLiz/minify-html-literals/issues/31.
+        this.style.setProperty(
+            '--dwac-snackbar-fade-in-duration', `${fadeInTimeoutMs}ms`);
+        this.style.setProperty(
+            '--dwac-snackbar-fade-out-duration', `${fadeOutTimeoutMs}ms`);
 
         // Default to `alert` role which most accurately represents the intended
         // use of this component.

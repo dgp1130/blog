@@ -62,4 +62,18 @@ describe('Snackbar Element', () => {
         jasmine.clock().tick(fadeOutTimeoutMs);
         await expectAsync(promise).toBeResolved();
     });
+
+    it('sets the fade-in and fade-out duration CSS properties', async () => {
+        const snackbar = await init();
+
+        const fadeInDuration =
+            snackbar.style.getPropertyValue('--dwac-snackbar-fade-in-duration');
+        expect(fadeInDuration).toBeInstanceOf(String);
+        expect(fadeInDuration).not.toBe('');
+
+        const fadeOutDuration =
+            snackbar.style.getPropertyValue('--dwac-snackbar-fade-out-duration');
+        expect(fadeOutDuration).toBeInstanceOf(String);
+        expect(fadeOutDuration).not.toBe('');
+    });
 });
