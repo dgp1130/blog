@@ -4,13 +4,14 @@
  */
 
 import { getLocation } from './browser_env';
+import { show as showSnackbar } from './components/snackbar';
 
 /**
  * Adds an event listener to the given `Node` which detects clicks to header
  * (`<h* />`) elements and copies a permalink to the user's clipboard.
  */
 export function handleHeaderLinkOnClick(node: Node): void {
-    node.addEventListener('click', (evt) => {
+    node.addEventListener('click', async (evt) => {
         // Ignore non-<h*> elements.
         if (!(evt.target instanceof HTMLHeadingElement)) return;
     
@@ -24,5 +25,7 @@ export function handleHeaderLinkOnClick(node: Node): void {
         url.hash = id;
         history.replaceState({}, '', url);
         navigator.clipboard.writeText(url.toString());
+
+        await showSnackbar('Copied URL to clipboard.', 2_000 /* ms */);
     });
 }

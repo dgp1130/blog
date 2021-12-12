@@ -8,8 +8,9 @@
 :root {
     /* Core theme colors. */
     --dwac-color-primary: #0d47a1;
-    --dwac-color-bg: #fefefe;
     --dwac-color-secondary: white;
+    --dwac-color-bg: #fefefe;
+    --dwac-color-bg-secondary: #101010;
     --dwac-color-highlight: #fa0;
 
     /* Text colors. */

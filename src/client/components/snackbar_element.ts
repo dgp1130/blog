@@ -1,0 +1,110 @@
+import { css, customElement, html, LitElement, TemplateResult } from 'lit-element';
+import { timeout } from '../time';
+
+/** @testonly */
+export const fadeInTimeoutMs = 100;
+/** @testonly */
+export const fadeOutTimeoutMs = 250;
+
+/**
+ * Displays a "snackbar" alert message to the user. This is shown in a small
+ * popup-like box near the top of the screen.
+ */
+@customElement('dwac-snackbar')
+export class Snackbar extends LitElement {
+    static override styles = css`
+        :host {
+            /* Fill up the whole screen horizontally. */
+            display: block;
+            width: 100%;
+            position: fixed;
+            top: 60px;
+
+            /* Center visible child element. */
+            text-align: center;
+
+            /* User interactions should empty space within this element. */
+            pointer-events: none;
+        }
+
+        div {
+            /* Center the snackbar. */
+            display: inline-block;
+            min-width: 15%;
+            max-width: 50%;
+            margin: auto;
+
+            /* Show in a popup-like design. */
+            color: var(--dwac-color-secondary);
+            background: var(--dwac-color-bg-secondary);
+            padding: 0.25em;
+            border-radius: 0.5em;
+
+            /* Block user interactions on this element. */
+            pointer-events: auto;
+
+            /* Apply a fade-in animation when added to the DOM. */
+            animation-name: fadeIn;
+            animation-iteration-count: 1;
+            animation-timing-function: ease-in;
+            animation-duration: ${fadeInTimeoutMs}ms;
+            opacity: 1; /* End fade-in by staying visible. */
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        /* Apply a fade-out animation when the \`.fade-out\` class is set. */
+        :host(.fade-out) div {
+            animation-name: fadeOut;
+            animation-iteration-count: 1;
+            animation-timing-function: ease-out;
+            animation-duration: ${fadeOutTimeoutMs}ms;
+            opacity: 0; /* End fade-out by staying invisible. */
+        }
+
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+    `;
+
+    private text!: string;
+
+    /** Creates a snackbar which displays the given text. */
+    public static of(text: string): Snackbar {
+        const el = document.createElement('dwac-snackbar');
+        el.text = text;
+        return el;
+    }
+
+    public override connectedCallback(): void {
+        super.connectedCallback();
+
+        // Default to `alert` role which most accurately represents the intended
+        // use of this component.
+        if (!this.hasAttribute('role')) this.setAttribute('role', 'alert');
+    }
+
+    protected override render(): TemplateResult {
+        if (!this.text) throw new Error('No `text` given to snackbar.');
+
+        return html`<div>${this.text}</div>`;
+    }
+
+    /**
+     * Fades out this element and returns a `Promise` which resolve when done.
+     */
+    public async fadeOut(): Promise<void> {
+        this.classList.add('fade-out');
+        await timeout(fadeOutTimeoutMs);
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        'dwac-snackbar': Snackbar;
+    }
+}
