@@ -1,5 +1,5 @@
 import * as browserEnv from './browser_env';
-import { makeShareable } from "./share";
+import { makeShareable } from './share';
 
 describe('share', () => {
     describe('makeShareable()', () => {

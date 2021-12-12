@@ -1,4 +1,4 @@
-import { getLocation } from "./browser_env";
+import { getLocation } from './browser_env';
 
 describe('browser_env', () => {
     describe('getLocation()', () => {

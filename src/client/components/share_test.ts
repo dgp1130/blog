@@ -1,5 +1,5 @@
 import * as browserEnv from '../browser_env';
-import { Share } from "./share";
+import { Share } from './share';
 
 describe('Share', () => {
     let share: Share|undefined;
@@ -18,7 +18,7 @@ describe('Share', () => {
         target?: URL | string,
         articleTitle?: string,
     } = {}): Promise<Share> {
-        share = new Share();
+        share = document.createElement('dwac-share');
         share.prompt = prompt;
         
         // Either set the target property directly as a URL, or set an attribute

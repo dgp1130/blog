@@ -1,4 +1,4 @@
-import { assertDefined } from "./asserts";
+import { assertDefined } from './asserts';
 
 describe('asserts', () => {
     describe('assertDefined()', () => {
