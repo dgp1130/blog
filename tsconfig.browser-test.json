@@ -7,7 +7,7 @@
     // exported from `client/` and tested. It would then simply be called from
     // `www/` at the top-level of a file. By not importing `www/` we avoid
     // invoking all the top-level side effects that come with doing so.
-    "include": [ "src/client/**/*_test.ts" ],
+    "include": [ "src/client/**/*.ts" ],
 
     "compilerOptions": {
         "module": "CommonJS",
