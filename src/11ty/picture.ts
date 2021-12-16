@@ -105,22 +105,31 @@ function rule(state, silent) {
         parseSources();
     }
 
+    const mimeTypes = sources.map((source) => getMimeTypeFromSource(source));
+
     if (!silent && sources.length) {
         const primary = sources.shift();
+        const primaryMimeType = mimeTypes.shift();
         const title = media.shift();
-        const alt = state.src.slice(labelStart, labelEnd).replace(/\n/g, ' ');
+        const alt = state.src.slice(labelStart, labelEnd)
+            .replace(/\n/g, ' ')
+            .trim();
 
         let token = state.push('picture_open', 'picture', 1);
 
         sources.forEach((s, i) => {
             token = state.push('picture_source', 'source', 0);
-            const attrs = [['srcset', s]];
+            const attrs = [['srcset', s], ['type', mimeTypes[i]]];
             if (media[i]) attrs.push(['media', media[i]]);
             token.attrs = attrs;
         });
 
         token = state.push('picture_img', 'img', 0);
-        const attrs = [['srcset', primary], ['alt', alt]];
+        const attrs = [
+            ['srcset', primary],
+            ['alt', alt],
+            ['type', primaryMimeType],
+        ];
         if (title) attrs.push(['title', title]);
         token.attrs = attrs;
 
@@ -129,4 +138,27 @@ function rule(state, silent) {
 
     state.pos = pos;
     return true;
+}
+
+function getMimeTypeFromSource(source: string): string {
+    const parts = source.split('.');
+    if (parts.length <= 1) {
+        throw new Error(`Failed to determine extension for \`${source}\`.`);
+    }
+
+    const extension = parts[parts.length - 1];
+    switch (extension.toLowerCase()) {
+        case 'avif':
+            return 'image/avif';
+        case 'jpg':
+        case 'jpeg':
+            return 'image/jpeg';
+        case 'png':
+            return 'image/png';
+        case 'webp':
+            return 'image/webp';
+        default:
+            throw new Error(`No known MIME type for file extension \`${
+                extension}\` from source \`${source}\`.`);
+    }
 }
