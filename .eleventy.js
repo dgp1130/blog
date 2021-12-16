@@ -5,6 +5,7 @@
 
 const { createHash } = require('crypto');
 const { promises: fs } = require('fs');
+const path = require('path');
 
 const { minify: minifyHtml } = require('html-minifier-terser');
 const mdLib = require('markdown-it');
@@ -22,6 +23,10 @@ const { bundleStyles } = require('./src/11ty/filters/styles');
 const { addMdPicturePlugin } = require('./src/11ty/picture');
 const { addMdTimestampPlugin } = require('./src/11ty/timestamp');
 const { addMdTargetBlankPlugin } = require('./src/11ty/target_blank');
+const { addImageDimensions } = require('./src/11ty/images');
+
+const inputDir = 'src/www/';
+const outputDir = '_site/';
 
 module.exports = function (config) {
     // Process markdown and Nunjucks templates.
@@ -98,16 +103,22 @@ module.exports = function (config) {
     });
 
     // Post-process HTML files.
-    config.addTransform('html-post-process', (content, path) => {
+    config.addTransform('html-post-process', async (content, outputPath) => {
         // Ignore non-HTML files.
-        if (!path.endsWith('.html')) return content;
+        if (!outputPath.endsWith('.html')) return content;
+
+        // Add `width` and `height` attributes to image tags on the page.
+        const relPath = outputPath.slice(outputDir.length);
+        const inputPath = path.join(inputDir, relPath);
+        const contentWithImageDimensions =
+            await addImageDimensions(content, inputPath, inputDir);
 
         // Minify the HTML first. Some scripts may be minified, so CSP hashes
         // need to be calculated afterwards. Don't minify dev builds to improve
         // debuggability.
         const minified = getEnv() !== Environment.DEV
-                ? minifyHtml(content, htmlMinifierConfig)
-                : content;
+                ? minifyHtml(contentWithImageDimensions, htmlMinifierConfig)
+                : contentWithImageDimensions;
 
         // Generate and inject a content security policy.
         return injectCsp(minified, {
@@ -147,7 +158,8 @@ module.exports = function (config) {
 
     return {
         dir: {
-            input: 'src/www/',
+            input: inputDir,
+            output: outputDir,
 
             // Move _data/ outside input directory so it can be compiled as 11ty
             // code without conflicting with other build targets.
