@@ -1,5 +1,6 @@
 import * as browserEnv from '../browser_env';
 import { Share } from './share';
+import * as snackbar from './snackbar';
 
 describe('Share', () => {
     let share: Share|undefined;
@@ -145,6 +146,7 @@ describe('Share', () => {
         });
         spyOnProperty(navigator, 'clipboard', 'get')
                 .and.returnValue(clipboard);
+        spyOn(snackbar, 'show').and.resolveTo();
         
         const share = await init({
             target: new URL('https://copied.test/'),
@@ -158,6 +160,8 @@ describe('Share', () => {
 
         expect(navigator.clipboard.writeText)
                 .toHaveBeenCalledWith('https://copied.test/');
+        expect(snackbar.show).toHaveBeenCalledWith(
+                'Copied URL to clipboard.', 2_000 /* ms */);
     });
 
     it('copies the given path when the user presses "Copy"', async () => {

@@ -3,6 +3,7 @@ import { customElement, property } from 'lit/decorators';
 import { when } from 'lit/directives/when';
 import { assertDefined } from '../asserts';
 import { makeShareable } from '../share';
+import { show as showSnackbar } from './snackbar';
 
 /** Displays a share UI to allow users to easily share the given URL. */
 @customElement('dwac-share')
@@ -157,6 +158,8 @@ export class Share extends LitElement {
         assertDefined(this.target);
 
         await navigator.clipboard.writeText(this.target.toString());
+
+        await showSnackbar('Copied URL to clipboard.', 2_000 /* ms */);
     }
 }
 
