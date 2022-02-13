@@ -11,6 +11,18 @@
         "!typescript",
         "md"
     ],
+    "[markdown]": {
+        "editor.wordWrap": "off",
+        "editor.quickSuggestions": false,
+        "editor.rulers": [
+            // Important code should be less than this limit for mobile devices.
+            // You can extend past it for unimportant "just needs to be there to
+            // compile and users can scroll to see it if they really care, but
+            // it's not actually relevant to the point I'm making".
+            60,
+            80  // General length limit.
+        ]
+    },
     "cSpell.words": [
         "dwac"
     ],
