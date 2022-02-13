@@ -5,6 +5,7 @@
 
 const { createHash } = require('crypto');
 const { promises: fs } = require('fs');
+const path = require('path');
 
 const { minify: minifyHtml } = require('html-minifier-terser');
 const mdLib = require('markdown-it');
@@ -98,6 +99,7 @@ module.exports = function (config) {
     });
 
     // Post-process HTML files.
+    const liveReloadCspSources = getLiveReloadCspSources();
     config.addTransform('html-post-process', (content, path) => {
         // Ignore non-HTML files.
         if (!path.endsWith('.html')) return content;
@@ -156,20 +158,32 @@ module.exports = function (config) {
     };
 };
 
-// Copy of the inline script tag contents injected by browser-sync. Likely needs
-// to be changed whenever browser-sync is updated.
-const browserSyncScript = `//<![CDATA[
-    document.write("<script async src='/browser-sync/browser-sync-client.js?v=2.26.14'><\\/script>".replace("HOST", location.hostname));
-//]]>`;
+/**
+ * Get CSP sources for live reload scripts.
+ * @returns {!Array<string>}
+ */
+function getLiveReloadCspSources() {
+    // Need a hash of the inject browser sync client. This is fairly stable, but
+    // includes the client's version number. Resolve the `package.json` of the
+    // client and read it's version number to compute the script source and get
+    // its hash.
+    const browserSyncPackage = require.resolve('browser-sync-client/package.json');
+    const { version: browserSyncVersion } = require(browserSyncPackage);
+    const browserSyncScript = `
+//<![CDATA[
+    document.write("<script async src='/browser-sync/browser-sync-client.js?v=${
+        browserSyncVersion}'><\\/script>".replace("HOST", location.hostname));
+//]]>
+    `.trim();
 
-// CSP sources for 11ty live reload functionality.
-const liveReloadCspSources = [
-    // Live reload inlined script for browser sync 2.26.13.
-    `'sha256-${hash(browserSyncScript)}'`,
-    // The inlined script creates another script that loads browser sync as a
-    // self-hosted script.
-    `'self'`,
-];
+    return [
+        // Live reload inlined script for browser sync 2.26.13.
+        `'sha256-${hash(browserSyncScript)}'`,
+        // The inlined script creates another script that loads browser sync as a
+        // self-hosted script.
+        `'self'`,
+    ];
+}
 
 /**
  * Calculates the CSP hash source for the given string.
