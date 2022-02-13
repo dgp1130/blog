@@ -9,7 +9,12 @@
     --dwac-base-padding: 1em;
 }
 
+html {
+    background-color: --dwac-color-primary;
+}
+
 body {
+    background-color: --dwac-color-bg;
     display: flex;
     flex-flow: column;
     min-height: 100vh;
