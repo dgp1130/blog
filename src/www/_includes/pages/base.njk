@@ -43,6 +43,10 @@
         <meta name="twitter:creator" content="@{{ author.twitter_username }}">
         <meta name="twitter:title" content="{{ title }}">
         <meta name="twitter:description" content="{{ desc }}">
+        {# Note: image must meet a few requirements to be valid:
+           https://developer.twitter.com/en/docs/twitter-for-websites/cards/overview/markup #}
+        <meta name="twitter:image" content="/res/img/profile.webp">
+        <meta name="twitter:image:alt" content="Headshot of author wearing a Noogler hat, googley-eyed glasses, and a Google t-shirt.">
 
         <link rel="preload" href="/res/fonts/lora/latin.woff2" as="font"
             crossorigin="anonymous">
