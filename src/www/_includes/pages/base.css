@@ -10,11 +10,11 @@
 }
 
 html {
-    background-color: --dwac-color-primary;
+    background-color: var(--dwac-color-primary);
 }
 
 body {
-    background-color: --dwac-color-bg;
+    background-color: var(--dwac-color-bg);
     display: flex;
     flex-flow: column;
     min-height: 100vh;
