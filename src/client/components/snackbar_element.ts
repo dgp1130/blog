@@ -1,4 +1,5 @@
-import { css, customElement, html, LitElement, TemplateResult } from 'lit-element';
+import { css, html, LitElement, TemplateResult } from 'lit';
+import { customElement } from 'lit/decorators';
 import { timeout } from '../time';
 
 /** @testonly */

@@ -1,5 +1,6 @@
-import { LitElement, TemplateResult, html, property, customElement, css } from 'lit-element';
-import { ifDefined } from 'lit-html/directives/if-defined';
+import { LitElement, TemplateResult, html, css } from 'lit';
+import { customElement, property } from 'lit/decorators';
+import { ifDefined } from 'lit/directives/if-defined';
 import { assertDefined } from '../asserts';
 import { makeShareable } from '../share';
 
