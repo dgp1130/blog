@@ -1,6 +1,6 @@
 import { LitElement, TemplateResult, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators';
-import { ifDefined } from 'lit/directives/if-defined';
+import { when } from 'lit/directives/when';
 import { assertDefined } from '../asserts';
 import { makeShareable } from '../share';
 
@@ -105,11 +105,11 @@ export class Share extends LitElement {
         assertDefined(this.articleTitle);
 
         return html`
-            ${ifDefined(this.prompt && html`
+            ${when(this.prompt, () => html`
                 <span>${this.prompt}</span>
             `)}
             <ul>
-                ${ifDefined(!!navigator.share && html`
+                ${when(navigator.share, () => html`
                     <li>
                         <button id="share" @click="${this.onShare.bind(this)}"
                                 class="unstyled" title="Share link">
@@ -117,7 +117,7 @@ export class Share extends LitElement {
                         </button>
                     </li>
                 `)}
-                ${ifDefined(!!navigator.clipboard?.writeText && html`
+                ${when(navigator.clipboard?.writeText, () => html`
                     <li>
                         <button id="copy" @click="${this.onCopy.bind(this)}"
                                 class="unstyled" title="Copy link to clipboard">

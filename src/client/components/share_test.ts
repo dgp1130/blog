@@ -4,7 +4,7 @@ import { Share } from './share';
 describe('Share', () => {
     let share: Share|undefined;
 
-    beforeAll(() => {
+    beforeEach(() => {
         // Make fake share function if not present in the browser.
         navigator.share = navigator.share ?? new Function();
     });
@@ -70,6 +70,14 @@ describe('Share', () => {
         expect(navigator.share).not.toHaveBeenCalled();
 
         expect(share.shadowRoot!.querySelector('#share')).not.toBeNull();
+    });
+
+    it('hides share UI when not supported', async () => {
+        navigator.share = undefined as any;
+
+        const share = await init();
+
+        expect(share.shadowRoot!.querySelector('#share')).toBeNull();
     });
 
     it('shares the given full URL when the user clicks "Share"', async () => {
