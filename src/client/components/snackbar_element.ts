@@ -37,7 +37,7 @@ export class Snackbar extends LitElement {
 
             /* Show in a popup-like design. */
             color: var(--dwac-color-secondary);
-            background: var(--dwac-color-bg-secondary);
+            background: rgb(60, 60, 60);
             padding: 0.25em;
             border-radius: 0.5em;
 
