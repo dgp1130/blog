@@ -11,7 +11,44 @@ const { htmlMinifierConfig } = require('./configs/html_minifier');
 
 const prodMode = process.env.DWAC_ENV === 'prod';
 
+const defaultPlugins = [
+    typescript({
+        tsconfig: './tsconfig.browser.json',
+    }),
+    alias({
+        entries: [{
+            find: 'lit-html/lib/shady-render.js',
+            replacement: 'node_modules/lit-html/lit-html.js',
+        }],
+    }),
+    resolve({ browser: true }),
+    ...(!prodMode ? [] : [
+        // Production-only plugins.
+        minifyHtmlTemplateLiterals({
+            options: {
+                minifyOptions: {
+                    ...htmlMinifierConfig,
+                    minifyCSS: cleanCssConfig,
+                },
+            },
+        }),
+        terser(),
+    ]),
+];
+
 export default [
+    // Base page entry point.
+    {
+        input: 'src/www/scripts/base.ts',
+        output: {
+            name: 'base',
+            file: 'src/www/scripts/base.js',
+            format: 'es',
+            sourcemap: true,
+        },
+        plugins: defaultPlugins,
+    },
+
     // Post page entry point.
     {
         input: 'src/www/scripts/post.ts',
@@ -21,29 +58,6 @@ export default [
             format: 'es',
             sourcemap: true,
         },
-        plugins: [
-            typescript({
-                tsconfig: './tsconfig.browser.json',
-            }),
-            alias({
-                entries: [{
-                    find: 'lit-html/lib/shady-render.js',
-                    replacement: 'node_modules/lit-html/lit-html.js',
-                }],
-            }),
-            resolve({ browser: true }),
-            ...(!prodMode ? [] : [
-                // Production-only plugins.
-                minifyHtmlTemplateLiterals({
-                    options: {
-                        minifyOptions: {
-                            ...htmlMinifierConfig,
-                            minifyCSS: cleanCssConfig,
-                        },
-                    },
-                }),
-                terser(),
-            ]),
-        ],
+        plugins: defaultPlugins,
     },
 ];

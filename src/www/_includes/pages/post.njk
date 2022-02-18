@@ -10,15 +10,15 @@
     {{ excerpt }}
 {% endblock %}
 
+{% block scripts %}
+    /scripts/post.js
+{% endblock %}
+
 {% block styles %}
     _includes/pages/post.css
     {% for language in languages %}
         styles/syntax-highlighting/{{ language }}.css
     {% endfor %}
-{% endblock %}
-
-{% block head %}
-    <script src="/scripts/post.js" type="module" async></script>
 {% endblock %}
 
 {% block content %}

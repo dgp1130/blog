@@ -20,6 +20,9 @@
         {% block description %}{% endblock %}
     {% endfilter %}
 {% endset %}
+{% set scripts %}
+    {% block scripts %}{% endblock %}
+{% endset %}
 {% set styles %}
     res/fonts/lora/lora.css
     {% block styles %}{% endblock %}
@@ -56,7 +59,9 @@
 
         {% block head %}{% endblock %}
 
-        <script async defer src="https://plausible.io/js/plausible.js"></script>
+        {% for script in scripts | trim | split('\n') %}
+            <script src="{{ script | trim }}" async defer></script>
+        {% endfor %}
     </head>
     <body>
         {{ header.header(class="header") }}

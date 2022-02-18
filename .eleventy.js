@@ -68,6 +68,9 @@ module.exports = function (config) {
     // Add filters.
     config.addFilter('date', formatDate);
     config.addFilter('short', short);
+    config.addFilter('split', (data, splitter) => {
+        return data.split(splitter);
+    });
     config.addFilter('oneline', (data) => {
         return data.trim().split('\n').map((line) => line.trim()).join(' ');
     });
