@@ -84,7 +84,7 @@ stored in a
 
 ## Analytics
 
-Analytics are hosted on [Plausible](https://plausible.io/).
+See [analytics docs](doc/analytics.md).
 
 ## Domain Management
 
