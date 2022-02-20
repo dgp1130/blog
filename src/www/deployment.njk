@@ -20,7 +20,7 @@
     <h1>Deployment Info</h1>
     <ul>
         <li>
-            Commit: <a href="{{ repo.href }}/commit/{{ git.commit }}" target="_blank">
+            Commit: <a href="{{ repo.href }}/commit/{{ git.commit }}">
                 {{- git.commit | short -}}
             </a>
             {%- if not git.clean %}
@@ -28,7 +28,6 @@
             {%- endif -%}
             .
         </li>
-        <li>Commit date: {{ git.date }}</li>
         <li>Build type: {{ environment }}</li>
     </ul>
 {% endblock %}
