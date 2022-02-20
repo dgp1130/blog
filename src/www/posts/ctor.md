@@ -11,7 +11,7 @@ languages: [ typescript ]
 
 # Construct Better
 
-::: timestamp :::
+{{ date | postDate | safe }}
 
 Constructors are weird. No, seriously, have you ever taken a moment to
 *really* think about them? Why they work the way they do? You probably learned

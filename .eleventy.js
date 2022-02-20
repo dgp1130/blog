@@ -17,11 +17,10 @@ const { htmlMinifierConfig } = require('./configs/html_minifier');
 const { addMdAnchorPlugin } = require('./src/11ty/anchor');
 const { injectCsp } = require('./src/11ty/csp');
 const { Environment, getEnv } = require('./src/11ty/environment');
-const { format: formatDate } = require('./src/11ty/filters/dates');
+const { format: formatDate, postDate } = require('./src/11ty/filters/dates');
 const { short } = require('./src/11ty/filters/git');
 const { bundleStyles } = require('./src/11ty/filters/styles');
 const { addMdPicturePlugin } = require('./src/11ty/picture');
-const { addMdTimestampPlugin } = require('./src/11ty/timestamp');
 const { addMdTargetBlankPlugin } = require('./src/11ty/target_blank');
 
 module.exports = function (config) {
@@ -29,10 +28,9 @@ module.exports = function (config) {
     config.setTemplateFormats(['md', 'njk']);
 
     // Explicitly provide the Markdown library to set an explicit configuration.
-    const md = mdLib();
+    const md = mdLib({ html: true });
     addMdAnchorPlugin(md);
     addMdPicturePlugin(md);
-    addMdTimestampPlugin(md);
     addMdTargetBlankPlugin(md);
     config.setLibrary('md', md);
 
@@ -67,6 +65,7 @@ module.exports = function (config) {
 
     // Add filters.
     config.addFilter('date', formatDate);
+    config.addFilter('postDate', postDate);
     config.addFilter('short', short);
     config.addFilter('split', (data, splitter) => {
         return data.split(splitter);
@@ -158,6 +157,7 @@ module.exports = function (config) {
             // code without conflicting with other build targets.
             data: '../11ty/_data/',
         },
+        markdownTemplateEngine: 'njk',
     };
 };
 
