@@ -5,36 +5,31 @@
 
 const { createHash } = require('crypto');
 const { promises: fs } = require('fs');
-const path = require('path');
 
 const { minify: minifyHtml } = require('html-minifier-terser');
-const mdLib = require('markdown-it');
 const Nunjucks = require('nunjucks');
 const syntaxHighlight = require('@11ty/eleventy-plugin-syntaxhighlight');
 
 const { cleanCssConfig, cleanCssConfigDev } = require('./configs/clean_css');
 const { htmlMinifierConfig } = require('./configs/html_minifier');
-const { addMdAnchorPlugin } = require('./src/11ty/anchor');
 const { injectCsp } = require('./src/11ty/csp');
 const { Environment, getEnv } = require('./src/11ty/environment');
 const { format: formatDate } = require('./src/11ty/filters/dates');
 const { short } = require('./src/11ty/filters/git');
 const { bundleStyles } = require('./src/11ty/filters/styles');
-const { addMdPicturePlugin } = require('./src/11ty/picture');
-const { addMdTimestampPlugin } = require('./src/11ty/timestamp');
-const { addMdTargetBlankPlugin } = require('./src/11ty/target_blank');
+const { markdown } = require('./src/11ty/markdown');
 
 module.exports = function (config) {
     // Process markdown and Nunjucks templates.
     config.setTemplateFormats(['md', 'njk']);
 
-    // Explicitly provide the Markdown library to set an explicit configuration.
-    const md = mdLib();
-    addMdAnchorPlugin(md);
-    addMdPicturePlugin(md);
-    addMdTimestampPlugin(md);
-    addMdTargetBlankPlugin(md);
-    config.setLibrary('md', md);
+    // Explicitly provide the Markdown library to use `marked`.
+    const renderMd = markdown();
+    config.addExtension('md', {
+        compile(contents) {
+            return (frontmatter) => renderMd(contents, frontmatter);
+        },
+    });
 
     // Explicitly provide the Nunjucks library to set an explicit configuration.
     config.setLibrary('njk', new Nunjucks.Environment(
@@ -158,6 +153,7 @@ module.exports = function (config) {
             // code without conflicting with other build targets.
             data: '../11ty/_data/',
         },
+        markdownTemplateEngine: false,
     };
 };
 

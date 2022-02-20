@@ -11,7 +11,8 @@ languages: [ typescript ]
 
 # Construct Better
 
-::: timestamp :::
+```timestamp
+```
 
 Constructors are weird. No, seriously, have you ever taken a moment to
 *really* think about them? Why they work the way they do? You probably learned
