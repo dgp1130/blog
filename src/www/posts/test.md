@@ -11,7 +11,7 @@ languages: [ typescript ]
 
 # H1 Hello World!
 
-{{ date | postDate | safe }}
+::: timestamp :::
 
 This is a *post* which says **hello** to the world. I hope the world responds
 ~~positively~~, because I can't take any more rejection.
