@@ -47,10 +47,11 @@ describe('analytics', () => {
                 .toHaveBeenCalledOnceWith('scroll-depth', {
                     props: {
                         path: '/page',
-                        // Viewport bottom is at 200 (viewport top) + 500 (viewport
-                        // height). This is 35% of 2000 (document height) which
-                        // rounds down to 30%.
+                        // Viewport bottom is at 200 (viewport top) + 500
+                        // (viewport height). This is 35% of 2000 (document
+                        // height) which rounds down to 30%.
                         depth: '30%',
+                        tag: '/page - 30%',
                     },
                 },
             );
@@ -105,10 +106,11 @@ describe('analytics', () => {
                 .toHaveBeenCalledOnceWith('scroll-depth', {
                     props: {
                         path: '/page',
-                        // Viewport bottom is at 200 (viewport top) + 500 (viewport
-                        // height). This is 35% of 2000 (document height) which
-                        // rounds down to 30%.
+                        // Viewport bottom is at 200 (viewport top) + 500
+                        // (viewport height). This is 35% of 2000 (document
+                        // height) which rounds down to 30%.
                         depth: '30%',
+                        tag: '/page - 30%',
                     },
                 },
             );
@@ -191,7 +193,11 @@ describe('analytics', () => {
                 .toHaveBeenCalledOnceWith('scroll-depth', {
                     props: {
                         path: '/page',
+                        // Viewport bottom is at 200 (viewport top) + 500
+                        // (viewport height). This is 35% of 2000 (document
+                        // height) which rounds down to 30%.
                         depth: '30%',
+                        tag: '/page - 30%',
                     },
                 },
             );

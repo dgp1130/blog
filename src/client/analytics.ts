@@ -36,10 +36,12 @@ export function trackScrollDepth(host: EventTarget = window): () => void {
             const scrollPercentage = `${maxObservedScrollBucket * 100}%`;
 
             // See /doc/analytics.md#scroll-depth more details.
+            const path = getLocation().pathname;
             trackEvent('scroll-depth', {
                 props: {
-                    path: getLocation().pathname,
+                    path,
                     depth: scrollPercentage,
+                    tag: `${path} - ${scrollPercentage}`,
                 },
             });
         },

@@ -20,6 +20,8 @@ This contains two values:
 * `path` - The path of the page the user is currently navigated to.
 * `depth` - The maximum percentage (as a string of the format "dd%") the user
   has scrolled on the page.
+* `tag` - A stringified format of the `path` and `depth` values together. This
+  is to make it easier to view in Plausible.
 
 This event is debounced for frequent, repeated scroll events and users can
 easily make quick, large scrolls. As a result, this percentage should be
