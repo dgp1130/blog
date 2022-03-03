@@ -1,0 +1,91 @@
+@import url(./theme.css);
+
+:root {
+    --dwac-color-twitter-blue: rgb(29, 161, 242);
+}
+
+.tweet {
+    background-color: white;
+    border: 1px solid rgb(207, 217, 222);
+    border-radius: 12px;
+    padding: 16px 12px 8px 12px;
+    max-width: 550px;
+    margin: 1.2em auto;
+    font-family: sans-serif;
+}
+
+.tweet .author {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 8px;
+}
+
+.tweet .author img {
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.tweet .name {
+    font-size: 16px;
+}
+
+.tweet .name * {
+    display: block;
+}
+
+.tweet a:visited {
+    color: inherit;
+}
+
+.tweet .author-name {
+    color: rgb(15, 20, 25);
+    font-weight: bold;
+}
+
+.tweet .author-name:hover {
+    text-decoration: underline;
+}
+
+.tweet .username {
+    color: rgb(83, 100, 113);
+}
+
+.tweet .name {
+    display: flex;
+    flex-direction: column;
+}
+
+.tweet .source {
+    flex-grow: 1;
+}
+
+.tweet .source a {
+    float: right;
+}
+
+.tweet .source svg {
+    fill: currentColor;
+    color: var(--dwac-color-twitter-blue);
+}
+
+.tweet .content {
+    color: #555;
+    margin-bottom: 6px;
+}
+
+.tweet .hashtag {
+    color: var(--dwac-color-twitter-blue);
+}
+
+.tweet .hashtag:hover, .tweet .hashtag:visited {
+    text-decoration: underline;
+    color: var(--dwac-color-twitter-blue);
+}
+
+.tweet time a {
+    font-size: 16px;
+}
+
+.tweet time a:hover {
+    text-decoration: underline;
+}
