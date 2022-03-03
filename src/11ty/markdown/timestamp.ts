@@ -1,5 +1,5 @@
 import { marked } from 'marked';
-import { getContext } from './frontmatter';
+import { getContext } from './context';
 
 /**
  * A `marked` extension which renders the timestamp of the current page when it
@@ -22,7 +22,7 @@ export const timestampExtension: marked.MarkedExtension = {
             if (language !== 'timestamp') return false;
 
             // Get the date of the post from the frontmatter context.
-            const frontmatter = getContext();
+            const { frontmatter } = getContext();
             const postDate = frontmatter.page.date;
 
             if (!postDate) {

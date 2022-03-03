@@ -22,24 +22,28 @@ const { markdown } = require('./src/11ty/markdown');
 module.exports = function (config) {
     // Process markdown and Nunjucks templates.
     config.setTemplateFormats(['md', 'njk']);
-
-    // Explicitly provide the Markdown library to use `marked`.
-    const renderMd = markdown();
-    config.addExtension('md', {
-        compile(contents) {
-            return (frontmatter) => renderMd(contents, frontmatter);
-        },
-    });
-
-    // Explicitly provide the Nunjucks library to set an explicit configuration.
-    config.setLibrary('njk', new Nunjucks.Environment(
+    const njkEnv = new Nunjucks.Environment(
         new Nunjucks.FileSystemLoader('src/www/_includes'),
         {
             throwOnUndefined: true,
             trimBlocks: true,
             lstripBlocks: true,
         },
-    ));
+    );
+
+    // Explicitly provide the Markdown library to use `marked`.
+    const renderMd = markdown();
+    config.addExtension('md', {
+        compile(contents) {
+            return (frontmatter) => renderMd(contents, {
+                frontmatter,
+                njk: njkEnv,
+            });
+        },
+    });
+
+    // Explicitly provide the Nunjucks library to set an explicit configuration.
+    config.setLibrary('njk', njkEnv);
 
     config.addPlugin(syntaxHighlight);
 

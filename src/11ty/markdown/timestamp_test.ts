@@ -1,21 +1,23 @@
 import 'jasmine';
 
 import { marked } from 'marked';
-import { useContext } from './frontmatter';
-import { mockFrontmatter } from './frontmatter_mock';
+import { useContext } from './context';
+import { mockContext } from './context_mock';
 import { timestampExtension } from './timestamp';
 
 describe('timestamp', () => {
     describe('timestampExtension', () => {
         marked.use(timestampExtension);
 
-        it('renders a timestamp from the frontmatter context', () => {
-            const frontmatter = mockFrontmatter({
-                page: {
-                    date: new Date("2022-02-19T12:00:00-0700"),
+        it('renders a timestamp from the context frontmatter', () => {
+            const ctx = mockContext({
+                frontmatter: {
+                    page: {
+                        date: new Date("2022-02-19T12:00:00-0700"),
+                    },
                 },
             });
-            const html = useContext(frontmatter, () => marked(`
+            const html = useContext(ctx, () => marked(`
 \`\`\`timestamp
 \`\`\`
             `.trim()));
@@ -26,12 +28,14 @@ describe('timestamp', () => {
         });
 
         it('renders a TODO when no date is available for the post', () => {
-            const frontmatter = mockFrontmatter({
-                page: {
-                    date: undefined,
+            const ctx = mockContext({
+                frontmatter: {
+                    page: {
+                        date: undefined,
+                    },
                 },
             });
-            const html = useContext(frontmatter, () => marked(`
+            const html = useContext(ctx, () => marked(`
 \`\`\`timestamp
 \`\`\`
             `.trim()));
@@ -42,8 +46,8 @@ describe('timestamp', () => {
         });
 
         it('ignores non-timestamp code blocks', () => {
-            const frontmatter = mockFrontmatter();
-            const html = useContext(frontmatter, () => marked(`
+            const ctx = mockContext();
+            const html = useContext(ctx, () => marked(`
 \`\`\`typescript
 \`\`\`
             `.trim()));
@@ -55,7 +59,7 @@ describe('timestamp', () => {
             expect(() => marked(`
 \`\`\`timestamp
 \`\`\`
-            `.trim())).toThrowError(/No frontmatter context available\./);
+            `.trim())).toThrowError(/No context available\./);
         });
     });
 });
