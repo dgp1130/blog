@@ -37,6 +37,7 @@
 
     "exclude": [
         "src/client/**/*_test.ts",
+        "src/client/**/*_mock.ts",
         // We exclude test files in `www/`, however there should not be any
         // tests in that directory, because it should only contain entry points
         // which import libraries from `client/` which are properly tested.
