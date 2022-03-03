@@ -19,6 +19,9 @@
     {% for language in languages %}
         styles/syntax-highlighting/{{ language }}.css
     {% endfor %}
+    {% for style in additional_styles %}
+        styles/{{ style }}.css
+    {% endfor %}
 {% endblock %}
 
 {% block content %}
