@@ -355,18 +355,10 @@
 
 .md a:link, .md a:visited {
   text-decoration: none;
-  -webkit-transition: color 0.1s linear;
-  -moz-transition: color 0.1s linear;
-  -o-transition: color 0.1s linear;
-  transition: color 0.1s linear;
 }
 
 .md a:hover, .md a:active {
   color: #7bdaff;
-  -webkit-transition: color 0.15s linear;
-  -moz-transition: color 0.15s linear;
-  -o-transition: color 0.15s linear;
-  transition: color 0.15s linear;
 }
 
 .md time.timestamp {
