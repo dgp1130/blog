@@ -5,6 +5,9 @@
  * namespace.
  */
 
+@import url(../res/fonts/lora/lora.css);
+@import url(../res/fonts/noto/noto-color-emoji.css);
+
 :root {
     /* Core theme colors. */
     --dwac-color-primary: #0d47a1;
@@ -18,7 +21,7 @@
     --dwac-text-color-secondary: white;
     
     /* Fonts. */
-    --dwac-font-primary: Lora, Verdana, sans-serif;
+    --dwac-font-primary: Lora, 'Noto Color Emoji', Verdana, sans-serif;
 
     /* Font sizes. */
     --dwac-font-size-small: 0.8em;
