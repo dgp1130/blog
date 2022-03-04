@@ -23,7 +23,7 @@ const extension = {
         // does for text.
         const rawAlt = match.groups?.['alt'];
         if (!rawAlt) throw new Error(`No alt: \`${raw}\``);
-        const alt = rawAlt.split('\n').join(' ');
+        const alt = rawAlt.split('\n').join(' ').trim().replace(/"/g, '&quot;');
 
         // Parse the sources.
         const rawSources = match.groups?.['sources'];

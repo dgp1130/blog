@@ -23,13 +23,37 @@ describe('picture', () => {
         });
 
         it('renders an image with a multiline alt', () => {
-            expect(marked(`![this is a\nvery long\nalt text](/foo.webp)(/foo.png)`))
-                .toContain(`alt="this is a very long alt text"`);
+            const html = marked(`
+![this is a
+very long
+alt text](/foo.webp)(/foo.png)
+            `.trim());
+            expect(html).toContain(`alt="this is a very long alt text"`);
         });
 
         it('throws an error when given a source with no alt', () => {
             expect(() => marked(`![](/foo.png)`))
                 .toThrowError(/No alt: `!\[\]\(\/foo\.png\)`/);
+        });
+
+        it('escapes alt text with quotes', () => {
+            const html = marked(
+                `![this is "alt" text with "quotes"!](/foo.webp)(/foo.png)`);
+            expect(html).toContain(
+                `alt="this is &quot;alt&quot; text with &quot;quotes&quot;!"`);
+        });
+
+        it('trims leading and trailing alt whitespace', () => {
+            const html = marked(`
+![
+this is some
+multiline alt text
+with leading and trailing newlines
+](/foo.webp)(/foo.png)
+            `.trim());
+
+            expect(html).toContain(
+                `alt="this is some multiline alt text with leading and trailing newlines"`);
         });
 
         it('throws an error when given no sources', () => {
