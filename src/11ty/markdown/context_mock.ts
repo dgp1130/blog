@@ -1,14 +1,20 @@
 import * as nunjucks from 'nunjucks';
 import { Context } from './context';
 
-type DeepPartial<T> = T extends Date
-    ? Date
-    : T extends object
-        ? {[P in keyof T]?: DeepPartial<T[P]>}
-        : T;
+interface ContextOverrides {
+    frontmatter?: {
+        page?: {
+            url?: string;
+            inputPath?: string;
+            outputPath?: string;
+            date?: Date;
+        };
+    };
+    njk?: nunjucks.Environment;
+}
 
 /** Mocks the context type. */
-export function mockContext(overrides: DeepPartial<Context> = {}): Context {
+export function mockContext(overrides: ContextOverrides = {}): Context {
     return {
         frontmatter: {
             page: {
@@ -19,6 +25,6 @@ export function mockContext(overrides: DeepPartial<Context> = {}): Context {
                 ...overrides.frontmatter?.page ?? {},
             },
         },
-        njk: new nunjucks.Environment(),
+        njk: overrides.njk ?? new nunjucks.Environment(),
     };
 }

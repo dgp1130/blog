@@ -57,12 +57,18 @@ with leading and trailing newlines
         });
 
         it('throws an error when given no sources', () => {
-            expect(() => marked(`![alt]`)).toThrowError(/No sources: `!\[alt\]`/);
+            expect(() => marked(`![alt]`))
+                .toThrowError(/No sources: `!\[alt\]`/);
         });
 
         it('throws an error when given a source with an unknown MIME type', () => {
             expect(() => marked(`![alt](/foo.doesnotexist)(/foo.png)`))
-                .toThrowError(/No known MIME type for file extension `doesnotexist` from source `\/foo.doesnotexist`\./);
+                .toThrow();
+        });
+
+        it('throws an error when given a source without an extension', () => {
+            expect(() => marked(`![alt](/foowithoutextension)(/foo.png)`))
+                .toThrow();
         });
     });
 });

@@ -1,6 +1,8 @@
 import 'jasmine';
 
 import { marked } from 'marked';
+import * as nunjucks from 'nunjucks';
+import { getMimeType } from '../mime_types';
 import { useContext } from './context';
 import { mockContext } from './context_mock';
 import { tweetExtension } from './tweet';
@@ -13,7 +15,7 @@ describe('tweet', () => {
             url: 'http://twitter.test/status/abc123/',
             author: 'Doug Parker',
             username: 'develwoutacause',
-            avatar: '/devel.png',
+            avatars: [ '/devel.avif', '/devel.webp', '/devel.jpg' ],
             timestamp: '2022-03-02T12:00:00-0700',
             content: 'Hello, World!',
         });
@@ -22,6 +24,34 @@ describe('tweet', () => {
 
         it('renders a tweet from valid JSON', () => {
             expect(() => renderTweet(goldenConfig)).not.toThrow();
+        });
+
+        it('renders avatar images in order', () => {
+            const html = renderTweet({
+                ...goldenConfig,
+                avatars: [ '/profile.avif', '/profile.webp', '/profile.jpg' ],
+            });
+
+            const avifSource = html
+                .indexOf('<source srcset="/profile.avif" type="image/avif" />');
+            const webpSource = html
+                .indexOf('<source srcset="/profile.webp" type="image/webp" />');
+            
+            // `.avif` is first and should be preferred over `.webp`.
+            expect(avifSource).toBeLessThan(webpSource);
+
+            // `.jpg` is last and should be the default.
+            expect(html).toContain('<img srcset="/profile.jpg"');
+        });
+
+        it('renders a single avatar image', () => {
+            const html = renderTweet({
+                ...goldenConfig,
+                avatars: [ '/profile.jpg' ],
+            });
+
+            expect(html).toContain('<img srcset="/profile.jpg"');
+            expect(html).not.toContain('<source');
         });
 
         it('throws an error when given non-JSON content', () => {
@@ -68,13 +98,17 @@ not a json object
                 .toThrowError(parseErrorRegex);
         });
 
-        it('throws an error for a malformed `avatar`', () => {
-            expect(() => renderTweet({ ...goldenConfig, avatar: undefined }))
+        it('throws an error for malformed `avatars`', () => {
+            expect(() => renderTweet({ ...goldenConfig, avatars: undefined }))
                 .toThrowError(parseErrorRegex);
-            expect(() => renderTweet({ ...goldenConfig, avatar: null }))
+            expect(() => renderTweet({ ...goldenConfig, avatars: null }))
                 .toThrowError(parseErrorRegex);
-            expect(() => renderTweet({ ...goldenConfig, avatar: 12345 }))
+            expect(() => renderTweet({ ...goldenConfig, avatars: 12345 }))
                 .toThrowError(parseErrorRegex);
+            expect(() => renderTweet({ ...goldenConfig, avatars: [ 12345 ] }))
+                .toThrowError(parseErrorRegex);
+            expect(() => renderTweet({ ...goldenConfig, avatars: [ ] }))
+                .toThrowError(/At least one avatar is required\./);
         });
 
         it('throws an error for a malformed `timestamp`', () => {
@@ -105,7 +139,8 @@ not a json object
         });
 
         it('ignores non-tweet code blocks', () => {
-            const html = useContext(mockContext(), () => marked(`
+            const ctx = mockContext({ njk: mockEnvironment });
+            const html = useContext(ctx, () => marked(`
 \`\`\`typescript
 \`\`\`
             `.trim()));
@@ -123,8 +158,13 @@ ${JSON.stringify(goldenConfig, null, 4)}
     });
 });
 
+const mockEnvironment = new nunjucks.Environment()
+    .addFilter('mime', (path) => getMimeType(path))
+;
+
 function renderTweet(config: unknown): string {
-    return useContext(mockContext(), () => marked(`
+    const ctx = mockContext({ njk: mockEnvironment });
+    return useContext(ctx, () => marked(`
 \`\`\`tweet
 ${JSON.stringify(config, null, 4)}
 \`\`\`

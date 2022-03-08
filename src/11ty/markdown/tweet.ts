@@ -76,7 +76,13 @@ function parseConfig(configString: string): TweetConfig {
                 .join('\n')
         }`);
     }
-    return result.data;
+
+    const config = result.data;
+    if (config.avatars.length === 0) {
+        throw new Error('At least one avatar is required.');
+    }
+
+    return config;
 }
 
 // Parser for an ISO8601 formatted string into a `Date` object.
@@ -90,7 +96,7 @@ const tweetConfigParser = zod.strictObject({
     url: zod.string().url(),
     author: zod.string(),
     username: zod.string(),
-    avatar: zod.string(),
+    avatars: zod.array(zod.string()),
     timestamp: zodIso8601Date,
     content: zod.string(),
 });
@@ -121,7 +127,12 @@ const tweetNjkTemplate = `
     <div role="blockquote" class="tweet">
         <div class="author">
             <a href="{{ authorHref }}" target="_blank">
-                <img src="{{ avatar }}" width="48px" height="48px" />
+                <picture>
+                    {% for avatar in avatars.slice(0, -1) %}
+                        <source srcset="{{ avatar }}" type="{{ avatar | mime }}" />
+                    {% endfor %}
+                    <img srcset="{{ avatars | last }}" width="48px" height="48px" />
+                </picture>
             </a>
         <div class="name">
                 <a href="{{ authorHref }}" class="author-name" target="_blank">{{ author }}</a>

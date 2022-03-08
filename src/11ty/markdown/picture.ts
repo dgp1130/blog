@@ -1,4 +1,5 @@
 import { marked } from 'marked';
+import { getMimeType } from '../mime_types';
 
 interface PictureToken extends marked.Tokens.Generic {
     type: 'picture';
@@ -88,27 +89,5 @@ function* matches(regex: RegExp, content: string): Generator<RegExpExecArray> {
     let match: RegExpExecArray | null = null;
     while ((match = regex.exec(content)) !== null) {
         yield match;
-    }
-}
-
-function getMimeType(source: string): string {
-    const extension = source.split('.').slice(-1)[0];
-    if (!extension) {
-        throw new Error(`Failed to extract extension from source: ${source}`);
-    }
-
-    switch (extension) {
-        case 'avif':
-            return 'image/avif';
-        case 'jpg':
-        case 'jpeg':
-            return 'image/jpeg';
-        case 'png':
-            return 'image/png';
-        case 'webp':
-            return 'image/webp';
-        default:
-            throw new Error(`No known MIME type for file extension \`${
-                extension}\` from source \`${source}\`.`);
     }
 }
