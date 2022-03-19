@@ -24,20 +24,26 @@
         ]
     },
     "cSpell.words": [
+        "autoplay",
+        "avif",
+        "component-ized",
         "develwoutacause",
         "devs",
         "dwac",
         "eleventy",
+        "IIFE",
         "instanceof",
         "malloc",
         "noto",
         "preload",
         "pyftsubset",
+        "shadowroot",
         "struct",
         "subclassing",
         "unicodes",
         "vtable",
-        "vtables"
+        "vtables",
+        "webp"
     ],
     "javascript.preferences.quoteStyle": "single",
     "typescript.preferences.quoteStyle": "single"
