@@ -56,8 +56,10 @@ module.exports = function (config) {
     config.addPassthroughCopy('src/www/**/*.avif');
     config.addPassthroughCopy('src/www/**/*.ico');
     config.addPassthroughCopy('src/www/**/*.jpg');
+    config.addPassthroughCopy('src/www/**/*.png');
     config.addPassthroughCopy('src/www/**/*.svg');
     config.addPassthroughCopy('src/www/**/*.webp');
+    config.addPassthroughCopy('src/www/**/*.mp4');
 
     // Copy font resources to the output directory.
     config.addPassthroughCopy('src/www/**/*.woff2');
