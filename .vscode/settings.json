@@ -13,7 +13,11 @@
     ],
     "[markdown]": {
         "editor.wordWrap": "off",
-        "editor.quickSuggestions": false,
+        "editor.quickSuggestions": {
+            "comments": "off",
+            "strings": "off",
+            "other": "off"
+        },
         "editor.rulers": [
             // Important code should be less than this limit for mobile devices.
             // You can extend past it for unimportant "just needs to be there to
