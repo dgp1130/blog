@@ -574,7 +574,9 @@ element. [So I did](https://github.com/dgp1130/html-fragments-demo/blob/blog-pos
 and it works
 [just as smoothly as I wanted it to](https://github.com/dgp1130/html-fragments-demo/blob/blog-post/client/embedded.html#L11).
 
-![TODO](demos/4-embed.avif)(demos/4-embed.webp)(demos/4-embed.png)
+![A screenshot of a page title with the header "Embedding a Tweet" which
+includes a single tweet along with an open DevTools Network tab showing that
+the tweet was fetched as an HTML fragment.](demos/4-embed.avif)(demos/4-embed.webp)(demos/4-embed.png)
 
 ## Implementation
 
