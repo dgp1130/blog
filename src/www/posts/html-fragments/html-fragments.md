@@ -569,6 +569,13 @@ additions to the web standard could have significant impact for embedding
 third-party content in addition to the low-commitment HTML-over-the-wire
 architecture discussed earlier.
 
+Edit: I realized later that one can prototype this `<embed />` tag as a custom
+element. [So I did](https://github.com/dgp1130/html-fragments-demo/blob/blog-post/client/em-bed.ts),
+and it works
+[just as smoothly as I wanted it to](https://github.com/dgp1130/html-fragments-demo/blob/blog-post/client/embedded.html#L11).
+
+![TODO](demos/4-embed.avif)(demos/4-embed.webp)(demos/4-embed.png)
+
 ## Implementation
 
 So that's the interesting part of this blog post and you can stop reading now,
@@ -604,11 +611,11 @@ tweets. Chrome DevTools shows the network tab. Two of these requests are
 highlighted, the first for `/tweet?id=1234` the second for `/tweet.css`. The
 highlight is labeled "No tweet.js?", indicating there is no request for
 `/tweet.js` as would be expected.
-](demos/4-missing-script.avif)(demos/4-missing-script.png)
+](demos/5-missing-script.avif)(demos/5-missing-script.png)
 
 I looked up the [`DOMParser` spec](https://www.w3.org/TR/DOM-Parsing/) and found
 that scripting is
-[explicitly disabled]( https://www.w3.org/TR/DOM-Parsing/#:~:text=script%20elements%20get%20marked%20unexecutable%20and%20the%20contents%20of%20noscript%20get%20parsed%20as%20markup.)!
+[explicitly disabled](https://www.w3.org/TR/DOM-Parsing/#:~:text=script%20elements%20get%20marked%20unexecutable%20and%20the%20contents%20of%20noscript%20get%20parsed%20as%20markup.)!
 
 > The `parseFromString(str, type)` method must run these steps, depending on type:
 > 
@@ -659,7 +666,7 @@ problem to:
 the console panel. The console shows a message "(2) Running tweet.js..."
 followed by an error: "Uncaught DOMException: Failed to execute 'define' on
 'CustomElementRegistry': The name 'my-tweet' has already been used with this
-registry".](demos/5-double-script.avif)(demos/5-double-script.png)
+registry".](demos/6-double-script.avif)(demos/6-double-script.png)
 
 Note the "2" by the first log statement along with "'my-tweet' has already been
 used with this registry", I was loading the same JavaScript file twice! This was
@@ -712,7 +719,7 @@ network tab. In the network, there are two requests for tweet fragments, the
 first includes a request for `/tweet?id=1234`, followed by `/tweet.css` and
 `/tweet.js`. The second includes a request for `/tweet?id=4321` and is also
 followed by a duplicate request to `/tweet.css`.
-](demos/6-double-style.avif)(demos/6-double-style.png)
+](demos/7-double-style.avif)(demos/7-double-style.png)
 
 `/tweet.css` got downloaded twice, what gives!? It seems that much like
 `<script />` tags, putting the same stylesheet in the document twice actually
