@@ -77,6 +77,9 @@ module.exports = function (config) {
     config.addFilter('oneline', (data) => {
         return data.trim().split('\n').map((line) => line.trim()).join(' ');
     });
+    config.addFilter('throw', (message) => {
+        throw new Error(message.split('\n').map((line) => line.trim()).join(' '));
+    });
 
     config.addShortcode('buildDate', () => {
         return new Date().toISOString();

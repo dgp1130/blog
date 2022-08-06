@@ -10,6 +10,17 @@
     {{ excerpt }}
 {% endblock %}
 
+{% block socialImage -%}
+    {% if socialImage -%}
+        {{ socialImage | safe }}
+    {%- endif %}
+{%- endblock %}
+{% block socialImageAlt -%}
+    {% if socialImageAlt -%}
+        {{ socialImageAlt | oneline | safe }}
+    {%- endif %}
+{%- endblock %}
+
 {% block scripts %}
     /scripts/post.js
 {% endblock %}

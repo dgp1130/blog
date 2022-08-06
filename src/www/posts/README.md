@@ -21,8 +21,16 @@ It **may** also contain:
 * `languages` - A list of languages with syntax highlighting support under
   [src/www/styles/syntax-highlighting](/src/www/styles/syntax-highlighting/)
   used by the post.
+* `socialImage` - A link to a custom image to use in social media previews.
+* `socialImageAlt` - Alt text for the custom social media preview image.
+  Required when `socialImage` is provided.
 
 ## Special tags
 
-Adding `::: timestamp :::` will insert a formatted value from the `date` front
-matter. This should typically go immediately under the top header.
+~~~
+```timestamp
+```
+~~~
+
+Inserts a formatted value from the `date` front matter. This should typically go
+immediately under the top header.
