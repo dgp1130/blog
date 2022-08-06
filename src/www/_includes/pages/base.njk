@@ -57,8 +57,10 @@
 {# Trim and default the social image alt text. #}
 {% set socialImageAlt -%}
     {% if socialImageAltBlock | trim === "" -%}
-        Headshot of the author wearing a Noogler hat, googley-eyed glasses,
-        and a Google t-shirt.
+        {% filter oneline %}
+            Headshot of the author wearing a Noogler hat, googley-eyed glasses,
+            and a Google t-shirt.
+        {% endfilter %}
     {%- else -%}
         {{ socialImageAltBlock | safe }}
     {%- endif %}
