@@ -23,6 +23,7 @@
 .md table {
   border-collapse: collapse;
   border-spacing: 0;
+  border: 1px solid gray;
 }
 
 .md caption, .md th, .md td {
@@ -147,7 +148,8 @@
 .md table th, .md table td {
   font-size: 1.1em;
   line-height: 23px;
-  padding: 0 1em;
+  padding: 2px 0.5em;
+  border: 1px solid gray;
 }
 
 .md dt, .md th {
@@ -156,10 +158,6 @@
 
 .md dd {
   padding-left: 1.4em;
-}
-
-.md table tr:nth-child(even) {
-  background: rgba(200, 200, 200, 0.25);
 }
 
 .md figure {
