@@ -7,6 +7,7 @@ describe('mime_types', () => {
             expect(getMimeType('/foo.jpg')).toBe('image/jpeg');
             expect(getMimeType('/foo.jpeg')).toBe('image/jpeg');
             expect(getMimeType('/foo.png')).toBe('image/png');
+            expect(getMimeType('/foo.svg')).toBe('image/svg+xml');
             expect(getMimeType('/foo.webp')).toBe('image/webp');
         });
 

@@ -19,6 +19,8 @@ export function getMimeType(path: string): string {
             return 'image/jpeg';
         case 'png':
             return 'image/png';
+        case 'svg':
+            return 'image/svg+xml';
         case 'webp':
             return 'image/webp';
         default:
