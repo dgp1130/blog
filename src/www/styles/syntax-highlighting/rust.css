@@ -1,0 +1,62 @@
+/** @fileoverview Styles for syntax highlighting of TypeScript code. */
+
+code.language-rust {
+    --dwac-code-base-color: #0073dd;
+    color: var(--dwac-code-base-color);
+}
+
+code.language-rust .comment {
+    color: #006800;
+}
+
+code.language-rust .template-string {
+    color: #a55828;
+}
+
+code.language-rust .template-string > .interpolation {
+    color: var(--dwac-code-base-color); /* Reset to base color. */
+}
+
+code.language-rust .string {
+    color: #405d40;
+}
+
+code.language-rust .class-name {
+    color: var(--dwac-code-base-color); /* Reset to base color. */
+}
+
+code.language-rust .regex {
+    color: #a00;
+}
+
+code.language-rust .constant {
+    color: blue;
+}
+
+code.language-rust .keyword {
+    color: blue;
+}
+
+code.language-rust .boolean {
+    color: blue;
+}
+
+code.language-rust .function {
+    color: #a55828;
+}
+
+code.language-rust .number {
+    color: #405d40;
+}
+
+code.language-rust .operator {
+    color: black;
+}
+
+code.language-rust .punctuation {
+    color: black;
+}
+
+code.language-rust .builtin {
+    color: blue;
+}

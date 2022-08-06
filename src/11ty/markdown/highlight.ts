@@ -5,7 +5,7 @@ import PrismLoader from 'prismjs/components/index';
 /** Returns the Prism grammar for a given language. */
 function loadGrammar(lang: string): prism.Grammar {
     // Prism doesn't load all languages immediately. Need to call `PrismLoader`
-    // with the desired language, which will have the side effect of add the
+    // with the desired language, which will have the side effect of adding the
     // grammar to `prism.languages` if it is supported.
 
     // Check the grammar is already loaded and use it.
