@@ -292,7 +292,6 @@ the [full example](https://github.com/dgp1130/html-fragments-demo/) to see all
 the nitty-gritty details and actual implementation of
 [`parseDomFragment()`](https://github.com/dgp1130/html-fragments-demo/blob/blog-post/client/dom.ts).
 
-
 ## Standardization
 
 Of course there are existing HTML-over-the-wire frameworks which make this
@@ -323,7 +322,7 @@ never officially adopted into the web specification.
 While researching the proposal more, I discovered
 [HTML modules](https://github.com/WICG/webcomponents/blob/gh-pages/proposals/html-modules-explainer.md),
 a successor to HTML imports which attempts to resolve some of the flaws of the
-original proposal, primarily by integrating the system with ES module. This
+original proposal, primarily by integrating the system with ES modules. This
 would allow developers to "import" an HTML fragment using a regular ESM `import`
 statement or a dynamic `import()` expression. For example, we could write the
 infinite scroll example like so:
@@ -578,13 +577,17 @@ and it works
 includes a single tweet along with an open DevTools Network tab showing that
 the tweet was fetched as an HTML fragment.](demos/4-embed.avif)(demos/4-embed.webp)(demos/4-embed.png)
 
-## Implementation
+So that's the interesting part of this blog post and you can stop reading now. I
+also have a [follow-up post](/posts/streamable-html-fragments/) which _streams_
+HTML fragments. There were a lot of unexpected nuances and challenges with
+making this approach streamable, so check it out!
 
-So that's the interesting part of this blog post and you can stop reading now,
-but I never really explained how my implementation of `parseDomFragment()`
+However, I never really explained how my implementation of `parseDomFragment()`
 works. I encountered a few surprising edge cases and learned some interesting
 tidbits about the web specification, so if that is your kind of thing, keep
 reading.
+
+## Implementation
 
 It turns out that `parseDomFragment()` is only about 40 lines of meaningful
 code. Fundamentally, all it does is call:
@@ -917,3 +920,8 @@ usable.
 
 I think there is a lot of potential here, and I hope web developers get the
 opportunity to fully explore it.
+
+**Edit**: If you got this far, you should _definitely_ check out
+[the sequel to this post](/posts/streamable-html-fragments/) on
+_streaming_ HTML fragments. Lost of interesting nuances, challenges, and "fun"
+bugs along the way.
