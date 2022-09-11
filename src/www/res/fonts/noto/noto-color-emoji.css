@@ -10,6 +10,12 @@
     /* Defines what code points are supported by this font, so the browser can
        skip downloading it if no emojis are actually on the page. This must be
        kept in sync with the unicodes.txt file which subsets the font. */
-    unicode-range: U+1F937, U+200D, U+2642, U+FE0F;
+    unicode-range:
+        U+1F389 /* 🎉 - Popper */,
+        U+1F3D6️ U+FE0F /* 🏖️ - Beach with umbrella */,
+        U+1F609 /* 😉 - Winking face */,
+        U+1F6CC /* 🛌 - Person in bed */,
+        U+1F6EB /* 🛫 - Airplane departure */,
+        U+1F937 U+200D U+2642 U+FE0F /* 🤷‍♂️ - Man shrugging. */;
     font-display: swap;
 }

@@ -14,16 +14,11 @@ process works like this:
 
 ## Adding a new emoji
 
-First, look up the emoji you want from the
-[full list](https://unicode.org/emoji/charts/full-emoji-list.html) and copy down
-its code points (U+ABC12).
+Open the [`emojis.txt`](./emojis.txt) file and copy-paste the emoji into the
+file. New lines can be added as needed and are ignored by tooling, but comments
+are _not_ supported.
 
-Open the [`unicodes.txt`](./unicodes.txt) file and add it as a new line. If the
-emoji uses multiple code points, they should be space separated. Text after a
-`#` character is considered a comment. Just follow the existing conventions of
-the file.
-
-Now it's time to subset the font while including the new emoji. Install
+Next, subset the font to only include the emoji listed in that file. Install
 `pyftsubset` if it is not already available:
 
 ```shell
@@ -36,13 +31,13 @@ Then run:
 npm run font:update
 ```
 
-This reads all the code points in `unicodes.txt` and subsets the font to only
+This reads all the code points in `emojis.txt` and subsets the font to only
 include those glyphs. It then updates
 [`noto-color-emoji.woff2`](./noto-color-emoji.woff2) to only include that
 subset.
 
-Finally, open [`noto-color-emoji.css`](./noto-color-emoji.css) and add the code
-points to the `unicode-range` property. This tells the browser that the emoji
-font should be loaded if it is needed for any of those code points. This is an
-optimization so the browser can skip downloading the font if no emojis are
+Finally, open [`noto-color-emoji.css`](./noto-color-emoji.css) and add emoji's
+code points to the `unicode-range` property. This tells the browser that the
+emoji font should be loaded if it is needed for any of those code points. This
+is an optimization so the browser can skip downloading the font if no emojis are
 actually on the page.

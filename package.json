@@ -27,7 +27,7 @@
     "test:lit": "lit-analyzer --strict --rules.no-unknown-tag-name error --rules.no-missing-import error --rules.no-missing-element-type-definition error --rules.no-unknown-attribute error --rules.no-unknown-property error --rules.no-unknown-event error --rules.no-unknown-slot error --rules.no-legacy-attribute error --rules.no-unintended-mixed-binding error --rules.no-property-visibility-mismatch error --rules.no-invalid-css error",
     "clean": "rm -rf _site/ && find src/ \\( -name '*.js' -o -name '*.js.map' \\) -delete",
     "deploy-test": "npm run -s netlify -- deploy -m \"Test deployment\" --alias",
-    "font:update": "pyftsubset src/www/res/fonts/noto/noto-color-emoji-all.ttf --output-file=\"src/www/res/fonts/noto/noto-color-emoji.woff2\" --flavor=woff2 --unicodes-file=\"src/www/res/fonts/noto/unicodes.txt\"",
+    "font:update": "pyftsubset src/www/res/fonts/noto/noto-color-emoji-all.ttf --output-file=\"src/www/res/fonts/noto/noto-color-emoji.woff2\" --flavor=woff2 --text-file=\"src/www/res/fonts/noto/emojis.txt\"",
     "netlify": "netlify"
   },
   "engines": {
