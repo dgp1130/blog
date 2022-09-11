@@ -30,13 +30,10 @@ Now it's time to subset the font while including the new emoji. Install
 pip install fonttools brotli
 ```
 
-Then run from the repository root:
+Then run:
 
 ```shell
-pyftsubset src/www/res/fonts/noto/noto-color-emoji-all.ttf \
-    --output-file="src/www/res/fonts/noto/noto-color-emoji.woff2" \
-    --flavor=woff2 \
-    --unicodes-file="src/www/res/fonts/noto/unicodes.txt"
+npm run font:update
 ```
 
 This reads all the code points in `unicodes.txt` and subsets the font to only
