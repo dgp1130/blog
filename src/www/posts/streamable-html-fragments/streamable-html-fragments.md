@@ -178,7 +178,8 @@ There's a lot more nuances to HTML streaming (what happens if I remove the
 `HTMLDivElement` during the first pause?) But this should be good enough to
 understand the rest of this post, so I'll stop there. The aforementioned
 [HTTP 203 video](https://www.youtube.com/watch?v=LLRig4s1_yA) goes into more
-detail on HTML streaming, highly recommended if this seems interesting to you.
+detail on HTML streaming and with great visual aids. I highly recommend it if
+this seems interesting to you.
 
 ## First Node Problem
 
