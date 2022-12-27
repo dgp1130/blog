@@ -544,7 +544,7 @@ monadic operations like `?`.
 
 Many of these concepts are pretty easy to add into any language, but the great
 part about Rust is that
-[it has powerful, standardized primitives](https://twitter.com/develwoutacause/status/1554266879950065665?s=20&t=lTaalyru7p_X-0QRAfBucQ)
+[it has powerful, standardized primitives](https://tweets.dwac.dev/1554266879950065665/)
 which the whole ecosystem can leverage. No unexpected runtime errors and no
 unchecked nulls. This should really be the standard for all future languages and
 I would love to see a stronger effort to migrate towards these patterns in

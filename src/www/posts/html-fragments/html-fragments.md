@@ -44,7 +44,7 @@ things low-commitment and easily changeable? I came out with this thought:
 
 ```tweet
 {
-  "url": "https://twitter.com/develwoutacause/status/1452082837075607553",
+  "url": "https://tweets.dwac.dev/1452082837075607553/",
   "author": "Doug Parker",
   "username": "develwoutacause",
   "avatars": [ "/res/img/profile.avif", "/res/img/profile.webp", "/res/img/profile.jpg" ],

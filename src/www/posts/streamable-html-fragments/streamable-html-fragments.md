@@ -775,7 +775,7 @@ statement
 Well, it does if you're using `target: 'ES2022'` or greater in your
 `tsconfig.json`. This took me quite a while to wrap my head around and I had to
 call in some air support from
-[#WebComponents Twitter](https://twitter.com/develwoutacause/status/1571014530058321922?s=20&t=HCqIgp3SGGyqbgWRLumxhg)
+[#WebComponents Twitter](https://tweets.dwac.dev/1571014530058321922/)
 to figure it out. Let me explain.
 
 ### Class Fields Proposal
@@ -1115,8 +1115,8 @@ I learned quite a few interesting things here:
 You can check out the
 [full source code on GitHub](https://github.com/dgp1130/html-fragments-demo/tree/blog-post-streaming/)
 and play around with it.
-[Let me know what you think](https://twitter.com/develwoutacause/) or try it out
-yourself!
+[Let me know what you think](https://techhub.social/@develwithoutacause/) or try
+it out yourself!
 
 I was expecting this project to only take a couple hours and 3 weeks later, I
 think it _may_ have fallen a little out of hand. But I know just the solution...
