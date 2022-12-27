@@ -1,6 +1,9 @@
 {
     "email": "devel@dwac.dev",
-    "github": "https://github.com/dgp1130/",
+    "github_handle": "@dgp1130",
+    "github_link": "https://github.com/dgp1130/",
     "mastodon_handle": "@develwithoutacause@techhub.social",
-    "mastodon_link": "https://techhub.social/@develwithoutacause"
+    "mastodon_link": "https://techhub.social/@develwithoutacause",
+    "youtube_handle": "@develwithoutacause",
+    "youtube_link": "https://www.youtube.com/channel/UCsIQ5qy4zHslDm1lUVyLYAg"
 }

@@ -1,0 +1,72 @@
+{% extends "pages/base.njk" %}
+
+{% block title %}
+    Social - Devel without a Cause
+{% endblock %}
+
+{% block description %}
+    All the social links and handles.
+{% endblock %}
+
+{% block socialImage %}{% endblock %}
+{% block socialImageAlt %}{% endblock %}
+
+{% block scripts %}
+    /scripts/base.js
+{% endblock %}
+
+{% block styles %}
+    ./social.css
+{% endblock %}
+
+{% block content %}
+    <h2>Social links</h2>
+    <p>
+        Here are a list of all the relevant social networks I am active in and
+        how you can reach out.
+    </p>
+    <ul>
+        <li>Mastodon - <a href="{{ author.mastodon_link }}" rel="noopener me" target="_blank">{{ author.mastodon_handle }}</a></li>
+        <li>YouTube - <a href="{{ author.youtube_link }}" rel="noopener" target="_blank">{{ author.youtube_handle }}</a></li>
+        <li>GitHub - <a href="{{ author.github_link }}" rel="noopener" target="_blank">{{ author.github_handle }}</a></li>
+        <li>Email - <a href="mailto:{{ author.email }}" rel="noopener" target="_blank">{{ author.email }}</a></li>
+        <ul>
+            <li>
+                No spam, backlink requests, "business proposals", or anything
+                like that.
+            </li>
+            <li>
+                I don't host other people's content on this blog and I don't
+                guest author on other blogs.
+            </li>
+            <li>
+                If you suspect your inquiry <i>might</i> fall into those
+                categories list, it does.
+            </li>
+            <li>If you call it an "inquiry" it <i>definitely</i> does.</li>
+        </ul>
+        <li>
+            Twitter Archive -
+            <a href="https://tweets.dwac.dev/">tweets.dwac.dev</a>
+        </li>
+        <ul>
+            <li>
+                I was previously active on Twitter under the handle
+                <code>@develwoutacause</code>, but this is no longer used.
+            </li>
+            <li>This is a public archive of all tweets while I was active.</li>
+        </ul>
+    </ul>
+    <p>
+        <b>NOTE</b>: I'm generally not much of a "social media person" and this
+        is a <i>complete</i> list (no Instagram, no Telegram, no TikTok, etc).
+        If someone reaches out to you from an account not listed above and
+        claiming to be me, they're a dirty liar and should be treated as such!
+    </p>
+    <p>
+        <code>@develwoutacause</code> on Twitter <i>used</i> to be me, so
+        historical content is likely genuine. However I deactivated this account
+        on Jan 8th, 2023 and no longer own the handle. Anything after that date
+        is not me.
+    </p>
+{% endblock %}
