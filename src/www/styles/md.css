@@ -355,6 +355,10 @@
   line-height: 1.2em;
 }
 
+.md blockquote p:not(:first-child) {
+  margin-top: 1.2em;
+}
+
 .md a:link, .md a:visited {
   text-decoration: none;
 }
