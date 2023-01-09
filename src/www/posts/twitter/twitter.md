@@ -2,7 +2,7 @@
 tags: posts
 layout: pages/post
 title: Leaving Twitter
-date: 2023-01-07T12:00:00-07:00
+date: 2023-01-08T12:00:00-07:00
 excerpt: The current state of Twitter and how I'm responding to it.
 ---
 
