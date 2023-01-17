@@ -88,13 +88,17 @@
   margin: auto;
 }
 
+.md img.large {
+  width: 100%;
+}
+
 .md video {
   display: block;
   width: auto;
   height: auto;
   max-width: 100%;
 
-  margin: 0 auto;
+  margin: 0 auto 1em auto;
 }
 
 .md video.gif {
