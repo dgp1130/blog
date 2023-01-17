@@ -15,7 +15,8 @@ import { Context, getContext } from './context';
  *   "url": "https://twitter.com/develwoutacause/status/1452082837075607553",
  *   "author": "Doug Parker",
  *   "username": "develwoutacause",
- *   "avatar": "/res/img/profile.webp",
+ *   "avatars": ["/res/img/profile.webp", "/res/img/profile.jpg"],
+ *   "avatarDimensions": [200, 200],
  *   "timestamp": "2021-10-23T18:21:00-0700",
  *   "content": "Hello, World!"
  * }
@@ -23,15 +24,19 @@ import { Context, getContext } from './context';
  * ```
  * 
  * The configuration object supports the following properties:
- * * `url`       - A `string` which links to the original tweet source.
- * * `author`    - A `string` of the author's printed name.
- * * `username`  - A `string` of the author's Twitter username (without the @).
- * * `avatar`    - A `string` which links to an image of the user's avatar. Most
- *                likely you want to copy the image to a particular local path
- *                for the site and link to that copy.
+ * * `url` - A `string` which links to the original tweet source.
+ * * `author` - A `string` of the author's printed name.
+ * * `username` - A `string` of the author's Twitter username (without the @).
+ * * `avatars` - An `Array<string>` which links to the images of the user's
+ *               avatar. Most likely you want to copy the image to a particular
+ *               local path for the site and link to that copy. Multiple avatars
+ *               are available for performance and the earliest supported format
+ *               for the current browser will be used.
+ * * `avatarDimensions` - A `[width: number, height: number]` tuple indicating
+ *                        the expected dimensions of the avatar images.
  * * `timestamp` - An ISO8601-formatted `string` of the time the tweet was
  *                 tweeted.
- * * `content`   - A `string` of the text content of the tweet.
+ * * `content` - A `string` of the text content of the tweet.
  * 
  * You also probably want to include the `additional_styles` frontmatter so the
  * tweet is styled correctly:
@@ -97,6 +102,7 @@ const tweetConfigParser = zod.strictObject({
     author: zod.string(),
     username: zod.string(),
     avatars: zod.array(zod.string()),
+    avatarDimensions: zod.tuple([ zod.number(), zod.number() ]),
     timestamp: zodIso8601Date,
     content: zod.string(),
 });
@@ -131,7 +137,7 @@ const tweetNjkTemplate = `
                     {% for avatar in avatars.slice(0, -1) %}
                         <source srcset="{{ avatar }}" type="{{ avatar | mime }}" />
                     {% endfor %}
-                    <img srcset="{{ avatars | last }}" width="48px" height="48px" />
+                    <img srcset="{{ avatars | last }}" width="{{ avatarDimensions[0] }}" height="{{ avatarDimensions[1] }}" />
                 </picture>
             </a>
         <div class="name">

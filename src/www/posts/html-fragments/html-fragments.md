@@ -48,6 +48,7 @@ things low-commitment and easily changeable? I came out with this thought:
   "author": "Doug Parker",
   "username": "develwoutacause",
   "avatars": [ "/res/img/profile.avif", "/res/img/profile.webp", "/res/img/profile.jpg" ],
+  "avatarDimensions": [200, 200],
   "timestamp": "2021-10-23T18:21:00-0700",
   "content": "I really wish it were possible to serve an SSR'd #HTML fragment (with #CSS and #JS), and be able to directly insert it into the #DOM securely.\\n\\nHow many web sites could drop a client side framework if SSR'd web components could work like this?"
 }
