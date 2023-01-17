@@ -88,6 +88,19 @@
   margin: auto;
 }
 
+.md video {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+
+  margin: 0 auto;
+}
+
+.md video.gif {
+  max-width: 512px /* Half page content's max-width. */;
+}
+
 .md dd {
   margin-bottom: 1em;
 }
