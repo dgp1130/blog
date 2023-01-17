@@ -407,7 +407,13 @@ With that, the tweet is actually rendering! Notice how the `<my-tweet />` node
 is immediately created because the server returned it instantly, while the
 rest of the content streams in afterwards.
 
-<video src="demos/1-single-node-streaming.mp4" autoplay muted loop></video>
+```video
+{
+    "type": "demo",
+    "urls": ["demos/1-single-node-streaming.mp4"],
+    "size": [1280, 720]
+}
+```
 
 ## Streaming a List
 
@@ -440,7 +446,13 @@ tweets with a delay between each one.
 
 However, when I tried this, I only actually saw one tweet appear.
 
-<video src="demos/2-list-stream-fail.mp4" autoplay muted loop></video>
+```video
+{
+    "type": "demo",
+    "urls": ["demos/2-list-stream-fail.mp4"],
+    "size": [1280, 720]
+}
+```
 
 I eventually came to realize that `streamingParse()` returns a single `Node`,
 but my HTTP response actually contains two top-level `<my-tweet />` nodes. It
@@ -499,7 +511,13 @@ for await (const myTweetEl of streamDomFragment(res)) {
 
 With this, I have successfully streamed HTML fragments!
 
-<video src="demos/3-list-stream.mp4" autoplay muted loop></video>
+```video
+{
+    "type": "demo",
+    "urls": ["demos/3-list-stream.mp4"],
+    "size": [1280, 720]
+}
+```
 
 As for how to actually implement this, we can use another `MutationObserver` to
 watch for additional children added to the root node of the hidden document, and
@@ -1084,7 +1102,13 @@ streamTweetsBtn.addEventListener('click', () => {
 });
 ```
 
-<video src="demos/3-list-stream.mp4" autoplay muted loop></video>
+```video
+{
+    "type": "demo",
+    "urls": ["demos/3-list-stream.mp4"],
+    "size": [1280, 720]
+}
+```
 
 I'd say that's mission accomplished.
 

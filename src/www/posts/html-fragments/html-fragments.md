@@ -179,7 +179,13 @@ whenUserNearBottomOfDocument(async () => {
 Here is a demo which uses this strategy to load a new tweet each time a button
 is pressed.
 
-<video src="demos/2-infinite-scroll.mp4" loop autoplay muted></video>
+```video
+{
+    "type": "demo",
+    "urls": ["demos/2-infinite-scroll.mp4"],
+    "size": [1920, 928]
+}
+```
 
 This implements infinite scroll without having to render a tweet on the client,
 commit to an HTML-over-the-wire framework, or use any particular server
@@ -268,7 +274,13 @@ customElements.define('my-editable-tweet', MyEditableTweet);
 This is able to edit the tweet on the server and get back a freshly rendered
 copy to swap into the page over the old version.
 
-<video src="demos/3-edit.mp4" loop autoplay muted></video>
+```video
+{
+    "type": "demo",
+    "urls": ["demos/3-edit.mp4"],
+    "size": [1920, 928]
+}
+```
 
 This edit functionality
 [reuses the existing tweet render logic](https://github.com/dgp1130/html-fragments-demo/blob/blog-post/server.ts#L62)
