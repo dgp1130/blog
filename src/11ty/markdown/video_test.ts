@@ -33,7 +33,18 @@ describe('video', () => {
             expect(html).not.toMatch(/<video[^>]*controls[^>]*>/);
         });
 
-        it('renders \`urls\` in order', () => {
+        it('renders `gif` class for gif videos', () => {
+            const html = renderVideo({ ...goldenConfig, type: 'gif' });
+            const [, classes] = /<video[^>]*class="([^"]*)"/.exec(html)!;
+            const classList = classes!
+                .split(' ')
+                .filter((cls) => cls.trim() !== '')
+            ;
+
+            expect(classList).toContain('gif');
+        });
+
+        it('renders `urls` in order', () => {
             const html = renderVideo({
                 ...goldenConfig,
                 urls: [ '/video.webm', '/video.mp4' ],

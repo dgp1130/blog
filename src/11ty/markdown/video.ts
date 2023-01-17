@@ -95,7 +95,7 @@ const videoNjkTemplate = `
         {{ sources | safe }}
     </video>
 {% elif type === 'gif' %}
-    <video autoplay muted loop playsinline {{ sizes | safe }}>
+    <video autoplay muted loop playsinline {{ sizes | safe }} class="gif">
         {{ sources | safe }}
     </video>
 {% else %}

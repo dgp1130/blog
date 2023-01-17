@@ -98,7 +98,7 @@
 }
 
 .md video.gif {
-  max-width: 512px /* Half page content's max-width. */;
+  max-width: min(100%, 512px /* Half page content's max-width. */);
 }
 
 .md dd {
