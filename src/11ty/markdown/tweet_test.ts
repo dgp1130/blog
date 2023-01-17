@@ -16,6 +16,7 @@ describe('tweet', () => {
             author: 'Doug Parker',
             username: 'develwoutacause',
             avatars: [ '/devel.avif', '/devel.webp', '/devel.jpg' ],
+            avatarDimensions: [ 200, 200 ],
             timestamp: '2022-03-02T12:00:00-0700',
             content: 'Hello, World!',
         });
@@ -109,6 +110,33 @@ not a json object
                 .toThrowError(parseErrorRegex);
             expect(() => renderTweet({ ...goldenConfig, avatars: [ ] }))
                 .toThrowError(/At least one avatar is required\./);
+        });
+
+        it('throws an error for malformed `avatarDimensions`', () => {
+            expect(() => renderTweet({
+                ...goldenConfig,
+                avatarDimensions: undefined,
+            })).toThrowError(parseErrorRegex);
+            expect(() => renderTweet({
+                ...goldenConfig,
+                avatarDimensions: null,
+            })).toThrowError(parseErrorRegex);
+            expect(() => renderTweet({
+                ...goldenConfig,
+                avatarDimensions: 12345,
+            })).toThrowError(parseErrorRegex);
+            expect(() => renderTweet({
+                ...goldenConfig,
+                avatarDimensions: [ ],
+            })).toThrowError(parseErrorRegex);
+            expect(() => renderTweet({
+                ...goldenConfig,
+                avatarDimensions: [ 12345 ],
+            })).toThrowError(parseErrorRegex);
+            expect(() => renderTweet({
+                ...goldenConfig,
+                avatarDimensions: [ 1, 2, 3 ],
+            })).toThrowError(parseErrorRegex);
         });
 
         it('throws an error for a malformed `timestamp`', () => {
