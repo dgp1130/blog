@@ -5,6 +5,7 @@ import { pictureExtension } from './picture';
 import { targetBlankExtension } from './target_blank';
 import { timestampExtension } from './timestamp';
 import { tweetExtension } from './tweet';
+import { videoExtension } from './video';
 
 /**
  * Returns a function which accepts markdown content as a string parameter and
@@ -16,6 +17,7 @@ export function markdown(): (md: string, data: Context) => string {
     marked.use(targetBlankExtension);
     marked.use(timestampExtension);
     marked.use(tweetExtension);
+    marked.use(videoExtension);
 
     // Set the context and render to HTML.
     return (md: string, data: Context) => {

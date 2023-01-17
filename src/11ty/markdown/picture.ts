@@ -1,5 +1,5 @@
 import { marked } from 'marked';
-import { getMimeType } from '../mime_types';
+import { getImageMimeType } from '../mime_types';
 
 interface PictureToken extends marked.Tokens.Generic {
     type: 'picture';
@@ -64,7 +64,7 @@ const extension = {
         return `
 <picture>
 ${sources.map((source) => `    <source srcset="${source}" type="${
-        getMimeType(source)}" />`).join('\n')}
+        getImageMimeType(source)}" />`).join('\n')}
     <img srcset="${defaultSource}" alt="${token.alt}" />
 </picture>
         `.trim();

@@ -18,7 +18,7 @@ const { format: formatDate } = require('./src/11ty/filters/dates');
 const { short } = require('./src/11ty/filters/git');
 const { bundleStyles } = require('./src/11ty/filters/styles');
 const { markdown } = require('./src/11ty/markdown');
-const { getMimeType } = require('./src/11ty/mime_types');
+const { getImageMimeType, getVideoMimeType } = require('./src/11ty/mime_types');
 
 module.exports = function (config) {
     // Process markdown and Nunjucks templates.
@@ -69,7 +69,8 @@ module.exports = function (config) {
 
     // Add filters.
     config.addFilter('date', formatDate);
-    config.addFilter('mime', (path) => getMimeType(path));
+    config.addFilter('mimeImg', (path) => getImageMimeType(path));
+    config.addFilter('mimeVideo', (path) => getVideoMimeType(path));
     config.addFilter('short', short);
     config.addFilter('split', (data, splitter) => {
         return data.split(splitter);

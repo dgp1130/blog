@@ -2,7 +2,7 @@ import 'jasmine';
 
 import { marked } from 'marked';
 import * as nunjucks from 'nunjucks';
-import { getMimeType } from '../mime_types';
+import { getImageMimeType } from '../mime_types';
 import { useContext } from './context';
 import { mockContext } from './context_mock';
 import { tweetExtension } from './tweet';
@@ -39,6 +39,8 @@ describe('tweet', () => {
                 .indexOf('<source srcset="/profile.webp" type="image/webp" />');
             
             // `.avif` is first and should be preferred over `.webp`.
+            expect(avifSource).not.toBe(-1);
+            expect(webpSource).not.toBe(-1);
             expect(avifSource).toBeLessThan(webpSource);
 
             // `.jpg` is last and should be the default.
@@ -187,7 +189,7 @@ ${JSON.stringify(goldenConfig, null, 4)}
 });
 
 const mockEnvironment = new nunjucks.Environment()
-    .addFilter('mime', (path) => getMimeType(path))
+    .addFilter('mimeImg', (path) => getImageMimeType(path))
 ;
 
 function renderTweet(config: unknown): string {

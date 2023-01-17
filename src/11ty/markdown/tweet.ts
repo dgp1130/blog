@@ -135,7 +135,7 @@ const tweetNjkTemplate = `
             <a href="{{ authorHref }}" target="_blank">
                 <picture>
                     {% for avatar in avatars.slice(0, -1) %}
-                        <source srcset="{{ avatar }}" type="{{ avatar | mime }}" />
+                        <source srcset="{{ avatar }}" type="{{ avatar | mimeImg }}" />
                     {% endfor %}
                     <img srcset="{{ avatars | last }}" width="{{ avatarDimensions[0] }}" height="{{ avatarDimensions[1] }}" />
                 </picture>
