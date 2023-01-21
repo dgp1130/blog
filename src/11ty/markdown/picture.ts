@@ -1,10 +1,12 @@
 import { marked } from 'marked';
 import { getImageMimeType } from '../mime_types';
+import { Parser } from './parser';
 
 interface PictureToken extends marked.Tokens.Generic {
     type: 'picture';
     alt: string;
     sources: string[];
+    attrs: Map<string, string>;
 }
 
 const extension = {
@@ -16,34 +18,7 @@ const extension = {
     },
 
     tokenizer(raw: string, tokens: marked.Token[]): PictureToken | undefined {
-        // Separate the alt text and source list from markdown.
-        const match = raw.match(/!\[(?<alt>[^\]]*)\](?<sources>.*)/);
-        if (!match) return undefined;
-
-        // Collapse a multiline alt onto a single line like markdown typically
-        // does for text.
-        const rawAlt = match.groups?.['alt'];
-        if (!rawAlt) throw new Error(`No alt: \`${raw}\``);
-        const alt = rawAlt.split('\n').join(' ').trim().replace(/"/g, '&quot;');
-
-        // Parse the sources.
-        const rawSources = match.groups?.['sources'];
-        if (!rawSources) throw new Error(`No sources: \`${raw}\``);
-        const sources = Array.from(matches(/\((?<source>[^)]*)\)/g, rawSources))
-            .map((match) => match.groups?.['source']!)
-        ;
-
-        // Just one source, should be an `<img />` tag.
-        if (sources.length === 1) {
-            return undefined;
-        }
-
-        return {
-            type: 'picture',
-            raw,
-            alt,
-            sources,
-        };
+        return PictureParser.parse(raw);
     },
 
     renderer(inputToken: marked.Tokens.Generic): string {
@@ -60,12 +35,17 @@ const extension = {
         const [ defaultSource ] = token.sources.slice(-1);
         const sources = token.sources.slice(0, -1);
 
+        const attrs = Array.from(token.attrs.entries())
+            .map(([name, value]) => ` ${name}="${value}"`)
+            .join('')
+        ;
+
         // Render the picture.
         return `
 <picture>
 ${sources.map((source) => `    <source srcset="${source}" type="${
         getImageMimeType(source)}" />`).join('\n')}
-    <img srcset="${defaultSource}" alt="${token.alt}" />
+    <img srcset="${defaultSource}" alt="${token.alt}"${attrs} />
 </picture>
         `.trim();
     },
@@ -85,9 +65,112 @@ export const pictureExtension: marked.MarkedExtension = {
     extensions: [ extension ],
 };
 
-function* matches(regex: RegExp, content: string): Generator<RegExpExecArray> {
-    let match: RegExpExecArray | null = null;
-    while ((match = regex.exec(content)) !== null) {
-        yield match;
+/** Parses a picture token. */
+class PictureParser {
+    private readonly raw: string;
+    private readonly parser: Parser;
+    private constructor({ raw, parser }: { raw: string, parser: Parser }) {
+        this.raw = raw;
+        this.parser = parser;
+    }
+
+    /**
+     * Parses the whole token and returns it, or undefined if it is not matched.
+     * Throws an error if the input is likely a picture with syntax errors as
+     * opposed to just not being a picture.
+     */
+    public static parse(input: string): PictureToken | undefined {
+        return PictureParser.of(input).parse();
+    }
+
+    private static of(input: string): PictureParser {
+        return new PictureParser({ raw: input, parser: Parser.of(input) });
+    }
+
+    /** Parses the whole picture. */
+    private parse(): PictureToken | undefined {
+        if (this.parser.peek(2) !== '![') return undefined;
+
+        const rawAlt = this.parseAlt();
+        const sources = this.parseSources();
+        const attrs = this.parseAttrs();
+
+        // Use built-in image parser if it's just a single plain image.
+        if (sources.length === 1 && attrs.size === 0) return undefined;
+
+        // Collapse a multiline alt onto a single line like markdown typically
+        // does for text.
+        if (!rawAlt) throw new Error(`No image alt for:\n${this.raw}`);
+        const alt = rawAlt.split('\n').join(' ').trim().replace(/"/g, '&quot;');
+
+        return {
+            type: 'picture',
+            raw: this.raw,
+            alt,
+            sources,
+            attrs,
+        };
+    }
+
+    /** Parses the alt text: '![alt text]' => 'alt text' */
+    private parseAlt(): string {
+        this.parser.expect('![');
+        const alt = this.parser.until(']');
+        this.parser.expect(']');
+        return alt;
+    }
+
+    /** Parses a single source: '(/foo.png)' => '/foo.png' */
+    private parseSource(): string {
+        this.parser.expect('(');
+        const source = this.parser.until(')');
+        this.parser.expect(')');
+        return source;
+    }
+
+    /**
+     * Parses multiple sources:
+     * '(/foo.png)(/bar.png)' => [ '/foo.png', '/bar.png' ]
+     */
+    private parseSources(): string[] {
+        const sources: string[] = [];
+        this.parser.trimStart();
+        while (this.parser.peek() === '(') {
+            sources.push(this.parseSource());
+            this.parser.trimStart();
+        }
+        return sources;
+    }
+
+    /** Parses a single attribute: 'foo="bar"' => [ 'foo', 'bar' ] */
+    private parseAttr(): [ name: string, value: string ] {
+        const name = this.parser.until('=');
+        this.parser.expect('="');
+        const value = this.parser.until('"');
+        this.parser.expect('"');
+
+        return [ name, value ];
+    }
+
+    /**
+     * Parses multiple attributes:
+     * '{foo="bar", hello="world"}' => Map({ foo: 'bar', hello: 'world' })
+     */
+    private parseAttrs(): Map<string, string> {
+        const attrs = new Map<string, string>();
+        if (this.parser.peek() !== '{') return attrs;
+
+        this.parser.trimStart();
+        this.parser.expect('{');
+        while (this.parser.peek() !== '}') {
+            const [ name, value ] = this.parseAttr();
+            debugger;
+            attrs.set(name, value);
+            this.parser.trimStart();
+            if (this.parser.peek() === ',') this.parser.expect(',');
+            this.parser.trimStart();
+        }
+        this.parser.expect('}');
+        return attrs;
     }
 }

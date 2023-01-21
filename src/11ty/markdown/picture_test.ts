@@ -32,8 +32,8 @@ alt text](/foo.webp)(/foo.png)
         });
 
         it('throws an error when given a source with no alt', () => {
-            expect(() => marked(`![](/foo.png)`))
-                .toThrowError(/No alt: `!\[\]\(\/foo\.png\)`/);
+            expect(() => marked(`![](/foo.png)(/bar.png)`))
+                .toThrowError(/No image alt/);
         });
 
         it('escapes alt text with quotes', () => {
@@ -58,7 +58,7 @@ with leading and trailing newlines
 
         it('throws an error when given no sources', () => {
             expect(() => marked(`![alt]`))
-                .toThrowError(/No sources: `!\[alt\]`/);
+                .toThrowError(/Picture token has zero sources/);
         });
 
         it('throws an error when given a source with an unknown MIME type', () => {
@@ -69,6 +69,24 @@ with leading and trailing newlines
         it('throws an error when given a source without an extension', () => {
             expect(() => marked(`![alt](/foowithoutextension)(/foo.png)`))
                 .toThrow();
+        });
+
+        it('renders custom attributes', () => {
+            expect(marked(`![alt](/foo.png)(/bar.png){foo="bar"}`))
+                .toMatch(/<img[^>]*foo="bar"[^>]*>/);
+        });
+
+        it('renders multiple custom attributes', () => {
+            const rendered = marked(
+                `![alt](/foo.png)(/bar.png){foo="bar", hello="world"}`);
+
+            expect(rendered).toMatch(/<img[^>]*foo="bar"[^>]*>/);
+            expect(rendered).toMatch(/<img[^>]*hello="world"[^>]*>/);
+        });
+
+        it('renders custom attributes even when only one source is used', () => {
+            expect(marked(`![alt](/foo.png){foo="bar"}`))
+                .toMatch(/<img[^>]*foo="bar"[^>]*>/);
         });
     });
 });
