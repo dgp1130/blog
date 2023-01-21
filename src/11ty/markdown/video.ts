@@ -78,7 +78,6 @@ function renderVideo(config: VideoConfig, ctx: Context): string {
     return ctx.njk.renderString(videoNjkTemplate, {
         ...ctx.frontmatter,
         ...config,
-        test: 1,
     });
 }
 
