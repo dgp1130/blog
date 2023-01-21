@@ -1,5 +1,6 @@
 import { marked } from 'marked';
 import { Context, useContext } from './context';
+import { demoExtension } from './demo';
 import { highlightExtension } from './highlight';
 import { pictureExtension } from './picture';
 import { targetBlankExtension } from './target_blank';
@@ -13,6 +14,7 @@ import { videoExtension } from './video';
  */
 export function markdown(): (md: string, data: Context) => string {
     marked.use(highlightExtension);
+    marked.use(demoExtension);
     marked.use(pictureExtension);
     marked.use(targetBlankExtension);
     marked.use(timestampExtension);
