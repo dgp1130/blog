@@ -164,7 +164,6 @@ class PictureParser {
         this.parser.expect('{');
         while (this.parser.peek() !== '}') {
             const [ name, value ] = this.parseAttr();
-            debugger;
             attrs.set(name, value);
             this.parser.trimStart();
             if (this.parser.peek() === ',') this.parser.expect(',');
