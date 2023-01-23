@@ -89,17 +89,24 @@ const videoNjkTemplate = `
     {% endfor %}
 {% endset %}
 
-{% if type === 'demo' %}
-    <video autoplay muted loop playsinline {{ sizes | safe }} controls>
-        {{ sources | safe }}
-    </video>
-{% elif type === 'gif' %}
-    <video autoplay muted loop playsinline {{ sizes | safe }} class="gif">
-        {{ sources | safe }}
-    </video>
-{% else %}
-    {% filter throw %}
-        Unknown video type "{{ type }}".
-    {% endfilter %}
-{% endif %}
+{% set videoEl %}
+    {% if type === 'demo' %}
+        <video autoplay muted loop playsinline {{ sizes | safe }} controls>
+            {{ sources | safe }}
+        </video>
+    {% elif type === 'gif' %}
+        <video autoplay muted loop playsinline {{ sizes | safe }} class="gif">
+            {{ sources | safe }}
+        </video>
+    {% else %}
+        {% filter throw %}
+            Unknown video type "{{ type }}".
+        {% endfilter %}
+    {% endif %}
+{% endset %}
+
+<dwac-lazy style="display: block; aspect-ratio: {{ size[0] | safe }} / {{ size[1] | safe }};">
+    <template>{{ videoEl | safe }}</template>
+    <noscript>{{ videoEl | safe }}</noscript>
+</dwac-lazy>
 `.trim();
