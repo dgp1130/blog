@@ -4,30 +4,6 @@
  */
 const loadedElements = new WeakSet<Element>();
 
-/**
- * An element which lazily renders the given content when it is nearing the
- * viewport. Render this with `display: block;` and
- * `aspect-ratio: ${width} / ${height};` to avoid CLS.
- */
-export class Lazy extends HTMLElement {
-    connectedCallback(): void {
-        // Only observe for an intersection if the element has not been loaded.
-        if (!loadedElements.has(this)) getObserver().observe(this);
-    }
-
-    disconnectedCallback(): void {
-        getObserver().unobserve(this);
-    }
-}
-
-customElements.define('dwac-lazy', Lazy);
-
-declare global {
-    interface HTMLElementTagNameMap {
-        'dwac-lazy': Lazy;
-    }
-}
-
 let observer: IntersectionObserver;
 function getObserver(): IntersectionObserver {
     // An `IntersectionObserver` which renders `<dwac-lazy />` content when it
@@ -61,4 +37,28 @@ function getObserver(): IntersectionObserver {
     });
 
     return observer;
+}
+
+/**
+ * An element which lazily renders the given content when it is nearing the
+ * viewport. Render this with `display: block;` and
+ * `aspect-ratio: ${width} / ${height};` to avoid CLS.
+ */
+export class Lazy extends HTMLElement {
+    connectedCallback(): void {
+        // Only observe for an intersection if the element has not been loaded.
+        if (!loadedElements.has(this)) getObserver().observe(this);
+    }
+
+    disconnectedCallback(): void {
+        getObserver().unobserve(this);
+    }
+}
+
+customElements.define('dwac-lazy', Lazy);
+
+declare global {
+    interface HTMLElementTagNameMap {
+        'dwac-lazy': Lazy;
+    }
 }
