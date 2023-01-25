@@ -740,7 +740,7 @@ use `async`.
 Alternatively, if you're not using native ES modules you can drop
 `type="module"` and make the `<script>` block the parser to force `my-router`
 to load first. Although that would slow down parsing and degrade the user
-experience causing [Alex Russel](https://infrequently.org/) to inject 50MBs of
+experience causing [Alex Russell](https://infrequently.org/) to inject 50MBs of
 JavaScript into your dreams, so maybe _don't_ take that approach. 😉
 
 I think that's enough about streaming. The takeaway is that it works, it just
