@@ -21,7 +21,8 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v1
       with:
-        node-version: 12.x
+        # From `.nvmrc`.
+        node-version: 16.10.0
 
     - name: Install
       run: npm ci
