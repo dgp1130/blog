@@ -89,9 +89,9 @@ See [analytics docs](doc/analytics.md).
 ## Domain Management
 
 The [domain is registered](https://domains.google.com/registrar/dwac.dev) with
-[Google Domains](https://domains.google.com/) and uses their default DNS.
+[porkbun](https://porkbun.com/) and uses their default DNS nameservers.
 
-Domains in Google Domains are configured with Netlify via DNS CNAME redirects.
+Domains are configured with Netlify via DNS CNAME redirects.
 [blog.dwac.dev](https://blog.dwac.dev/) redirects to
 [dwac-blog.netlify.app](https://dwac-blog.netlify.app/) which is updated from
 the [`deploy`](https://github.com/dgp1130/blog/tree/deploy) branch.
