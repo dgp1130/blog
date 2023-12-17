@@ -35,6 +35,15 @@
     {% endfor %}
 {% endblock %}
 
+{% block ogTypeBlock %}article{% endblock %}
+
+{% block head %}
+    <meta property="og:article:published_time" content="{{ date.toISOString() }}">
+    <meta property="og:article:author:first_name" content="Doug">
+    <meta property="og:article:author:last_name" content="Parker">
+    <meta property="og:article:author:username" content="develwithoutacause">
+{% endblock %}
+
 {% block content %}
     {% macro share(prompt, class="") %}
         <dwac-share class="{{ class }}"

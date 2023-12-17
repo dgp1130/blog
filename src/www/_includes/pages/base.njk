@@ -45,10 +45,10 @@
     {% endfilter %}
 {% endif %}
 
-{# Trim and default the social image to author profile pic. #}
+{# Trim and default the social image. #}
 {% set socialImage -%}
     {% if socialImageBlock | trim === "" -%}
-        https://blog.dwac.dev/res/img/profile.webp
+        https://blog.dwac.dev/res/img/social.webp
     {%- else -%}
         {{ socialImageBlock | safe }}
     {%- endif %}
@@ -58,22 +58,38 @@
 {% set socialImageAlt -%}
     {% if socialImageAltBlock | trim === "" -%}
         {% filter oneline %}
-            Headshot of the author wearing a Noogler hat, googley-eyed glasses,
-            and a Google t-shirt.
+            Headshot of the author wearing a Noogler propeller hat, googley-eyed
+            glasses, and a Google t-shirt.
         {% endfilter %}
     {%- else -%}
         {{ socialImageAltBlock | safe }}
     {%- endif %}
 {%- endset %}
 
+{% set ogType -%}
+    {% if ogTypeBlock -%}
+        {{ ogTypeBlock | safe }}
+    {%- else -%}
+        website
+    {%- endif %}
+{%- endset %}
+
 <!DOCTYPE html>
 <html lang="en">
-    <head>
+    <head prefix="ns_article: https://ogp.me/ns/article#">
         <title>{{ title }}</title>
 
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="{{ desc }}">
+
+        {# Open Graph meta tags. #}
+        <meta property="og:title" content="{{ title }}">
+        <meta property="og:type" content="{{ ogType }}">
+        <meta property="og:image" content="{{ socialImage }}">
+        <meta property="og:image:alt" content="{{ socialImageAlt }}">
+        <meta property="og:description" content="{{ desc }}">
+        <meta namproperty="og:site_name" content="Devel without a Cause">
 
         {# Twitter meta tags to render nicely in a card. #}
         <meta name="twitter:card" content="summary">
