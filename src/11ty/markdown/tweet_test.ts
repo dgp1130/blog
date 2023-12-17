@@ -30,30 +30,30 @@ describe('tweet', () => {
         it('renders avatar images in order', () => {
             const html = renderTweet({
                 ...goldenConfig,
-                avatars: [ '/profile.avif', '/profile.webp', '/profile.jpg' ],
+                avatars: [ '/profile.avif', '/profile.png', '/profile.webp' ],
             });
 
             const avifSource = html
                 .indexOf('<source srcset="/profile.avif" type="image/avif" />');
-            const webpSource = html
-                .indexOf('<source srcset="/profile.webp" type="image/webp" />');
-            
-            // `.avif` is first and should be preferred over `.webp`.
-            expect(avifSource).not.toBe(-1);
-            expect(webpSource).not.toBe(-1);
-            expect(avifSource).toBeLessThan(webpSource);
+            const pngSource = html
+                .indexOf('<source srcset="/profile.png" type="image/png" />');
 
-            // `.jpg` is last and should be the default.
-            expect(html).toContain('<img srcset="/profile.jpg"');
+            // `.avif` is first and should be preferred over `.png`.
+            expect(avifSource).not.toBe(-1);
+            expect(pngSource).not.toBe(-1);
+            expect(avifSource).toBeLessThan(pngSource);
+
+            // `.webp` is last and should be the fallback.
+            expect(html).toContain('<img srcset="/profile.webp"');
         });
 
         it('renders a single avatar image', () => {
             const html = renderTweet({
                 ...goldenConfig,
-                avatars: [ '/profile.jpg' ],
+                avatars: [ '/profile.webp' ],
             });
 
-            expect(html).toContain('<img srcset="/profile.jpg"');
+            expect(html).toContain('<img srcset="/profile.webp"');
             expect(html).not.toContain('<source');
         });
 

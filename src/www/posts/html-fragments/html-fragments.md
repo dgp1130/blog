@@ -47,7 +47,7 @@ things low-commitment and easily changeable? I came out with this thought:
   "url": "https://tweets.dwac.dev/1452082837075607553/",
   "author": "Doug Parker",
   "username": "develwoutacause",
-  "avatars": [ "/res/img/profile.avif", "/res/img/profile.webp", "/res/img/profile.jpg" ],
+  "avatars": [ "/res/img/profile.avif", "/res/img/profile.webp" ],
   "avatarDimensions": [200, 200],
   "timestamp": "2021-10-23T18:21:00-0700",
   "content": "I really wish it were possible to serve an SSR'd #HTML fragment (with #CSS and #JS), and be able to directly insert it into the #DOM securely.\\n\\nHow many web sites could drop a client side framework if SSR'd web components could work like this?"
@@ -636,13 +636,13 @@ that scripting is
 [explicitly disabled](https://www.w3.org/TR/DOM-Parsing/#:~:text=script%20elements%20get%20marked%20unexecutable%20and%20the%20contents%20of%20noscript%20get%20parsed%20as%20markup.)!
 
 > The `parseFromString(str, type)` method must run these steps, depending on type:
-> 
+>
 > * `"text/html"` - Parse `str` with an HTML parser, and return the newly created document.
->     
+>
 >   **The scripting flag must be set to "disabled".**
 >
 > > NOTE
-> > 
+> >
 > > `script` elements get marked unexecutable and the contents of `noscript` get parsed as markup.
 
 This seemed like a non-starter, but there is a workaround. We don't actually
