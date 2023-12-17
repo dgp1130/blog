@@ -44,6 +44,22 @@ describe('video', () => {
             expect(classList).toContain('gif');
         });
 
+        it('defaults to autoplaying muted videos', () => {
+            const html = renderVideo(goldenConfig);
+
+            expect(html).toMatch(/<video[^>]*autoplay[^>]*>/);
+            expect(html).toMatch(/<video[^>]*muted[^>]*>/);
+            expect(html).toMatch(/<video[^>]*loop[^>]*>/);
+        });
+
+        it('does not autoplay audible videos', () => {
+            const html = renderVideo({ ...goldenConfig, audible: true });
+
+            expect(html).not.toMatch(/<video[^>]*autoplay[^>]*>/);
+            expect(html).not.toMatch(/<video[^>]*muted[^>]*>/);
+            expect(html).not.toMatch(/<video[^>]*loop[^>]*>/);
+        });
+
         it('renders `urls` in order', () => {
             const html = renderVideo({
                 ...goldenConfig,
@@ -120,6 +136,13 @@ not a json object
             expect(() => renderVideo({ ...goldenConfig, size: [ 12345 ] }))
                 .toThrowError(parseErrorRegex);
             expect(() => renderVideo({ ...goldenConfig, size: [ 1, 2, 3 ] }))
+                .toThrowError(parseErrorRegex);
+        });
+
+        it('throws an error for malformed `audible`', () => {
+            expect(() => renderVideo({ ...goldenConfig, audible: null }))
+                .toThrowError(parseErrorRegex);
+            expect(() => renderVideo({ ...goldenConfig, audible: 'test' }))
                 .toThrowError(parseErrorRegex);
         });
 

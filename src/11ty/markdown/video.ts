@@ -6,27 +6,30 @@ import { Context, getContext } from './context';
  * A `marked` extension which renders an optimized video when it encounters a
  * code block with the language `video`. The content of the code block must be a
  * JSON-formatted object with the required information like so:
- * 
+ *
  * ```markdown
  * Check out this video:
- * 
+ *
  * \`\`\`video
  * {
  *     "type": "demo",
  *     "urls": ["/video.avif", "/video.mp4"],
- *     "size": [1920, 1080]
+ *     "size": [1920, 1080],
+ *     "audible": false
  * }
  * \`\`\`
  * ```
- * 
+ *
  * The configuration object supports the following properties:
- * * `type` - An enum string which chooses which kind of video to render.
- *            Options are: 'demo', 'gif'.
- * * `urls` - An `Array<string>` of video URLs to use. Multiple URLs are
- *            available for performance and the earliest supported format by the
- *            browser will be used.
- * * `size` - A `[width: number, height: number]` tuple indicating the expected
- *            dimensions of the avatar images.
+ * * `type`    - An enum string which chooses which kind of video to render.
+ *               Options are: 'demo', 'gif'.
+ * * `urls`    - An `Array<string>` of video URLs to use. Multiple URLs are
+ *               available for performance and the earliest supported format by
+ *               the browser will be used.
+ * * `size`    - A `[width: number, height: number]` tuple indicating the
+ *               expected dimensions of the avatar images.
+ * * `audible` - Whether or not the video contains meaningful audio. Optional,
+ *               defaults to `false`.
  */
 export const videoExtension: marked.MarkedExtension = {
     renderer: {
@@ -44,6 +47,7 @@ const videoConfigParser = zod.strictObject({
     type: zod.enum(['demo', 'gif']),
     urls: zod.array(zod.string()),
     size: zod.tuple([ zod.number(), zod.number() ]),
+    audible: zod.boolean().default(false),
 });
 type VideoConfig = zod.infer<typeof videoConfigParser>;
 
@@ -82,6 +86,11 @@ function renderVideo(config: VideoConfig, ctx: Context): string {
 }
 
 const videoNjkTemplate = `
+{% set autoplay %}
+    {% if not audible %}
+        autoplay muted loop
+    {% endif %}
+{% endset %}
 {% set sizes %}width="{{ size[0] }}" height="{{ size[1] }}"{% endset %}
 {% set sources %}
     {% for url in urls %}
@@ -91,11 +100,11 @@ const videoNjkTemplate = `
 
 {% set videoEl %}
     {% if type === 'demo' %}
-        <video autoplay muted loop playsinline {{ sizes | safe }} controls>
+        <video {{ autoplay }} playsinline {{ sizes | safe }} controls>
             {{ sources | safe }}
         </video>
     {% elif type === 'gif' %}
-        <video autoplay muted loop playsinline {{ sizes | safe }} class="gif">
+        <video {{ autoplay }} playsinline {{ sizes | safe }} class="gif">
             {{ sources | safe }}
         </video>
     {% else %}
