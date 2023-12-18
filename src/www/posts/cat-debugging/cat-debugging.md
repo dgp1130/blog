@@ -33,7 +33,7 @@ I was interested in experimenting with AI image generation. Not for any
 particular use case, just doing it for fun. I could use any number of existing
 web sites to do this, but pretty much all of them require some form of login or
 payment and as I have
-[previously established on this blog](http://localhost:8080/posts/html-fragments-routing/#service-worker-server),
+[previously established on this blog](/posts/html-fragments-routing/#service-worker-server),
 I am too cheap to do that. So instead I went with the pro hacker move of trying
 to run [Stable Diffusion](https://github.com/Stability-AI/stablediffusion/) on
 my computer locally.
