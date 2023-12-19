@@ -16,6 +16,14 @@ describe('target blank', () => {
             expect(marked(`[foo](#bar)`)).toContain('<a href="#bar">foo</a>');
         });
 
+        it('renders a relative link without `target="_blank"', () => {
+            expect(marked(`[foo](./bar)`)).toContain('<a href="./bar">foo</a>');
+        });
+
+        it('renders an absolute link without `target="_blank"', () => {
+            expect(marked(`[foo](/bar)`)).toContain('<a href="/bar">foo</a>');
+        });
+
         it('renders a link with a title', () => {
             expect(marked(`[foo](#bar "This is the title")`))
                 .toContain('<a href="#bar" title="This is the title">foo</a>');

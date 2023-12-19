@@ -13,10 +13,17 @@ export const targetBlankExtension: marked.MarkedExtension = {
             const attrs = [
                 `href="${href}"`,
                 title ? `title="${title}"` : null,
-                href.startsWith('#') ? null : `target="_blank"`,
+                isInternalLink(href) ? null : `target="_blank"`,
             ].filter((attr): attr is string => !!attr);
 
             return `<a ${attrs.join(' ')}>${text}</a>`;
         },
     },
 };
+
+function isInternalLink(href: string): boolean {
+    if (href.startsWith('#')) return true;
+    if (href.startsWith('/')) return true;
+    if (href.startsWith('.')) return true;
+    return false;
+}
