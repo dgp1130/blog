@@ -79,7 +79,7 @@
     "karma-typescript-es6-transform": "^5.2.0",
     "lit-analyzer": "^1.2.1",
     "marked": "^4.0.12",
-    "netlify-cli": "^15.1.1",
+    "netlify-cli": "^17.22.1",
     "nodegit": "^0.26.5",
     "nunjucks": "^3.2.4",
     "plausible-tracker": "^0.3.5",
