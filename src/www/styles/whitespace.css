@@ -1,0 +1,14 @@
+.inline-block-list {
+  font-size: 5rem !important;
+  list-style: none;
+  margin-inline: 0 !important;
+  margin-block: 1rem !important;
+}
+
+.inline-block-list li {
+  display: inline-block;
+  width: 2em;
+  height: 2em;
+  background: red;
+  border: 1px solid black;
+}
