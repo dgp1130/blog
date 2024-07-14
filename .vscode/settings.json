@@ -41,6 +41,8 @@
         "instanceof",
         "malloc",
         "mastadon",
+        "minifier",
+        "minifiers",
         "napi",
         "noto",
         "preload",
