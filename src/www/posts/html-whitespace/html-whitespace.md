@@ -13,12 +13,14 @@ additional_styles: [ whitespace ]
 ```timestamp
 ```
 
+TODO: Link to spec somewhere? https://drafts.csswg.org/css-text/
+
 Recently I have been working on a project which required a deeper understanding
-of how whitespace works in HTML. I was never a fan of HTML's behavior before,
-but as I dug into it I found myself discovering complex design issues that I
-wanted toe explore in a blog post. This is partially to write down my knowledge
-in this space for future reference and partially to vent about how unnecessarily
-complicated it all is.
+of how whitespace works in HTML. I was never a fan of HTML's whitespace behavior
+before as I've been burned by it a few times. As I dug into it more deeply I
+found myself discovering complex design issues that I wanted to explore in a
+blog post. This is partially to write down my knowledge in this space for future
+reference and partially to vent about how unnecessarily complicated it all is.
 
 ## How HTML Whitespace Works
 
@@ -86,14 +88,16 @@ leading and trailing whitespace is _not_ preserved.
             <a href="#" class="demo-link">Second</a>
 </span>
 
-Even though there are many spaces before the first `<a>`, they do not render to
-the user.
+Even though there are many spaces before the first `<a>` and after the second
+`</a>`, they do not render to the user. This is because whitespace at the start
+of rendering context (basically whitespace before the first line) is removed
+completely.
 
-Typically spaces which are visible to the user is referred to as _significant_,
+Typically spaces which are visible to the user are referred to as _significant_,
 while spaces which are not rendered are considered _insignificant_. For the
 above example, the spaces between the first `</a>` and second `<a>` are
 significant because they will be collapsed to a single space and rendered as a
-text node. The spaces between the first `<a>` and after the second `</a>` are
+text node. The spaces before the first `<a>` and after the second `</a>` are
 insignificant and not displayed to the user.
 
 This also applies to whitespace inside a tag. Consider these examples:
@@ -139,84 +143,118 @@ shows the text is outside the link, so let's swap the ordering in 9. below.
 Here we see that the space _does_ include the link underscore so the space was
 again given to the preceding text node.
 
+This also highlights the most common foot gun I've seen, links with extra
+spaces. Consider this example:
+
+```html
+10.
+Hello, <a href="#">
+    here is some long link text which I put on its own line
+</a> please take a look at it!
+```
+
+10. Hello, <a href="#" class="demo-link">
+    here is some long link text which I put on its own line
+</a> please take a look at it!
+
+You'll notice here that the space after the link ends is considered part of the
+link and the underscore trails one character farther than you might expect.
+Since the link is on its own line, the text ends with a newline character before
+the `</a>`. This means the link technically ends with the whitespace. There's
+also a space after the `</a>`, but as mentioned the space goes to the preceding
+text which is the link in this case. The solution here is to remove the newline
+at the end of the `<a>` tag by reformatting it, line length limits be dammed.
+
+```html
+11.
+Hello,
+<a href="#">here is some long link text which I put on its own line</a>
+please take a look at it!
+```
+
+11. Hello,
+<a href="#" class="demo-link">here is some long link text which I put on its own line</a>
+please take a look at it!
+
 ### Block Elements
 
 All of the above applies to _inline_ HTML elements.
 
 _Block_ elements are similar, but preserve less whitespace. Any spaces between
 block elements are dropped on the assumption that you don't want any block to
-have leading or trailing whitespace and you don't want any blocks of
-whitespace-only text nodes.
+have leading or trailing whitespace and you don't want any blocks of only
+whitespace.
 
 ```html
-10.
+12.
 <div>Hello</div><div>World</div>
 
-11.
+13.
 <div>Hello</div>      <div>World</div>
 
-12.
+14.
 <div>Hello</div>
 <div>World</div>
 ```
 
-10. <div>Hello</div><div>World</div>
-11. <div>Hello</div>      <div>World</div>
-12. <div>Hello</div>
+12. <div>Hello</div><div>World</div>
+13. <div>Hello</div>      <div>World</div>
+14. <div>Hello</div>
 <div>World</div>
 
 In this case there's actually no difference between the examples because all the
 whitespace differences are ignored and newlines are placed between the blocks.
-Example 10. does not actually contain _any_ whitespace yet the two `<div>` tags
+Example 12. does not actually contain _any_ whitespace yet the two `<div>` tags
 are rendered with a newline between them.
 
-### Accessibility
+### CSS
 
 So this means HTML's whitespace rules actually _vary_ based on how you're
 rendering the text. So let's do a quick pop quiz, how do you expect the
 following to render?
 
 ```html
-13.
+15.
 <aside>Hello</aside><aside>World</aside>
 ```
 
 You might intuitively think, "Well `<aside>` is a block element, so it should
 follow the same rules as `<div>`. Therefore this will render exactly like
-example 10., and there's a newline between them."
+example 12., and there's a newline between them."
 
-That's very well-reasoned of you, except this is a trick question. `<aside>` is
-natively a block element, but it doesn't _have_ to be. Therefore you can
-actually render different spacing based on how you _style_ the element.
+That's very well-reasoned of you, and you are correct... _most_ of the time...
+This is actually a trick question. `<aside>` is natively a block element, but it
+doesn't have to be. Therefore you can actually render different spacing based on
+how you _style_ the element.
 
 ```html
-13.
+16.
 <style>aside { display: 'block'; }</style>
 <aside>Hello</aside><aside>World</aside>
 
-14.
+17.
 <style>aside { display: 'inline'; }</style>
 <aside>Hello</aside><aside>World</aside>
 ```
 
-13. <aside>Hello</aside><aside>World</aside>
-14. <aside style="display: inline;">Hello</aside><aside style="display: inline;">World</aside>
+16. <aside>Hello</aside><aside>World</aside>
+17. <aside style="display: inline;">Hello</aside><aside style="display: inline;">World</aside>
 
 The same HTML can actually lead to different whitespace behavior. That might not
 sound too bad, after all this is exactly the layout difference between `block`
-and `inline`. However it actually changes the text displayed to the user. 13.
-displays two strings, "Hello" and "World". While 14. displays a single string
+and `inline`. However it actually _changes_ the text displayed to the user. 16.
+displays two strings, "Hello" and "World". While 17. displays a single string
 "HelloWorld". There's a semantic difference between those two options, not just
 a styling distinction.
 
 You can actually observe this distinction in JavaScript by accessing a parent
-element containing these `<aside>` tags.
+element containing these `<aside>` tags in the above order.
 
 ```
-> $0.textContent
+> parentElement.textContent
 '\nHelloWorld\nHelloWorld\n'
 
-> $0.innerText
+> parentElement.innerText
 'Hello\nWorld\nHelloWorld'
 ```
 
@@ -227,11 +265,11 @@ separation while `innerText` separates the same text with a newline.
 two examples in a way `textContent` cannot.
 
 You can even hear the difference with text-to-speech tools! Windows Narrator on
-Chrome treats block elements as three different text fields while inline
-elements are joined into a single word. When played normally it's a little
-trickier to hear, but I can manually step through each `block` formatted word
-and read them individually while the `inline` text is joined together into a
-single, inseparable word.
+Chrome treats block elements as different text fields while inline elements are
+joined into a single word. When played normally it's a little trickier to hear,
+but I can manually step through each `block` formatted word and read them
+individually while the `inline` text is joined together into a single,
+inseparable word.
 
 ```video
 {
@@ -242,6 +280,11 @@ single, inseparable word.
     "loop": true
 }
 ```
+
+This is also interesting because it means that whitespace handling is actually
+not done by the HTML parser. The parser must retain all spaces because it's
+actually the CSS layer which decides whether or not those spaces are
+significant.
 
 This also implies that search engines may index different textual content based
 on the CSS, which really bulldozes any idea of separation between the content
@@ -256,7 +299,7 @@ I'll just share
 with a couple boxes.
 
 ```html
-15.
+18.
 <style>
     li {
         display: inline-block;
@@ -272,7 +315,7 @@ with a couple boxes.
 </ul>
 ```
 
-15. <ul class="inline-block-list">
+18. <ul class="inline-block-list">
   <li></li>
   <li></li>
 </ul>
@@ -282,13 +325,13 @@ to make this space more visible. But where does that space come from? There's no
 margin or padding here. In fact, what if we change the HTML ever so slightly...
 
 ```html
-16.
+19.
 <ul>
   <li></li><li></li>
 </ul>
 ```
 
-16. <ul class="inline-block-list">
+19. <ul class="inline-block-list">
   <li></li><li></li>
 </ul>
 
@@ -296,6 +339,8 @@ Since the `<li>` tags are inline blocks the space between them is considered
 significant and rendered to the user. Shout out to the developer who had to
 debug that spacing issue. And also shout out to Firefox which actually displays
 a "whitespace" element in its DevTools to make this somewhat visible.
+
+TODO: Screenshot
 
 ### Preformatted Text
 
@@ -306,7 +351,7 @@ Yes, that is a valid point. HTML does have a `<pre>` tag for "preformatted" text
 which automatically preserves _all_ whitespace.
 
 ```html
-17.
+20.
 <pre>
 Hello world
 I am preformatted         text which is interesting.
@@ -314,17 +359,21 @@ I am preformatted         text which is interesting.
 </pre>
 ```
 
-17. <pre>
+TODO: This doesn't render right without `&nbsp;`... Maybe we need an iframe for these examples?
+
+TODO: Wrap in `<figure>`?
+
+20. <pre>
 Hello world
 I am preformatted         text which is interesting.
-    I'm indented more than the rest!
+&nbsp;&nbsp;&nbsp;&nbsp;I'm indented more than the rest!
 </pre>
 
 No whitespace collapsing occurs and all of it is considered significant, with
 one minor exception. There are actually two spaces not considered significant.
-The first is the first newline, the one immediately following the initial `<pre>`
-(`<pre>\nHello...`). The second one is the last newline, the one immediately
-preceding the final `</pre>` (`than the rest!\n</pre>`).
+Specifically, the first newline immediately following the initial `<pre>`
+(`<pre>\nHello...`) and the last newline, the one immediately preceding the
+final `</pre>` (`than the rest!\n</pre>`).
 
 Neither of these newlines are rendered, there's no blank line at the start or
 end of the rendered result. Surprisingly if we check `textContent` we don't see
@@ -332,26 +381,28 @@ the first newline, but we _do_ see the second newline, even though it's not
 rendered. I have no idea why this is the case.
 
 ```
-> $0.textContent
+> preElement.textContent
 'Hello world\n...than the rest!\n'
 ```
 
 But if we add spaces between the `<pre>` and `</pre>` and their nearest
-newlines... (I'm using `&#32;` to make these newlines visible, the behavior is
-the same as a literal space character, more on this later).
+newlines... (I'm using `&#32;` to make these newlines visible in code, the
+behavior is the same as a literal space character, more on this later).
 
 ```html
-18. <pre>&#32;
+21. <pre>&#32;
 Hello world
 I am preformatted         text which is interesting.
     I'm indented more than the rest!
 &#32;</pre>
 ```
 
-18. <pre>&#32;
+TODO: This doesn't render right without `&nbsp;` either...
+
+21. <pre>&#32;
 Hello world
 I am preformatted         text which is interesting.
-    I'm indented more than the rest!
+&nbsp;&nbsp;&nbsp;&nbsp;I'm indented more than the rest!
 &#32;</pre>
 
 Now we get the empty lines and the start and end of the block. So the rule seems
@@ -391,19 +442,19 @@ which is multiple lines.</pre>
 
 Even if that is more accurate when it comes to whitespace handling. The main
 takeaway is that even `<pre>` isn't totally straightforward about its whitespace
-logic, even when that's kind of the whole point of the tag.
+logic, despite that being kind of the whole point of the tag.
 
 `<pre>` is also just generally unergonomic. While the whitespace behavior is
 definitely more intuitive, you can't indent it at all without affecting its
 content. Compare these two examples:
 
 ```html
-18.
+22.
 <pre>
     Hello, World!
 </pre>
 
-19.
+23.
 <div>
     <pre>
         Hello, World!
@@ -411,27 +462,31 @@ content. Compare these two examples:
 </div>
 ```
 
-18. <pre>
+22. <pre>
         Hello, World!
     </pre>
-19. <div>
+23. <div>
         <pre>
             Hello, World!
         </pre>
     </div>
 
-These both feel like they should contain the same text "Hello, World!", but 18.
-is preceded by 4 spaces while 19. is preceded by 8 spaces and trailed with a
+These both feel like they should contain the same text "Hello, World!", but 22.
+is preceded by 4 spaces while 23. is preceded by 8 spaces and trailed with a
 newline and another 4 spaces (because that last indent comes after the newline,
 it triggers the trailing newline behavior mentioned earlier and we get a blank
 line at the end).
+
+So while `<pre>` does solve a number of whitespace issues I've described, it
+causes a whole separate set of developer experience (DX) issues which make it
+harder and less ergonomic to use correctly.
 
 #### `white-space`
 
 [The `white-space` CSS property](https://developer.mozilla.org/en-US/docs/Web/CSS/white-space)
 adds even more complexity to this. It supports `white-space: pre;` which can
 basically opt-in any element to the `<pre>` tag's parsing rules. It also
-supports `pre-line`, `pre-wrap` and a few option possibilities to further
+supports `pre-line`, `pre-wrap` and a few other possible options to further
 configure the behavior for specific use cases.
 
 ### `&nbsp;`
@@ -449,56 +504,94 @@ This is a useful tool, but is frequently misused. If you need a space between
 two elements, especially elements in an inline text context where devs
 frequently reach for `&nbsp;`, you probably don't want the non-breaking
 behavior. Imagine if the viewport shrinks really narrow such that the two items
-you're spacing out can't fit together. Would you want then to wrap and stack
+you're spacing out can't fit together. Would you want them to wrap and stack
 vertically, or would you want them to overflow and create a horizontal
 scrollbar? In my experience, usually the wrapping is more desirable, but maybe
 that's just coming from my abhorrence of horizontal scroll bars.
 
-I suspect most usages of `&nbsp;` actually have non-breaking behavior which the
-original developer did not intended but just didn't notice and I think most of
-those usages are probably incorrect.
+Even in cases where the spaced out elements do break on a line (such as two
+images), the `&nbsp;` still takes up one space of width and influences line
+wrapping. Take this example where I've got two red boxes with an `&nbsp;` in the
+middle (colored blue) to space them out. The `&nbsp;` itself needs to exist on
+one line or another, so as the viewport narrows it needs to pick a line. If it
+doesn't fix on the first line, it will become the first character on the second
+line and shift the second box. If it doesn't fit on either line, it will create
+its own empty line between the two boxes and introduce undesirable vertical
+space.
 
-So what so you do instead? I'd like to say to use just a regular space instead
-of `&nbsp;`. However the collapsing behavior I've described prevents you just
-inserting arbitrary spaces wherever you want. I want to suggest `&#32;` over
-`&nbsp;`, but that doesn't work either. `&#` lets you choose a character by its
-Unicode code point and 32 is the code point for a standard space. So `&#32;` is
-literally equivalent to a space character. Unfortunately it's so equivalent that
-it's also subject to the same whitespace collapsing behavior. So you can put as
-many `&#32;` as you want, you'll still get at most only one space. My sincerest
-apologies to the 3 people reading this who want to put two spaces after the end
-of a sentence.
+TODO: Transcode
+
+```video
+{
+    "type": "demo",
+    "urls": ["./demos/2-nbsp-overflow.mp4"],
+    "size": [1920, 1080],
+    "audible": false,
+    "loop": true
+}
+```
+
+This is a bit of a contrived example, but I suspect most usages of `&nbsp;`
+actually wanted a _non-collapsible_ space but landed on a non-breaking space
+instead. I have a feeling most developers who write `&nbsp;` do not actually
+want the non-breaking behavior but just didn't notice and it's quite possible
+most of those usages of `&nbsp;` are incorrect and have line breaking bugs like
+the one I just demonstrated above.
+
+So what so you do instead? I'd like to suggest using a regular space instead of
+`&nbsp;`. However the collapsing behavior I've described prevents you just
+inserting arbitrary spaces wherever you want, especially if you want multiple
+`&nbsp;` characters. To address that, I think the obvious solution would be to
+prefer `&#32;` over `&nbsp;`, but that doesn't work either. `&#` lets you choose
+a character by its Unicode code point and 32 is the code point for a standard
+space. So `&#32;` is literally equivalent to a space
+character. Unfortunately it's so equivalent that it's also subject to the same
+whitespace collapsing behavior. So you can put as many `&#32;` as you want,
+you'll still get at most only one space. My sincerest apologies to the 3 people
+reading this who want to put two spaces after the end of a sentence.
 
 ```html
-20.
+24.
 <div>Hello&#32;&#32;&#32;&#32;&#32;&#32;&#32;World!</div>
 ```
 
-20. <div>Hello&#32;&#32;&#32;&#32;&#32;&#32;&#32;World!</div>
+24. <div>Hello&#32;&#32;&#32;&#32;&#32;&#32;&#32;World!</div>
 
-This actually feels objectively wrong to me. Whitespace collapsing feels like a
+This behavior actually feels objectively wrong to me. Whitespace collapsing is a
 solution for the developer experience so you don't have to butcher your HTML
 code to get a reasonable output. But if the developer hand-writes `&#32;`, they
 clearly care about rendering a space in that slot and are giving up a convenient
-DX to do it. Whatever developer writes multiple `&#32;` clearly does not expect
-them to be collapsed together, so I'm confused why HTML works this way.
+DX to do it. Whatever developer writes multiple `&#32;` almost certainly does
+not expect them to be collapsed together.
 
-I suspect the counter-argument here is that a literal space and `&#32;` should
-be indistinguishable and lead to the same behavior. Though I think that's a
+I wasn't able to come up with a compelling reason for why a developer would want
+`&#32;` to be collapsible, but I think I do understand the reason for it. As
+[mentioned earlier](#css), CSS controls whitespace collapsing, not the HTML
+parser. This means the HTML parser needs to convert `&#32;` to literal spaces
+and retain _all_ of them for all elements. It's then up to CSS to decide which
+spaces are significant. Because of that, CSS can't distinguish between a literal
+space and a `&#32;` entity, they're the same thing.
+
+I can see an argument that this actually is desirable for purposes of
+consistency. On a certain level, a literal space and `&#32;` _should_ be
+indistinguishable and lead to the same behavior. However, I think that's a
 stronger argument for how the spaces are observable at runtime, not how the HTML
-parser interprets the code. HTML already has to deal with escaped entities. For
-example, `<` and `&lt;` are not the same because the former starts an HTML tag
-while the later is a text literal for `<` which explicitly does _not_ start an
-HTML tag. I feel like it would be equally reasonable for a space literal and
-`&#32;` to have different collapsing behavior.
+parser interprets the code. I think it would be reasonable for the HTML parser
+to distinguish a space character and a `&#32;` and use different collapsing
+behaviors. For example, `<` and `&lt;` are not the same because the former
+starts an HTML tag while the later is a text literal for `<` which explicitly
+does _not_ start an HTML tag. Unfortunately the HTML parser isn't the one doing
+the collapsing, so we've lost that information by the time CSS handles it. This
+"bug" with `&#32;` feels like a side effect of the decision to allow CSS to
+influence whitespace behavior.
 
 So what's the correct solution for spacing out two elements? Well it's probably
 best to do this in CSS with `margin`, `padding`, or any of the other thousand
 properties which create spaces and fail to center elements. If you really need
 to, a `<pre>` tag or the `white-space` property is probably the best way to have
-maximum control over your spacing behavior. I honestly can't blame you if you
-still end up using `&nbsp;` though, I don't have a great drop-in solution to
-that problem.
+maximum control over your spacing behavior. However, I honestly can't blame you
+if you still end up reaching for `&nbsp;` though, I don't have a great drop-in
+solution beyond "do it in CSS".
 
 ### How Did We Get Here?
 
@@ -580,7 +673,7 @@ element can be broken up into multiple lines:
 ```
 
 Anything affecting indenting can also cause line breaks. For example,
-considering adding a wrapper `<div>`.
+consider adding a wrapper `<div>`.
 
 ```html
 <!-- Before -->
@@ -599,59 +692,66 @@ These formatting changes are intended to be no-ops. They make my life easier as
 a developer, but should never change significant whitespace for the user. Except
 they do change significant whitespace because they introduce leading and
 trailing spaces. In a block rendering context it's probably fine, but you can
-consider more complicated text scenarios like:
+consider an inline text scenario like:
+
+TODO: Use a link example to call back.
 
 ```html
-21.
-<div>Hello, world! Are you enjoying my web<em>page</em>?</div>
+25.
+Check out my <a href="#">web site</a> and read my blog!
 ```
 
-21. <div>Hello, world! Are you enjoying my web<em>page</em>?</div>
+25. Check out my <a href="#" class="demo-link">web site</a> and read my blog!
 
-In this case I'm trying to emphasize only _part_ of a word and it renders as you
-would expect. But formatting this text can introduce a line break like:
+In this case we have text with a link in the middle. But if this exceeds the
+line length limit, formatting the text can introduce line breaks like:
 
 ```html
-22.
-<div>
-    Hello, world! Are you enjoying my web
-    <em>page</em>?
-</div>
+26.
+Check out my
+<a href="#">
+    web site
+</a>
+and read my blog!
 ```
 
-22. <div>
-        Hello, world! Are you enjoying my web
-        <em>page</em>?
-    </div>
+26. Check out my
+<a href="#" class="demo-link">
+    web site
+</a>
+and read my blog!
 
-It might be a little hard to see, but this has introduced a space between "web"
-and "page". Formatting this HTML code does affect user significant whitespace
-and changes the rendered output.
+TODO: Why is the leading space inside the `<a>`? Does that conflict with earlier content?
+
+Now we have that overextended underline again, all because of a single
+formatting change!
 
 Prettier actually has an option for this called
 [`--html-whitespace-sensitivity`](https://prettier.io/docs/en/options.html#html-whitespace-sensitivity).
-Setting this to `ignore` will make the above change, so the output code looks
-great, but my break your UI. `strict` will avoid introducing a significant
-whitespace change so your UI is safe, but leads to truly "pretty" HTML code
-like:
+Setting this to `ignore` will allow the above change, so the formatted code
+looks great, but may break your UI. `strict` will avoid introducing a
+significant whitespace change so your UI is safe, but leads to truly "pretty"
+HTML code like:
 
 ```html
-<div
-  >Hello, world! Are you enjoying my
-  web<em>page</em>?</div
+Check out my
+<a href="#" class="demo-link"
+  >web site</a
 >
+and read my blog!
 ```
 
-Prettier can't introduce a newline between `<div>` and `Hello`, so it has to put
-the newline _inside_ the `<div>` since that's the only location it can add
-insignificant whitespace.
+Prettier can't introduce a newline between `<a>` and `web`, so it has to put the
+newline _inside_ the `<a>` start tag since that's the only location it can add
+insignificant whitespace. Same for the `</a>` and the following `and`.
 
 Prettier also has a `css` option which tells it to "Respect the default value of
-CSS display property." Hopefully after reading this post you should know what
+CSS `display` property." Hopefully after reading this post you should know what
 that means! Given a `<div>` tag it can format with the `ignore` behavior because
-leading and trailing whitespace aren't significant in that context. `<span>`
-tags will use `strict` behavior because the whitespace _is_ significant. This
-makes a lot of sense as a useful middle ground between `ignore` and `strict`.
+leading and trailing whitespace aren't significant in block rendering contexts.
+`<span>` tags will use `strict` behavior because the leading and trailing
+whitespace _is_ significant. This makes a lot of sense as a useful middle ground
+between `ignore` and `strict`.
 
 But after reading this post you should also know that's not entirely accurate
 and breaks if you do `div { display: inline; }`. Prettier doesn't know anything
@@ -673,12 +773,12 @@ fundamentally unsolvable problem.
 ## Internationalization (i18n)
 
 Now let's pivot to another unsolvable problem, i18n. This term encompasses a
-wide umbrella of problems, tools, and technologies for localizing applications
-so your site can be accessed by users in many different languages across the
-world. This is a complex problem for a number of different reasons, but let's
-stay focused on HTML rendering and whitespace.
+wide umbrella of problems, tools, and technologies for localizing web pages so
+your site can be accessed by users in many different languages across the world.
+This is a complex problem for a number of different reasons, but let's stay
+focused on HTML rendering and whitespace.
 
-Ultimately, the process looks like this:
+Typically a site is localized through a process which looks something like this:
 
 1.  A developer writes some form of HTML code:
     ```html
@@ -689,20 +789,20 @@ Ultimately, the process looks like this:
     ```
     "Hello, World!"
     ```
-3.  These messages are translated to all the supported locales (`es` in this
-    case).
+3.  These messages are translated to all the supported locales (just `es` for
+    this example).
     ```
     "¡Hola, Mundo!"
     ```
-4.  The localized messages are inserted back into the deployed application and
-    made available to those users.
+4.  The localized messages are inserted back into the deployed site and made
+    available to those users.
     ```html
     <div>¡Hola, Mundo!</div>
     ```
 
 Exactly how this works depends on your i18n tooling and the DX of your actual
-application, so I won't go into specifics there. But this is the rough process
-of how a web application gets localized.
+site, so I won't go into specifics there. But this is the rough process of how a
+web site gets localized.
 
 So let's think through the whitespace implications of this. Imagine the
 developer writes the following:
@@ -730,11 +830,11 @@ This then gets inserted back into the HTML and we end up with:
 <span>¡Hola, Mundo!</span>
 ```
 
-This does not contain the leading/trailing whitespace and thus renders
+This does _not_ contain the leading/trailing whitespace and thus renders
 differently than the English version. It's also an especially bad bug because
 many development teams are going to be primarily focused on testing whatever
-language they are developing in (the source locale). Most devs aren't going to
-test a separate locale every time they alter text.
+language they are developing in (the source locale, English in this case). Most
+devs aren't going to test a separate locale every time they alter text.
 
 It's a rough bug, but a solvable one. The trick is to treat leading and trailing
 whitespace as significant and keep track of it _outside_ the translation system.
@@ -765,7 +865,7 @@ of data might be coming from a database at runtime and isn't known to the
 developer. Consider a server-side rendered HTML template:
 
 ```html
-<span>Hello, { (firstName + lastName).toLowerCase() }!</span>
+<span>Hello, { (firstName + ' ' + lastName).toLowerCase() }!</span>
 ```
 
 We don't know what `firstName` or `lastName` is at translation-time as that
@@ -808,8 +908,8 @@ whitespace, but `"Mundo"` does not. The UX designer is gonna have a fit as soon
 as they realize there are multiple locales they were supposed to design for.
 
 The problem here is that fixing leading and trailing whitespace for a localized
-element is not enough, we need to apply that same fix for every sub-element in
-the message.
+element is not enough, we need to apply that same fix for every descendant
+element in the message.
 
 All this means that i18n tooling needs to be acutely aware of HTML's whitespace
 rules and apply them correctly to the localized text. In any other language this
@@ -824,24 +924,31 @@ console.log(
 
 An alternative approach is to define your messages outside your actual view
 layer. Android does this with a `strings.xml` file which contains all
-user-visible messages and gets translated into various locales. Then you just
+user-visible messages and gets translated into various locales.
+
+```html
+<resources>
+    <!-- %1$s displays the first argument as a string. -->
+    <!-- %2$s displays the second argument as a string. -->
+    <string name="say_hello">Hello, %1$s %2$s!</string>
+</resources>
+```
+
+Then you just
 reference the string you want to display. In an HTML context, this might look
 like:
 
 ```html
 <span>
-    {i18n('say_hello', {
-        firstName: 'Devel',
-        lastName: 'Cause',
-    })}
+    {i18n('say_hello', 'Doug' /* firstName */, 'Parker' /* lastName */)}
 </span>
 ```
 
-This would find the string named `say_hello`, format it with the given
-`firstName` and `lastName` and then render the result to the `<span>` tag. This
-isn't awful and can avoid some of the whitespace issues since the developer's
-whitespace (in the HTML file) is clearly outside the message's whitespace (in
-the `strings.xml` file).
+This would find the string named `say_hello`, format it with the given first and
+last name and then render the result to the `<span>` tag. This isn't awful and
+can avoid some of the whitespace issues since the developer's whitespace (in the
+HTML file) is clearly outside the message's whitespace (in the `strings.xml`
+file).
 
 However this approach negatively impacts the developer experience since you
 can't just inline the content you want to render and also makes it significantly
@@ -851,7 +958,7 @@ pure string templating context it may be possible to replace `${linkStart}` with
 HTML escaping and XSS challenges. Also if the HTML is being processed in any
 kind of more powerful environment which outputs something other than pure text
 (ex. Angular), then you can't just shove arbitrary elements into strings without
-breaking other parts of your application.
+breaking other parts of your toolchain.
 
 ## How Could we Fix This?
 
@@ -860,9 +967,10 @@ all these whitespace problems go away. Is that possible? What would it look
 like?
 
 I don't have a perfect solution in mind, but I do have some thoughts. As I
-mentioned earlier, the root problem is that whitespace in HTML is ambiguous, is
-it there to support the developer authoring their HTML code, or to display
-something reasonable to the end user? That's the core problem we should fix.
+mentioned earlier, the root problem is that whitespace in HTML is ambiguous,
+does a space exist to support the developer authoring their HTML code, or to
+display something reasonable to the end user? That question is unanswerable and
+the core problem we should fix.
 
 The best way to do that is to change HTML syntax such that significant
 whitespace is syntactically distinct from insignificant whitespace. The obvious
@@ -889,6 +997,8 @@ concatenation like Python so you don't need `+` signs everywhere. If you really
 like angle brackets you could replace the quotes with `<text>` to make text
 nodes more explicit, but I probably wouldn't go that particular direction.
 
+TODO: You can't copy paste into an HTML document anyways...
+
 Aside from adding quotes there's a couple other changes which need to be made:
 1.  Any text outside of a quoted string is a syntax error.
     *   Exactly how it renders is up to the browser, I really don't care what
@@ -908,8 +1018,8 @@ Aside from adding quotes there's a couple other changes which need to be made:
         options.
     *   The `display` and `white-space` changes together remove the dependency
         on CSS to understand how HTML text is parsed, meaning just looking at
-        the HTML document is sufficient to understand how the text will be
-        formatted.
+        the HTML document is sufficient to understand the precise text it
+        contains.
 1.  `<pre>` tags should be removed.
     *   All text is preformatted (inside quotes), so having a special tag is no
         longer needed.
@@ -921,7 +1031,7 @@ Aside from adding quotes there's a couple other changes which need to be made:
         of this proposal would remove it entirely.
 1.  `&#32;` is no longer collapsed.
     *   Since we got rid of whitespace collapsing altogether, this is naturally
-        fixed.
+        fixed, though it isn't really a problem anymore either.
 
 Would this solve the problem? Since whitespace is no longer ambiguous, we don't
 need whitespace collapsing anymore. Whitespace outside the quotes is removed
@@ -929,8 +1039,11 @@ altogether, while whitespace inside the quotes is preserved. No collapsing
 needed! Developers can add multiple spaces without needing `&nbsp;`:
 
 ```html
-<!-- Just works! -->
-<span>"Hello,        World!"</span>
+<!-- Just works! Indentation is correctly ignored, but
+spacing between the words is retained. -->
+<span>
+    "Hello,        World!"
+</span>
 ```
 
 Prettier and other formatters can adjust the developer side of the whitespace as
@@ -969,12 +1082,16 @@ content inside the text and then replacing it with the translated result.
 </div>
 ```
 
+TODO: Raise HTML minification as a problem earlier or remove entirely.
+
 One problem I didn't talk much about is HTML minification, which has many of the
 same problems described above since the minifier needs to eliminate all
 insignificant whitespace, but it can't know which whitespace is insignificant
 because that requires understanding the CSS of the page. Quoted strings would
 solve this problem as well, since HTML minifiers would just remove all the
 spaces outside quotes and keep the spaces inside quotes.
+
+TODO: Talk about Nunjucks' solution?
 
 Since it seems to solve all the problems described, can we ship this?
 Unfortunately no.
@@ -1012,18 +1129,21 @@ Creating a new entity solves three problems:
         behavior.
 
 The downside of this is that it's a bit confusing that `&#32;` and my proposed
-`&sp;` would represent the same character (a space) but have different semantics
-to the HTML parser (one gets collapsed, the other doesn't). That's kind of
-unique and I'm not aware of any other character which works that way. Maybe this
-is infeasible too, but it's worth considering as a potential improvement which
-could actually be landed, albeit a small one.
+`&sp;` would represent the same character (a space) but have different
+collapsing semantics. Given that the HTML parser retains all the spaces already
+and processes entities, I don't think `&sp;` as a named entity of the space
+character would quite be sufficient, CSS still wouldn't be able to the tell the
+difference between that and a literal space.
+
+I suspect this would actually require an entirely new Unicode character
+representing a "non-collapsible space", distinct from the existing space
+character. Except Unicode is used in more than just HTML. In theory, other text
+rendering engines may do some form of whitespace collapsing and a
+non-collapsible space might be useful in some of those contexts, but I can see
+some push back to adding a new character specifically to solve an HTML rendering
+bug.
 
 TODO: File an issue?
-
-TODO: Does this even make sense? HTML parser must preserve all spaces so
-`white-space: pre;` can work, therefore it would need a distinct character code
-I think? Does a different character make sense when this an HTML-only issue?
-What would that character do outside an HTML context? Just a plain space?
 
 ## Practical Advice
 
@@ -1035,20 +1155,76 @@ does _usually_ work and we can often rely on that, it's mainly about minimizing
 edge case behavior where you need to look up a blog post like this. To that end,
 I have a few suggestions.
 
-First, avoid changing `display` to a different layout behavior. If you want a
+### Avoid Leading and Trailing Whitespace in Links
+
+First, avoid leading and trailing whitespace in `<a>` tags or any other
+underlined text.
+
+```html
+<div>
+    Here is some interesting text with
+    <a href="#">a link that exceeds the line length limit</a>
+    but I don't care.
+</div>
+```
+
+Pretty consistently it's links where I see the biggest challenges with
+whitespace given that they are underlined by default and it's a common style.
+While spacing may be incorrect in many other situations, the underline is
+usually where it becomes a problem that needs to be fixed.
+
+As long as `<a>` tags are written with no leading or trailing whitespace, this
+isn't an issue and your underlines will always be correct. It does mean that in
+some situations you might have to exceed the line length limit, and potentially
+fight with your formatter (don't use `--html-whitespace-sensitivity ignore`),
+but I think it's worth it given how common of a foot gun this particular use
+case is.
+
+### Don't Change Layout Behavior with `display`
+
+Second, avoid changing `display` to a different layout behavior. If you want a
 `display: block;` element, pick a tag which uses `display: block;` by default.
-This might not always be possible when you need a certain semantic tag (and of
-course other `display` values like `none` are still fine), but it at least
-reduces the possibility of your text content being dependent on CSS. I usually
-hate adding unnecessary elements, but I think there's some justification here
-for preferring `<aside><span>...</span></aside>` over
-`<aside style="display: inline;"></aside>`.
+This should reduce the possibility of your text content being dependent on CSS,
+however it might be difficult when you need a specific semantic tag. Take for
+example, if you need an inline `<aside>` tag. There are two ways to do this:
 
-Second, avoid `white-space: pre` and friends and use a real `<pre>` tag instead.
-Again, this reduces dependency on CSS and might not always be possible but
-hopefully a decent best practice to follow.
+1.  Add a second tag so the one containing the text uses the correct `display`
+    value by default, independent of the semantic `<aside>` tag wrapping it.
+    ```html
+    <aside>
+        <span>
+            My text content.
+        </span>
+    </aside>
+    ```
+2.  Pick a tag with the `display` behavior you want by default (`<div>` or
+    `<span>`), and then use `role` to switch it to the semantic element you
+    want. There might be other accessibility implications to this though.
+    ```html
+    <span role="aside">
+        My text content.
+    </span>
+    ```
 
-Third, always write `<pre>` tags with no leading and trailing whitespace, and
+Both of these approaches work with the `--html-whitespace-sensitivity css`
+option and avoid a CSS dependency just to understand the text displayed.
+
+### Avoid Changing Whitespace Collapsing with `white-space`
+
+Third, avoid `white-space: pre;` and prefer a real `<pre>` tag instead. Again,
+this reduces dependency on CSS and might not always be possible but hopefully a
+decent best practice to follow.
+
+When you need to configure `white-space` to something other than `pre`, I
+recommend only setting it on `<pre>` tags. The `<pre>` tag communicates to HTML
+tooling that its whitespace should be fully retained because its preformatted.
+Even if you're actually using a different `white-space` mode in your CSS, the
+`<pre>` tag is at least a key signal to HTML tooling that the whitespace is more
+significant here than any other tag.
+
+### Avoid Insignificant Whitespace in `<pre>` Tags
+
+Fourth, always write `<pre>` tags with no leading and trailing whitespace, and
 without indentation. They should generally look like:
 
 ```html
@@ -1065,9 +1241,9 @@ Yeah, I don't like the look either. But this approach avoids the confusing
 leading/trailing newline behavior and prevents indentation accidentally leaking
 into the content.
 
-None of this really helps with the formatting and i18n tooling issues
-unfortunately since they still need to deal with whitespace regardless. But I
-warned you at the start, this post is partially for sharing knowledge and
+None of these suggestions really help with the formatting and i18n tooling
+issues unfortunately since they still need to deal with whitespace regardless.
+But I warned you at the start, this post is partially for sharing knowledge and
 partially for venting about how broken HTML is.
 
 Broken? Yes.
@@ -1079,7 +1255,8 @@ Manageable? Probably.
 ![A meme from the animated TV comedy Bob's Burgers depicting Bob and Linda
 getting ready to go out. Linda is putting on makeup and asks Bob to work with
 HTML whitespace. Bob puts on his coat and replies with a frustrated sigh, "Okay,
-fine. But I'm gonna complain the whole time."](./demos/2-im-gonna-complain.gif)
+fine. But I'm gonna complain the whole time."](./demos/3-im-gonna-complain.gif)
 
 TODO: Convert gif format?
 TODO: Use picture macro.
+TODO: Double check example numbers.
