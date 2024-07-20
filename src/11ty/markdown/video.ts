@@ -22,17 +22,18 @@ import { Context, getContext } from './context';
  * ```
  *
  * The configuration object supports the following properties:
- * * `type`    - An enum string which chooses which kind of video to render.
- *               Options are: 'demo', 'gif'.
- * * `urls`    - An `Array<string>` of video URLs to use. Multiple URLs are
- *               available for performance and the earliest supported format by
- *               the browser will be used.
- * * `size`    - A `[width: number, height: number]` tuple indicating the
- *               expected dimensions of the avatar images.
- * * `audible` - Whether or not the video contains meaningful audio. Optional,
- *               defaults to `false`.
- * * `loop`    - Whether or not to loop the video. Optional, defaults to
- *               `false`.
+ * * `type`      - An enum string which chooses which kind of video to render.
+ *                 Options are: 'demo', 'gif'.
+ * * `urls`      - An `Array<string>` of video URLs to use. Multiple URLs are
+ *                 available for performance and the earliest supported format
+ *                 by the browser will be used.
+ * * `size`      - A `[width: number, height: number]` tuple indicating the
+ *                 expected dimensions of the avatar images.
+ * * `subtitles` - A `string` of the subtitle strack (VTT) to use. Optional.
+ * * `audible`   - Whether or not the video contains meaningful audio. Optional,
+ *                 defaults to `false`.
+ * * `loop`      - Whether or not to loop the video. Optional, defaults to
+ *                 `false`.
  */
 export const videoExtension: marked.MarkedExtension = {
     renderer: {
@@ -50,6 +51,7 @@ const videoConfigParser = zod.strictObject({
     type: zod.enum(['demo', 'gif']),
     urls: zod.array(zod.string()),
     size: zod.tuple([ zod.number(), zod.number() ]),
+    subtitles: zod.string().optional(),
     audible: zod.boolean().default(false),
     loop: zod.boolean().default(false),
 });
@@ -106,15 +108,22 @@ const videoNjkTemplate = `
         <source src="{{ url }}" type="{{ url | mimeVideo }}" />
     {% endfor %}
 {% endset %}
+{% set subtitles %}
+    {% if subtitles %}
+        <track label="English" kind="subtitles" srclang="en" src="{{ subtitles }}" default>
+    {% endif %}
+{% endset %}
 
 {% set videoEl %}
     {% if type === 'demo' %}
         <video {{ options }} playsinline {{ sizes | safe }} controls>
             {{ sources | safe }}
+            {{ subtitles | safe }}
         </video>
     {% elif type === 'gif' %}
         <video {{ options }} playsinline {{ sizes | safe }} class="gif">
             {{ sources | safe }}
+            {{ subtitles | safe }}
         </video>
     {% else %}
         {% filter throw %}

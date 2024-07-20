@@ -97,6 +97,28 @@ describe('video', () => {
             expect(html).toMatch(/<video[^>]*height="4321"[^>]*>/);
         });
 
+        it('does not render `<track>` tag when no subtitles are given', () => {
+            const html = renderVideo({
+                ...goldenConfig,
+                subtitles: undefined,
+            });
+
+            expect(html).not.toMatch(/<track/);
+        });
+
+        it('renders `<track>` tag when subtitles are given', () => {
+            const html = renderVideo({
+                ...goldenConfig,
+                subtitles: '/video.vtt',
+            });
+
+            expect(html).toMatch(/<track[^>]*label="English"[^>]*>/);
+            expect(html).toMatch(/<track[^>]*kind="subtitles"[^>]*>/);
+            expect(html).toMatch(/<track[^>]*srclang="en"[^>]*>/);
+            expect(html).toMatch(/<track[^>]*src="\/video.vtt"[^>]*>/);
+            expect(html).toMatch(/<track[^>]*default[^>]*>/);
+        });
+
         it('throws an error when given non-JSON content', () => {
             expect(() => useContext(mockContext(), () => marked(`
 \`\`\`video
