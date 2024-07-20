@@ -59,6 +59,7 @@ module.exports = function (config) {
     config.addPassthroughCopy('src/www/**/*.png');
     config.addPassthroughCopy('src/www/**/*.svg');
     config.addPassthroughCopy('src/www/**/*.webp');
+    config.addPassthroughCopy('src/www/**/*.webm');
     config.addPassthroughCopy('src/www/**/*.mp4');
 
     // Copy font resources to the output directory.
