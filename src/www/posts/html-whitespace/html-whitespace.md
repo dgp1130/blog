@@ -340,7 +340,16 @@ significant and rendered to the user. Shout out to the developer who had to
 debug that spacing issue. And also shout out to Firefox which actually displays
 a "whitespace" element in its DevTools to make this somewhat visible.
 
-TODO: Screenshot
+![Screenshot of Firefox rendering a web page with two pairs of boxes like above.
+The first pair does not contain any spacing between them, while the second pair
+does. DevTools is open to the "Inspector" panel showing the rendered DOM. It
+contains two `<ul>` tags, each containing two `<li>` tags representing each box.
+The elements are formatted in this view, so the whitespace around each of them
+is meaningless. However between the two `<li>` tags in the second `<ul>` is a
+small element labeled "whitespace". The user has clicked on this element and the
+spacing between the second pair of boxes is highlighted and marked as `#text`,
+indicating exactly where that spacing is coming from.
+](./demos/2-ff-whitespace.avif)(./demos/2-ff-whitespace.png)
 
 ### Preformatted Text
 
@@ -419,8 +428,6 @@ function renderPreformattedText(text: string): string {
 Except `.textContent` shows the trailing newline but not the leading newline and
 differs from this behavior, but let's not overcomplicate things, this blog would
 never do that... 😅
-
-TODO: Emoji
 
 I can see where the spec authors were going here. Usually if you're putting a
 `<pre>` tag on the page, you're probably going to put a newline before the
@@ -519,12 +526,10 @@ line and shift the second box. If it doesn't fit on either line, it will create
 its own empty line between the two boxes and introduce undesirable vertical
 space.
 
-TODO: Transcode
-
 ```video
 {
     "type": "demo",
-    "urls": ["./demos/2-nbsp-overflow.mp4"],
+    "urls": ["./demos/3-nbsp-overflow.mp4"],
     "size": [1920, 1080],
     "audible": false,
     "loop": true
@@ -693,8 +698,6 @@ a developer, but should never change significant whitespace for the user. Except
 they do change significant whitespace because they introduce leading and
 trailing spaces. In a block rendering context it's probably fine, but you can
 consider an inline text scenario like:
-
-TODO: Use a link example to call back.
 
 ```html
 25.
@@ -1091,7 +1094,7 @@ because that requires understanding the CSS of the page. Quoted strings would
 solve this problem as well, since HTML minifiers would just remove all the
 spaces outside quotes and keep the spaces inside quotes.
 
-TODO: Talk about Nunjucks' solution?
+TODO: Talk about Nunjucks' solution? Doesn't work for internal whitespace.
 
 Since it seems to solve all the problems described, can we ship this?
 Unfortunately no.
@@ -1250,13 +1253,15 @@ Broken? Yes.
 
 Fixable? Not really.
 
-Manageable? Probably.
+Manageable?
 
-![A meme from the animated TV comedy Bob's Burgers depicting Bob and Linda
-getting ready to go out. Linda is putting on makeup and asks Bob to work with
-HTML whitespace. Bob puts on his coat and replies with a frustrated sigh, "Okay,
-fine. But I'm gonna complain the whole time."](./demos/3-im-gonna-complain.gif)
+```video
+{
+    "type": "gif",
+    "urls": ["./demos/4-im-gonna-complain.webm", "./demos/4-im-gonna-complain.mp4"],
+    "size": [498, 244],
+    "loop": true
+}
+```
 
-TODO: Convert gif format?
-TODO: Use picture macro.
 TODO: Double check example numbers.
