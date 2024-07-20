@@ -215,14 +215,18 @@
 }
 
 .md figure {
-  display: inline-block;
   position: relative;
-  margin: 1em 0 2em;
+  margin: 1rem 0 2rem;
+}
+
+.md figure + figure {
+  margin: 3rem 0;
 }
 
 .md figcaption {
-  font-style: italic;
-  text-align: center;
+  font-weight: bold;
+  text-decoration: underline;
+  margin: 0 0 0.5rem;
 }
 
 .md pre {
