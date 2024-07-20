@@ -13,8 +13,6 @@ additional_styles: [ whitespace ]
 ```timestamp
 ```
 
-TODO: Link to spec somewhere? https://drafts.csswg.org/css-text/
-
 Recently I have been working on a project which required a deeper understanding
 of how whitespace works in HTML. I was never a fan of HTML's whitespace behavior
 before as I've been burned by it a few times. As I dug into it more deeply I
@@ -35,33 +33,63 @@ into a single space which is added as a text node between the elements.
 This means two adjacent links will render differently based on whether or not
 there is a space between them. Newlines and tabs are also interpreted as spaces.
 
+<figure>
+    <figcaption>Example 1: No whitespace.</figcaption>
+
 ```html
-1.
 <a href="#">First</a><a href="#">Second</a>
+```
 
-2.
+```inline-html
+<a href="#" class="demo-link">First</a><a href="#" class="demo-link">Second</a>
+```
+
+</figure>
+
+<figure>
+    <figcaption>Example 2: Single space.</figcaption>
+
+```html
 <a href="#">First</a> <a href="#">Second</a>
+```
 
-3.
+```inline-html
+<a href="#" class="demo-link">First</a> <a href="#" class="demo-link">Second</a>
+```
+
+</figure>
+
+<figure>
+    <figcaption>Example 3: Newline.</figcaption>
+
+```html
 <a href="#">First</a>
 <a href="#">Second</a>
 ```
 
-1. <a href="#" class="demo-link">First</a><a href="#" class="demo-link">Second</a>
-2. <a href="#" class="demo-link">First</a> <a href="#" class="demo-link">Second</a>
-3. <a href="#" class="demo-link">First</a>
+```inline-html
+<a href="#" class="demo-link">First</a>
 <a href="#" class="demo-link">Second</a>
+```
+
+</figure>
 
 This behavior of reducing multiple whitespace characters into a single space is
 called whitespace "collapsing". It also means that adding additional spaces has
 no effect. It's exactly the same as having one space.
 
+<figure>
+    <figcaption>Example 4: Lots of spaces.</figcaption>
+
 ```html
-4.
 <a href="#">First</a>       <a href="#">Second</a>
 ```
 
-4. <a href="#" class="demo-link">First</a>       <a href="#" class="demo-link">Second</a>
+```inline-html
+<a href="#" class="demo-link">First</a>       <a href="#" class="demo-link">Second</a>
+```
+
+</figure>
 
 This makes some amount of sense to me. The difference between 1. and 2. is clear
 in the code, obviously the developer intentionally put a space in 2. and it
@@ -75,23 +103,29 @@ the space is not in either `<a>` tag, that seems pretty reasonable to me.
 But let's keep experimenting. If we put this inside an `<span>` tag, then any
 leading and trailing whitespace is _not_ preserved.
 
+<figure>
+    <figcaption>Example 5: Indented.</figcaption>
+
 ```html
-5.
 <span>
             <a href="#">First</a>
             <a href="#">Second</a>
 </span>
 ```
 
-5. <span>
+```inline-html
+<span>
             <a href="#" class="demo-link">First</a>
             <a href="#" class="demo-link">Second</a>
 </span>
+```
+
+</figure>
 
 Even though there are many spaces before the first `<a>` and after the second
 `</a>`, they do not render to the user. This is because whitespace at the start
-of rendering context (basically whitespace before the first line) is removed
-completely.
+of rendering context (basically whitespace before the first line of a block) is
+removed completely.
 
 Typically spaces which are visible to the user are referred to as _significant_,
 while spaces which are not rendered are considered _insignificant_. For the
@@ -102,20 +136,44 @@ insignificant and not displayed to the user.
 
 This also applies to whitespace inside a tag. Consider these examples:
 
+<figure>
+    <figcaption>Example 6: Basic link.</figcaption>
+
 ```html
-6.
 Hello, <a href="#">World</a>!
+```
 
-7.
+```inline-html
+Hello, <a href="#" class="demo-link">World</a>!
+```
+
+</figure>
+
+<figure>
+    <figcaption>Example 7: Spaced link.</figcaption>
+
+```html
 Hello, <a href="#"> World </a>!
+```
 
-8.
+```inline-html
+Hello, <a href="#" class="demo-link"> World </a>!
+```
+
+</figure>
+
+<figure>
+    <figcaption>8. Very spacey link.</figcaption>
+
+```html
 Hello, <a href="#">        World          </a>!
 ```
 
-6. Hello, <a href="#" class="demo-link">World</a>!
-7. Hello, <a href="#" class="demo-link"> World </a>!
-8. Hello, <a href="#" class="demo-link">        World          </a>!
+```inline-html
+Hello, <a href="#" class="demo-link">        World          </a>!
+```
+
+</figure>
 
 In 7. we can see that the space between "World" and "!" is preserved because the
 space includes the underscore from the link and if you click that space
@@ -133,12 +191,18 @@ decide?
 In my testing, it seems like the space is always included in the former text. 7.
 shows the text is outside the link, so let's swap the ordering in 9. below.
 
+<figure>
+    <figcaption>Example 9: Link before text.</figcaption>
+
 ```html
-9.
 <a href="#">Hello, </a> World!
 ```
 
-9. <a href="#" class="demo-link">Hello, </a> World!
+```inline-html
+<a href="#" class="demo-link">Hello, </a> World!
+```
+
+</figure>
 
 Here we see that the space _does_ include the link underscore so the space was
 again given to the preceding text node.
@@ -146,16 +210,22 @@ again given to the preceding text node.
 This also highlights the most common foot gun I've seen, links with extra
 spaces. Consider this example:
 
+<figure>
+    <figcaption>Example 10: Long link text.</figcaption>
+
 ```html
-10.
 Hello, <a href="#">
     here is some long link text which I put on its own line
 </a> please take a look at it!
 ```
 
-10. Hello, <a href="#" class="demo-link">
+```inline-html
+Hello, <a href="#" class="demo-link">
     here is some long link text which I put on its own line
 </a> please take a look at it!
+```
+
+</figure>
 
 You'll notice here that the space after the link ends is considered part of the
 link and the underscore trails one character farther than you might expect.
@@ -165,16 +235,22 @@ also a space after the `</a>`, but as mentioned the space goes to the preceding
 text which is the link in this case. The solution here is to remove the newline
 at the end of the `<a>` tag by reformatting it, line length limits be dammed.
 
+<figure>
+    <figcaption>Example 11: Single-line link.</figcaption>
+
 ```html
-11.
 Hello,
 <a href="#">here is some long link text which I put on its own line</a>
 please take a look at it!
 ```
 
-11. Hello,
+```inline-html
+Hello,
 <a href="#" class="demo-link">here is some long link text which I put on its own line</a>
 please take a look at it!
+```
+
+</figure>
 
 ### Block Elements
 
@@ -185,22 +261,46 @@ block elements are dropped on the assumption that you don't want any block to
 have leading or trailing whitespace and you don't want any blocks of only
 whitespace.
 
+<figure>
+    <figcaption>Example 12: Block elements without whitespace.</figcaption>
+
 ```html
-12.
 <div>Hello</div><div>World</div>
+```
 
-13.
+```inline-html
+<div>Hello</div><div>World</div>
+```
+
+</figure>
+
+<figure>
+    <figcaption>Example 13: Block elements with whitespace.</figcaption>
+
+```html
 <div>Hello</div>      <div>World</div>
+```
 
-14.
+```inline-html
+<div>Hello</div>      <div>World</div>
+```
+
+</figure>
+
+<figure>
+    <figcaption>Example 14: Block elements with newline.</figcaption>
+
+```html
 <div>Hello</div>
 <div>World</div>
 ```
 
-12. <div>Hello</div><div>World</div>
-13. <div>Hello</div>      <div>World</div>
-14. <div>Hello</div>
+```inline-html
+<div>Hello</div>
 <div>World</div>
+```
+
+</figure>
 
 In this case there's actually no difference between the examples because all the
 whitespace differences are ignored and newlines are placed between the blocks.
@@ -213,10 +313,14 @@ So this means HTML's whitespace rules actually _vary_ based on how you're
 rendering the text. So let's do a quick pop quiz, how do you expect the
 following to render?
 
+<figure>
+    <figcaption>Example 15: <code>&lt;aside&gt;</code> without whitespace.</figcaption>
+
 ```html
-15.
 <aside>Hello</aside><aside>World</aside>
 ```
+
+</figure>
 
 You might intuitively think, "Well `<aside>` is a block element, so it should
 follow the same rules as `<div>`. Therefore this will render exactly like
@@ -227,59 +331,93 @@ This is actually a trick question. `<aside>` is natively a block element, but it
 doesn't have to be. Therefore you can actually render different spacing based on
 how you _style_ the element.
 
+<figure>
+    <figcaption>Example 16: Block <code>&lt;aside&gt;</code>.</figcaption>
+
 ```html
-16.
 <style>aside { display: 'block'; }</style>
 <aside>Hello</aside><aside>World</aside>
+```
 
-17.
+```inline-html
+<aside>Hello</aside><aside>World</aside>
+```
+
+</figure>
+
+<figure>
+    <figcaption>Example 17: Inline <code>&lt;aside&gt;</code>.</figcaption>
+
+```html
 <style>aside { display: 'inline'; }</style>
 <aside>Hello</aside><aside>World</aside>
 ```
 
-16. <aside>Hello</aside><aside>World</aside>
-17. <aside style="display: inline;">Hello</aside><aside style="display: inline;">World</aside>
+```inline-html
+<aside style="display: inline;">Hello</aside><aside style="display: inline;">World</aside>
+```
+
+</figure>
 
 The same HTML can actually lead to different whitespace behavior. That might not
 sound too bad, after all this is exactly the layout difference between `block`
-and `inline`. However it actually _changes_ the text displayed to the user. 16.
-displays two strings, "Hello" and "World". While 17. displays a single string
-"HelloWorld". There's a semantic difference between those two options, not just
-a styling distinction.
+and `inline`. However it actually _changes_ the text displayed to the user.
+Example 16. displays two strings, "Hello" and "World". While 17. displays a
+single string "HelloWorld". There's a semantic difference between those two
+options, not just a styling distinction.
 
-You can actually observe this distinction in JavaScript by accessing a parent
-element containing these `<aside>` tags in the above order.
+You can actually observe this distinction in JavaScript through
+[`textContent`](https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent)
+and
+[`innerText`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/innerText)
+on a parent element. The former joins the strings together with no spacing in
+both cases.
 
 ```
-> parentElement.textContent
-'\nHelloWorld\nHelloWorld\n'
-
-> parentElement.innerText
-'Hello\nWorld\nHelloWorld'
+> parentOfBlockAsides.textContent
+'HelloWorld'
+> parentOfInlineAsides.textContent
+'HelloWorld'
 ```
 
-`textContent` actually joins the first two "Hello" and "World" text with no
-separation while `innerText` separates the same text with a newline.
+However `innerText` adds a newline for the `block` elements _only_:
+
+```
+> parentOfBlockAsides.textContent
+'Hello\nWorld'
+> parentOfInlineAsides.textContent
+'HelloWorld'
+```
+
 [Per MDN](https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent#differences_from_innertext),
 `innerText` is "aware of styling" so it can tell the difference between these
 two examples in a way `textContent` cannot.
 
 You can even hear the difference with text-to-speech tools! Windows Narrator on
 Chrome treats block elements as different text fields while inline elements are
-joined into a single word. When played normally it's a little trickier to hear,
-but I can manually step through each `block` formatted word and read them
-individually while the `inline` text is joined together into a single,
-inseparable word.
+joined into a single word.
+
+Here I put the word "Refrigerator" split across multiple `<aside>` tags. The
+first attempt uses the default `display: block;` while the second is
+`display: inline;`.
 
 ```video
 {
     "type": "demo",
     "urls": ["./demos/1-refrigerator.mp4"],
     "size": [1920, 1080],
+    "subtitles": "./demos/1-refrigerator.vtt",
     "audible": true,
     "loop": true
 }
 ```
+
+Narrator treats the first attempt as four different words. It implicitly
+converts "fri" to "Friday" (assuming certain semantics on the text) and can't
+pronounce "ger" at all, choosing to spell it out instead as "g-e-r".
+
+The second attempt correctly speaks "Refrigerator" even though it has identical
+DOM structure to the first attempt. The only difference is the CSS `display`.
 
 This is also interesting because it means that whitespace handling is actually
 not done by the HTML parser. The parser must retain all spaces because it's
@@ -298,8 +436,12 @@ I'll just share
 [this example from MDN](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Whitespace#example_3)
 with a couple boxes.
 
+<figure>
+    <figcaption>
+        Example 18: <code>&lt;inline-block&gt;</code> with whitespace.
+    </figcaption>
+
 ```html
-18.
 <style>
     li {
         display: inline-block;
@@ -315,25 +457,37 @@ with a couple boxes.
 </ul>
 ```
 
-18. <ul class="inline-block-list">
+```inline-html
+<ul class="inline-block-list">
   <li></li>
   <li></li>
 </ul>
+```
+
+</figure>
 
 You should see a small space between the two boxes. I've blown up the font size
 to make this space more visible. But where does that space come from? There's no
 margin or padding here. In fact, what if we change the HTML ever so slightly...
 
+<figure>
+    <figcaption>
+        Example 19: <code>&lt;inline-block&gt;</code> without whitespace.
+    </figcaption>
+
 ```html
-19.
 <ul>
   <li></li><li></li>
 </ul>
 ```
 
-19. <ul class="inline-block-list">
+```inline-html
+<ul class="inline-block-list">
   <li></li><li></li>
 </ul>
+```
+
+</figure>
 
 Since the `<li>` tags are inline blocks the space between them is considered
 significant and rendered to the user. Shout out to the developer who had to
@@ -359,8 +513,10 @@ indicating exactly where that spacing is coming from.
 Yes, that is a valid point. HTML does have a `<pre>` tag for "preformatted" text
 which automatically preserves _all_ whitespace.
 
+<figure>
+    <figcaption>Example 20: Preformatted text.</figcaption>
+
 ```html
-20.
 <pre>
 Hello world
 I am preformatted         text which is interesting.
@@ -368,21 +524,21 @@ I am preformatted         text which is interesting.
 </pre>
 ```
 
-TODO: This doesn't render right without `&nbsp;`... Maybe we need an iframe for these examples?
-
-TODO: Wrap in `<figure>`?
-
-20. <pre>
+```inline-html
+<pre>
 Hello world
 I am preformatted         text which is interesting.
-&nbsp;&nbsp;&nbsp;&nbsp;I'm indented more than the rest!
+    I'm indented more than the rest!
 </pre>
+```
+
+</figure>
 
 No whitespace collapsing occurs and all of it is considered significant, with
-one minor exception. There are actually two spaces not considered significant.
-Specifically, the first newline immediately following the initial `<pre>`
-(`<pre>\nHello...`) and the last newline, the one immediately preceding the
-final `</pre>` (`than the rest!\n</pre>`).
+one minor exception. There are actually two insignificant spaces. Specifically,
+the first newline immediately following the initial `<pre>` (`<pre>\nHello...`)
+and the last newline, the one immediately preceding the final `</pre>`
+(`than the rest!\n</pre>`).
 
 Neither of these newlines are rendered, there's no blank line at the start or
 end of the rendered result. Surprisingly if we check `textContent` we don't see
@@ -395,24 +551,31 @@ rendered. I have no idea why this is the case.
 ```
 
 But if we add spaces between the `<pre>` and `</pre>` and their nearest
-newlines... (I'm using `&#32;` to make these newlines visible in code, the
+newlines... (I'm using `&#32;` to make these spaces visible in code, the
 behavior is the same as a literal space character, more on this later).
 
+<figure>
+    <figcaption>
+        Example 21: Preformatted text with leading/trailing spaces.
+    </figcaption>
+
 ```html
-21. <pre>&#32;
+<pre>&#32;
 Hello world
 I am preformatted         text which is interesting.
     I'm indented more than the rest!
 &#32;</pre>
 ```
 
-TODO: This doesn't render right without `&nbsp;` either...
-
-21. <pre>&#32;
+```inline-html
+<pre>&#32;
 Hello world
 I am preformatted         text which is interesting.
-&nbsp;&nbsp;&nbsp;&nbsp;I'm indented more than the rest!
+    I'm indented more than the rest!
 &#32;</pre>
+```
+
+</figure>
 
 Now we get the empty lines and the start and end of the block. So the rule seems
 to be:
@@ -455,13 +618,29 @@ logic, despite that being kind of the whole point of the tag.
 definitely more intuitive, you can't indent it at all without affecting its
 content. Compare these two examples:
 
+<figure>
+    <figcaption>Example 22: Indented <code>&lt;pre&gt;</code> tag.</figcaption>
+
 ```html
-22.
 <pre>
     Hello, World!
 </pre>
+```
 
-23.
+```inline-html
+<pre>
+    Hello, World!
+</pre>
+```
+
+</figure>
+
+<figure>
+    <figcaption>
+        Example 23: Double indented <code>&lt;pre&gt;</code> tag.
+    </figcaption>
+
+```html
 <div>
     <pre>
         Hello, World!
@@ -469,14 +648,15 @@ content. Compare these two examples:
 </div>
 ```
 
-22. <pre>
+```inline-html
+<div>
+    <pre>
         Hello, World!
     </pre>
-23. <div>
-        <pre>
-            Hello, World!
-        </pre>
-    </div>
+</div>
+```
+
+</figure>
 
 These both feel like they should contain the same text "Hello, World!", but 22.
 is preceded by 4 spaces while 23. is preceded by 8 spaces and trailed with a
@@ -495,6 +675,12 @@ adds even more complexity to this. It supports `white-space: pre;` which can
 basically opt-in any element to the `<pre>` tag's parsing rules. It also
 supports `pre-line`, `pre-wrap` and a few other possible options to further
 configure the behavior for specific use cases.
+
+As I mentioned earlier, whitespace processing is handled by CSS, not the HTML
+parser so the
+[standard which specifies this behavior](https://drafts.csswg.org/css-text/) is
+actually maintained by the CSS working group and primarily focuses on the
+behavior of the `white-space` property.
 
 ### `&nbsp;`
 
@@ -521,7 +707,7 @@ images), the `&nbsp;` still takes up one space of width and influences line
 wrapping. Take this example where I've got two red boxes with an `&nbsp;` in the
 middle (colored blue) to space them out. The `&nbsp;` itself needs to exist on
 one line or another, so as the viewport narrows it needs to pick a line. If it
-doesn't fix on the first line, it will become the first character on the second
+doesn't fit on the first line, it will become the first character on the second
 line and shift the second box. If it doesn't fit on either line, it will create
 its own empty line between the two boxes and introduce undesirable vertical
 space.
@@ -543,6 +729,8 @@ want the non-breaking behavior but just didn't notice and it's quite possible
 most of those usages of `&nbsp;` are incorrect and have line breaking bugs like
 the one I just demonstrated above.
 
+TODO: It's not really the non-breaking behavior that's the problem here.
+
 So what so you do instead? I'd like to suggest using a regular space instead of
 `&nbsp;`. However the collapsing behavior I've described prevents you just
 inserting arbitrary spaces wherever you want, especially if you want multiple
@@ -555,12 +743,18 @@ whitespace collapsing behavior. So you can put as many `&#32;` as you want,
 you'll still get at most only one space. My sincerest apologies to the 3 people
 reading this who want to put two spaces after the end of a sentence.
 
+<figure>
+    <figcaption>Example 24: <code>&amp;#32;</code> spaces.</figcaption>
+
 ```html
-24.
 <div>Hello&#32;&#32;&#32;&#32;&#32;&#32;&#32;World!</div>
 ```
 
-24. <div>Hello&#32;&#32;&#32;&#32;&#32;&#32;&#32;World!</div>
+```inline-html
+<div>Hello&#32;&#32;&#32;&#32;&#32;&#32;&#32;World!</div>
+```
+
+</figure>
 
 This behavior actually feels objectively wrong to me. Whitespace collapsing is a
 solution for the developer experience so you don't have to butcher your HTML
@@ -699,18 +893,26 @@ they do change significant whitespace because they introduce leading and
 trailing spaces. In a block rendering context it's probably fine, but you can
 consider an inline text scenario like:
 
+<figure>
+    <figcaption>25. One-line link.</figcaption>
+
 ```html
-25.
 Check out my <a href="#">web site</a> and read my blog!
 ```
 
-25. Check out my <a href="#" class="demo-link">web site</a> and read my blog!
+```inline-html
+Check out my <a href="#" class="demo-link">web site</a> and read my blog!
+```
+
+</figure>
 
 In this case we have text with a link in the middle. But if this exceeds the
 line length limit, formatting the text can introduce line breaks like:
 
+<figure>
+    <figcaption>26. Link with overextended underline.</figcaption>
+
 ```html
-26.
 Check out my
 <a href="#">
     web site
@@ -718,13 +920,15 @@ Check out my
 and read my blog!
 ```
 
-26. Check out my
+```inline-html
+Check out my
 <a href="#" class="demo-link">
     web site
 </a>
 and read my blog!
+```
 
-TODO: Why is the leading space inside the `<a>`? Does that conflict with earlier content?
+</figure>
 
 Now we have that overextended underline again, all because of a single
 formatting change!
@@ -748,13 +952,13 @@ Prettier can't introduce a newline between `<a>` and `web`, so it has to put the
 newline _inside_ the `<a>` start tag since that's the only location it can add
 insignificant whitespace. Same for the `</a>` and the following `and`.
 
-Prettier also has a `css` option which tells it to "Respect the default value of
-CSS `display` property." Hopefully after reading this post you should know what
-that means! Given a `<div>` tag it can format with the `ignore` behavior because
-leading and trailing whitespace aren't significant in block rendering contexts.
-`<span>` tags will use `strict` behavior because the leading and trailing
-whitespace _is_ significant. This makes a lot of sense as a useful middle ground
-between `ignore` and `strict`.
+Prettier also has an `--html-whitespace-sensitivity css` option which tells it
+to "Respect the default value of CSS `display` property." Hopefully after
+reading this post you should know what that means! Given a `<div>` tag it can
+format with the `ignore` behavior because leading and trailing whitespace aren't
+significant in block rendering contexts. `<span>` tags will use `strict`
+behavior because the leading and trailing whitespace _is_ significant. This
+makes a lot of sense as a useful middle ground between `ignore` and `strict`.
 
 But after reading this post you should also know that's not entirely accurate
 and breaks if you do `div { display: inline; }`. Prettier doesn't know anything
@@ -774,6 +978,8 @@ properties is just the cherry on top that cements HTML formatting as a
 fundamentally unsolvable problem.
 
 ## Internationalization (i18n)
+
+TODO: Whitespace inside translations.
 
 Now let's pivot to another unsolvable problem, i18n. This term encompasses a
 wide umbrella of problems, tools, and technologies for localizing web pages so
@@ -868,7 +1074,7 @@ of data might be coming from a database at runtime and isn't known to the
 developer. Consider a server-side rendered HTML template:
 
 ```html
-<span>Hello, { (firstName + ' ' + lastName).toLowerCase() }!</span>
+<span>Hello, ${(firstName + ' ' + lastName).toLowerCase()}!</span>
 ```
 
 We don't know what `firstName` or `lastName` is at translation-time as that
@@ -943,7 +1149,7 @@ like:
 
 ```html
 <span>
-    {i18n('say_hello', 'Doug' /* firstName */, 'Parker' /* lastName */)}
+    ${i18n('say_hello', 'Doug' /* firstName */, 'Parker' /* lastName */)}
 </span>
 ```
 
