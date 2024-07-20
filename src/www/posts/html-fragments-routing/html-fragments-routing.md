@@ -214,7 +214,8 @@ the `<router-outlet>`.
 {
     "type": "demo",
     "urls": ["demos/1-about.mp4"],
-    "size": [1920, 1080]
+    "size": [1920, 1080],
+    "loop": true
 }
 ```
 
@@ -255,7 +256,8 @@ it is rendered by the router.
 {
     "type": "demo",
     "urls": ["demos/2-counter.mp4"],
-    "size": [1920, 1080]
+    "size": [1920, 1080],
+    "loop": true
 }
 ```
 
@@ -271,7 +273,8 @@ second time!
 {
     "type": "demo",
     "urls": ["demos/3-cache.mp4"],
-    "size": [1920, 1080]
+    "size": [1920, 1080],
+    "loop": true
 }
 ```
 
@@ -288,7 +291,8 @@ application's `Router` class, it just happened naturally.
 {
     "type": "demo",
     "urls": ["demos/4-cached-counter.mp4"],
-    "size": [1920, 1080]
+    "size": [1920, 1080],
+    "loop": true
 }
 ```
 
@@ -357,7 +361,8 @@ continue to stream in the background.
 {
     "type": "demo",
     "urls": ["demos/5-streaming.mp4"],
-    "size": [1920, 1080]
+    "size": [1920, 1080],
+    "loop": true
 }
 ```
 
@@ -376,7 +381,8 @@ appending to the new route!
 {
     "type": "demo",
     "urls": ["demos/6-streaming-to-wrong-route.mp4"],
-    "size": [1920, 1080]
+    "size": [1920, 1080],
+    "loop": true
 }
 ```
 
@@ -490,7 +496,8 @@ in one big chunk. That's not how it's supposed to work!
 {
     "type": "demo",
     "urls": ["demos/7-streaming-single-chunk.mp4"],
-    "size": [1920, 1080]
+    "size": [1920, 1080],
+    "loop": true
 }
 ```
 
@@ -637,7 +644,8 @@ actually work in both cases. All the streaming requirements are satisfied.
 {
     "type": "demo",
     "urls": ["demos/8-streaming-list.mp4"],
-    "size": [1920, 1080]
+    "size": [1920, 1080],
+    "loop": true
 }
 ```
 
@@ -882,7 +890,8 @@ you'll excuse me, I'll be off enjoying my $5.
 {
     "type": "gif",
     "urls": ["make-it-rain.mp4"],
-    "size": [640, 360]
+    "size": [640, 360],
+    "loop": true
 }
 ```
 

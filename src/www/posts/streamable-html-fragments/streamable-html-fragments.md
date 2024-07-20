@@ -411,7 +411,8 @@ rest of the content streams in afterwards.
 {
     "type": "demo",
     "urls": ["demos/1-single-node-streaming.mp4"],
-    "size": [1280, 720]
+    "size": [1280, 720],
+    "loop": true
 }
 ```
 
@@ -450,7 +451,8 @@ However, when I tried this, I only actually saw one tweet appear.
 {
     "type": "demo",
     "urls": ["demos/2-list-stream-fail.mp4"],
-    "size": [1280, 720]
+    "size": [1280, 720],
+    "loop": true
 }
 ```
 
@@ -515,7 +517,8 @@ With this, I have successfully streamed HTML fragments!
 {
     "type": "demo",
     "urls": ["demos/3-list-stream.mp4"],
-    "size": [1280, 720]
+    "size": [1280, 720],
+    "loop": true
 }
 ```
 
@@ -788,7 +791,7 @@ console.log(el2.name); // undefined
 ```
 
 Yes, you did read that right and I was just as perplexed! The second log
-statement 
+statement
 [_does_ in fact print `undefined`](https://stackblitz.com/edit/typescript-4atoam?file=index.ts).
 Well, it does if you're using `target: 'ES2022'` or greater in your
 `tsconfig.json`. This took me quite a while to wrap my head around and I had to
@@ -1106,7 +1109,8 @@ streamTweetsBtn.addEventListener('click', () => {
 {
     "type": "demo",
     "urls": ["demos/3-list-stream.mp4"],
-    "size": [1280, 720]
+    "size": [1280, 720],
+    "loop": true
 }
 ```
 

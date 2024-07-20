@@ -49,7 +49,6 @@ describe('video', () => {
 
             expect(html).toMatch(/<video[^>]*autoplay[^>]*>/);
             expect(html).toMatch(/<video[^>]*muted[^>]*>/);
-            expect(html).toMatch(/<video[^>]*loop[^>]*>/);
         });
 
         it('does not autoplay audible videos', () => {
@@ -57,7 +56,18 @@ describe('video', () => {
 
             expect(html).not.toMatch(/<video[^>]*autoplay[^>]*>/);
             expect(html).not.toMatch(/<video[^>]*muted[^>]*>/);
+        });
+
+        it('defaults to unlooped videos', () => {
+            const html = renderVideo(goldenConfig);
+
             expect(html).not.toMatch(/<video[^>]*loop[^>]*>/);
+        });
+
+        it('`loop` configures the video to be looped', () => {
+            const html = renderVideo({ ...goldenConfig, loop: true });
+
+            expect(html).toMatch(/<video[^>]*loop[^>]*>/);
         });
 
         it('renders `urls` in order', () => {

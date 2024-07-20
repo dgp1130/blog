@@ -15,7 +15,8 @@ import { Context, getContext } from './context';
  *     "type": "demo",
  *     "urls": ["/video.avif", "/video.mp4"],
  *     "size": [1920, 1080],
- *     "audible": false
+ *     "audible": false,
+ *     "loop": false
  * }
  * \`\`\`
  * ```
@@ -30,6 +31,8 @@ import { Context, getContext } from './context';
  *               expected dimensions of the avatar images.
  * * `audible` - Whether or not the video contains meaningful audio. Optional,
  *               defaults to `false`.
+ * * `loop`    - Whether or not to loop the video. Optional, defaults to
+ *               `false`.
  */
 export const videoExtension: marked.MarkedExtension = {
     renderer: {
@@ -48,6 +51,7 @@ const videoConfigParser = zod.strictObject({
     urls: zod.array(zod.string()),
     size: zod.tuple([ zod.number(), zod.number() ]),
     audible: zod.boolean().default(false),
+    loop: zod.boolean().default(false),
 });
 type VideoConfig = zod.infer<typeof videoConfigParser>;
 
@@ -86,9 +90,14 @@ function renderVideo(config: VideoConfig, ctx: Context): string {
 }
 
 const videoNjkTemplate = `
-{% set autoplay %}
-    {% if not audible %}
-        autoplay muted loop
+{% set loop %}
+    {% if loop %}loop{% endif %}
+{% endset %}
+{% set options %}
+    {% if audible %}
+        {{ loop }}
+    {% else %}
+        autoplay muted {{ loop }}
     {% endif %}
 {% endset %}
 {% set sizes %}width="{{ size[0] }}" height="{{ size[1] }}"{% endset %}
@@ -100,11 +109,11 @@ const videoNjkTemplate = `
 
 {% set videoEl %}
     {% if type === 'demo' %}
-        <video {{ autoplay }} playsinline {{ sizes | safe }} controls>
+        <video {{ options }} playsinline {{ sizes | safe }} controls>
             {{ sources | safe }}
         </video>
     {% elif type === 'gif' %}
-        <video {{ autoplay }} playsinline {{ sizes | safe }} class="gif">
+        <video {{ options }} playsinline {{ sizes | safe }} class="gif">
             {{ sources | safe }}
         </video>
     {% else %}

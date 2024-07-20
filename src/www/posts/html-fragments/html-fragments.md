@@ -183,7 +183,8 @@ is pressed.
 {
     "type": "demo",
     "urls": ["demos/2-infinite-scroll.mp4"],
-    "size": [1920, 928]
+    "size": [1920, 928],
+    "loop": true
 }
 ```
 
@@ -278,7 +279,8 @@ copy to swap into the page over the old version.
 {
     "type": "demo",
     "urls": ["demos/3-edit.mp4"],
-    "size": [1920, 928]
+    "size": [1920, 928],
+    "loop": true
 }
 ```
 
