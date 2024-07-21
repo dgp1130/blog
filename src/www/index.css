@@ -5,6 +5,11 @@
 @import url(./_includes/fragments/card.css);
 @import url(./_includes/fragments/header.css);
 
+dwac-share {
+    text-align: right;
+    margin-bottom: 10px;
+}
+
 .base-content {
     /* Leave extra room on bottom for last card's drop-shadow. */
     padding-bottom: calc(var(--dwac-base-padding) + 6px);
