@@ -51,6 +51,15 @@ export class Share extends LitElement {
             height: 100%;
         }
 
+        #rss-icon {
+            width: 44px;
+            height: 44px;
+            vertical-align: middle;
+
+            fill: currentColor;
+            color: var(--dwac-share-twitter-blue);
+        }
+
         #twitter-logo {
             width: 44px;
             height: 44px;
@@ -126,6 +135,11 @@ export class Share extends LitElement {
                         </button>
                     </li>
                 `)}
+                <li>
+                    <a href="/feed.xml" title="Open RSS (Atom) feed">
+                        ${rssIcon}
+                    </a>
+                </li>
                 <li>
                     <a href="https://twitter.com/intent/tweet?text=${
                             encodeURIComponent(
@@ -205,6 +219,14 @@ const copyIcon = html`
             <rect stroke="#000" rx="60" width="248" height="328" x="105" y="20" stroke-width="40" fill="#fff" />
             <rect stroke="#000" rx="60" width="248" height="328" x="20" y="127" stroke-width="40" fill="#fff" />
         </g>
+    </svg>
+`;
+
+const rssIcon = html`
+    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" id="rss-icon" viewBox="32 32 204 204">
+        <circle cx="68" cy="189" r="24" fill="#E3702D"/>
+        <path d="M160 213h-34a82 82 0 0 0 -82 -82v-34a116 116 0 0 1 116 116z" fill="#E3702D"/>
+        <path d="M184 213A140 140 0 0 0 44 73 V 38a175 175 0 0 1 175 175z" fill="#E3702D"/>
     </svg>
 `;
 
