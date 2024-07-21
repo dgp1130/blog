@@ -64,6 +64,7 @@ module.exports = function (config) {
     config.addPassthroughCopy('src/www/**/*.webm');
     config.addPassthroughCopy('src/www/**/*.mp4');
     config.addPassthroughCopy('src/www/**/*.vtt');
+    config.addPassthroughCopy('src/www/**/*.xsl');
 
     // Copy font resources to the output directory.
     config.addPassthroughCopy('src/www/**/*.woff2');
