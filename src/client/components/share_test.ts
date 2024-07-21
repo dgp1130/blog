@@ -21,7 +21,7 @@ describe('Share', () => {
     } = {}): Promise<Share> {
         share = document.createElement('dwac-share');
         share.prompt = prompt;
-        
+
         // Either set the target property directly as a URL, or set an attribute
         // which gets converted into a URL using the `fromAttribute()` function.
         if (target instanceof URL) {
@@ -32,7 +32,7 @@ describe('Share', () => {
 
         share.articleTitle = articleTitle;
         document.body.appendChild(share);
-        
+
         await share.updateComplete;
         return share;
     }
@@ -67,7 +67,7 @@ describe('Share', () => {
         spyOn(navigator, 'share');
 
         const share = await init();
-        
+
         expect(navigator.share).not.toHaveBeenCalled();
 
         expect(share.shadowRoot!.querySelector('#share')).not.toBeNull();
@@ -132,7 +132,7 @@ describe('Share', () => {
         });
         spyOnProperty(navigator, 'clipboard', 'get')
                 .and.returnValue(clipboard);
-        
+
         const share = await init();
 
         expect(navigator.clipboard.writeText).not.toHaveBeenCalled();
@@ -147,14 +147,14 @@ describe('Share', () => {
         spyOnProperty(navigator, 'clipboard', 'get')
                 .and.returnValue(clipboard);
         spyOn(snackbar, 'show').and.resolveTo();
-        
+
         const share = await init({
             target: new URL('https://copied.test/'),
         });
 
         const copyBtn = share.shadowRoot!.querySelector('#copy') as HTMLButtonElement;
         expect(copyBtn).not.toBeNull();
-        
+
         copyBtn.click();
         await share.updateComplete;
 
@@ -173,19 +173,29 @@ describe('Share', () => {
         });
         spyOnProperty(navigator, 'clipboard', 'get')
                 .and.returnValue(clipboard);
-        
+
         const share = await init({
             target: '/foo',
         });
 
         const copyBtn = share.shadowRoot!.querySelector('#copy') as HTMLButtonElement;
         expect(copyBtn).not.toBeNull();
-        
+
         copyBtn.click();
         await share.updateComplete;
 
         expect(navigator.clipboard.writeText)
                 .toHaveBeenCalledWith('https://copied.test/foo');
+    });
+
+    it('renders a direct link to the RSS feed', async () => {
+        const share = await init();
+
+        const link = share.shadowRoot!.querySelector('a:has(#rss-icon)')! as
+            HTMLAnchorElement;
+        expect(link).not.toBeNull();
+
+        expect(new URL(link.href).pathname).toBe('/feed.xml');
     });
 
     it('renders a direct link to tweet the link', async () => {
@@ -194,7 +204,8 @@ describe('Share', () => {
             articleTitle: 'Tweetable Article',
         });
 
-        const link = share.shadowRoot!.querySelector('a')!;
+        const link = share.shadowRoot!.querySelector('a:has(#twitter-logo)')! as
+            HTMLAnchorElement;
         expect(link).not.toBeNull();
 
         expect(link.href).toContain('https://twitter.com/intent/tweet');
