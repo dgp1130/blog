@@ -18,11 +18,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Install Dependencies
-      run: |
-        # Install `krb5-config` to build `nodegit`.
-        sudo apt-get install libkrb5-dev
-
     - name: Setup Node.js
       uses: actions/setup-node@v1
       with:

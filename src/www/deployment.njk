@@ -23,8 +23,8 @@
     <h1>Deployment Info</h1>
     <ul>
         <li>
-            Commit: <a href="{{ repo.href }}/commit/{{ git.commit }}">
-                {{- git.commit | short -}}
+            Commit: <a href="{{ repo.href }}/commit/{{ git.sha }}">
+                {{- git.sha | short -}}
             </a>
             {%- if not git.clean %}
                 (with local changes)

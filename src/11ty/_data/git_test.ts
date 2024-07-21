@@ -1,101 +1,146 @@
-import { Object as GitObject, Oid, Repository, Revparse, StatusFile } from 'nodegit';
-
+import { ChildProcess, execFile as execFileCb, PromiseWithChild } from 'child_process';
+import { promisify } from 'util';
 import git from './git';
+
+const execFile = promisify(execFileCb);
+
+function mockExecResult({ exitCode, stdout = '', stderr = '' }: {
+    exitCode: number,
+    stdout?: string,
+    stderr?: string,
+}): PromiseWithChild<{ stdout: string, stderr: string }> {
+    const promise = new Promise((resolve) => {
+        resolve({ stdout, stderr });
+    }) as PromiseWithChild<{ stdout: string, stderr: string }>;
+    promise.child = {
+        exitCode,
+    } as ChildProcess;
+    return promise;
+}
 
 describe('git', () => {
     describe('default function', () => {
-        it('outputs Git commit data', async () => {
-            const repo = {
-                getStatus: () => [] as StatusFile[],
-            } as unknown as Repository;
-            const obj = {
-                id: () => ({
-                    toString: () => 'abcdef',
-                }) as Oid,
-            } as unknown as GitObject;
+        it('outputs Git HEAD commit SHA', async () => {
+            const execFileSpy = jasmine.createSpy<typeof execFile>('execFile')
+                .and.returnValues(
+                    /* getHeadSha */ mockExecResult({
+                        exitCode: 0,
+                        stdout: 'abc123',
+                    }),
+                    /* isClean */ mockExecResult({
+                        exitCode: 0,
+                        stdout: '',
+                    }),
+                ) as unknown as typeof execFile;
 
-            spyOn(Repository, 'open').and.returnValue(Promise.resolve(repo));
-            spyOn(Revparse, 'single').and.returnValue(Promise.resolve(obj));
+            const { sha } = await git({ execFile: execFileSpy });
 
-            const { commit } = await git();
-
-            expect(Repository.open).toHaveBeenCalledWith('.');
-            expect(Revparse.single).toHaveBeenCalledWith(repo, 'HEAD');
-
-            expect(commit).toBe('abcdef');
+            expect(sha).toBe('abc123');
         });
 
         it('outputs clean when the repository has no uncommitted changes', async () => {
-            const repo = {
-                // `git status` returns no uncommitted changes.
-                getStatus: () => [] as StatusFile[],
-            } as unknown as Repository;
-            const obj = {
-                id: () => ({
-                    toString: () => 'abcdef',
-                }) as Oid,
-            } as unknown as GitObject;
+            const execFileSpy = jasmine.createSpy<typeof execFile>('execFile')
+                .and.returnValues(
+                    /* getHeadSha */ mockExecResult({
+                        exitCode: 0,
+                        stdout: 'abc123',
+                    }),
+                    /* isClean */ mockExecResult({
+                        exitCode: 0,
+                        stdout: '',
+                    }),
+                ) as unknown as typeof execFile;
 
-            spyOn(Repository, 'open').and.returnValue(Promise.resolve(repo));
-            spyOn(Revparse, 'single').and.returnValue(Promise.resolve(obj));
+            const { clean } = await git({ execFile: execFileSpy });
 
-            const { clean } = await git();
-
-            expect(Repository.open).toHaveBeenCalledWith('.');
-
-            expect(clean).toBe(true);
+            expect(clean).toBeTrue();
         });
 
         it('outputs unclean when the repository has uncommitted changes', async () => {
-            const repo = {
-                getStatus: () => [
-                    { }, // First file.
-                    { }, // Second file.
-                ] as StatusFile[],
-            } as unknown as Repository;
-            const obj = {
-                id: () => ({
-                    toString: () => 'abcdef',
-                }) as Oid,
-            } as unknown as GitObject;
+            const execFileSpy = jasmine.createSpy<typeof execFile>('execFile')
+                .and.returnValues(
+                    /* getHeadSha */ mockExecResult({
+                        exitCode: 0,
+                        stdout: 'abc123',
+                    }),
+                    /* isClean */ mockExecResult({
+                        exitCode: 0,
+                        stdout: `
+ M src/foo.ts
+ A src/bar.ts
+                        `.trim(),
+                    }),
+                ) as unknown as typeof execFile;
 
-            spyOn(Repository, 'open').and.returnValue(Promise.resolve(repo));
-            spyOn(Revparse, 'single').and.returnValue(Promise.resolve(obj));
+            const { clean } = await git({ execFile: execFileSpy });
 
-            const { clean } = await git();
-
-            expect(Repository.open).toHaveBeenCalledWith('.');
-
-            expect(clean).toBe(false);
+            expect(clean).toBeFalse();
         });
 
-        it('fails when unable to read the repository', async () => {
-            const err = new Error('Could not "git"-er-done.');
-            spyOn(Repository, 'open').and.returnValue(Promise.reject(err));
+        it('fails when unable to read the repository for the SHA', async () => {
+            const error = new Error('Could not "git"-er-done!');
+            const execFileSpy = jasmine.createSpy<typeof execFile>('execFile')
+                .and.returnValues(
+                    /* getHeadSha */ Promise.reject(error) as
+                        PromiseWithChild<{ stdout: string, stderr: string }>,
+                    /* isClean */ mockExecResult({
+                        exitCode: 0,
+                        stdout: '',
+                    }),
+                ) as unknown as typeof execFile;
 
-            await expectAsync(git()).toBeRejectedWith(err);
-        });
-
-        it('fails when unable to parse the revision', async () => {
-            const err = new Error('Could not "git"-er-done.');
-            spyOn(Repository, 'open').and.returnValue(Promise.resolve({
-                getStatus: () => ([] as StatusFile[]),
-            } as unknown as Repository));
-            spyOn(Revparse, 'single').and.returnValue(Promise.reject(err));
-
-            await expectAsync(git()).toBeRejectedWith(err);
+            await expectAsync(git({ execFile: execFileSpy }))
+                .toBeRejectedWith(error);
         });
 
         it('fails when unable to read the repository status', async () => {
-            const err = new Error('Could not "git"-er-done.');
-            spyOn(Repository, 'open').and.returnValue(Promise.resolve({
-                getStatus: () => {
-                    throw err;
-                },
-            } as unknown as Repository));
-            spyOn(Revparse, 'single').and.returnValue(Promise.reject(err));
+            const error = new Error('Could not "git"-er-done!');
+            const execFileSpy = jasmine.createSpy<typeof execFile>('execFile')
+                .and.returnValues(
+                    /* getHeadSha */ mockExecResult({
+                        exitCode: 0,
+                        stdout: 'abc123',
+                    }),
+                    /* isClean */ Promise.reject(error) as
+                        PromiseWithChild<{ stdout: string, stderr: string }>,
+                ) as unknown as typeof execFile;
 
-            await expectAsync(git()).toBeRejectedWith(err);
+            await expectAsync(git({ execFile: execFileSpy }))
+                .toBeRejectedWith(error);
+        });
+
+        it('fails when reading the repository SHA exits with a non-zero status code', async () => {
+            const execFileSpy = jasmine.createSpy<typeof execFile>('execFile')
+                .and.returnValues(
+                    /* getHeadSha */ mockExecResult({
+                        exitCode: 1,
+                        stderr: 'Could not "git"-er-done!',
+                    }),
+                    /* isClean */ mockExecResult({
+                        exitCode: 0,
+                        stdout: '',
+                    }),
+                ) as unknown as typeof execFile;
+
+            await expectAsync(git({ execFile: execFileSpy }))
+                .toBeRejectedWithError(/Could not "git"-er-done!/);
+        });
+
+        it('fails when reading repository status exits with a non-zero status code', async () => {
+            const execFileSpy = jasmine.createSpy<typeof execFile>('execFile')
+                .and.returnValues(
+                    /* getHeadSha */ mockExecResult({
+                        exitCode: 0,
+                        stdout: 'abc123',
+                    }),
+                    /* isClean */ mockExecResult({
+                        exitCode: 1,
+                        stderr: 'Could not "git"-er-done!',
+                    }),
+                ) as unknown as typeof execFile;
+
+            await expectAsync(git({ execFile: execFileSpy }))
+                .toBeRejectedWithError(/Could not "git"-er-done!/);
         });
     });
 });
