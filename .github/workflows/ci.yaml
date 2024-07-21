@@ -7,7 +7,7 @@ name: CI
 
 on:
   push:
-    branches: [ main, deploy ]
+    branches: [ main, ci, deploy ]
   pull_request:
     branches: [ main ]
 
