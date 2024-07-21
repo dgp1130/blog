@@ -95,32 +95,6 @@ describe('csp', () => {
             expect(csp).toBe(`script-src http://example1.com/js https://example2.com/js http://example3.com:8080/js; object-src 'none';`);
         });
 
-        it('allowlists protocol script sources', () => {
-            const csp = getInjectedCsp(injectCsp(`
-                <!DOCTYPE html>
-                <html>
-                    <head></head>
-                    <body></body>
-                </html>
-            `, { scriptSrc: ['http:', 'https:'] }));
-
-            expect(csp).toBe(`script-src http: https:; object-src 'none';`);
-        });
-
-        it('appends provided script sources', () => {
-            const csp = getInjectedCsp(injectCsp(`
-                <!DOCTYPE html>
-                <html>
-                    <head>
-                        <script src="http://example2.com/js"></script>
-                    </head>
-                    <body></body>
-                </html>
-            `, { scriptSrc: ['http://example1.com/js', `'sha256-abc123'`] }));
-
-            expect(csp).toBe(`script-src http://example1.com/js 'sha256-abc123' http://example2.com/js; object-src 'none';`)
-        });
-
         it('hashes inline <style /> sources', () => {
             const csp = getInjectedCsp(injectCsp(`
                 <!DOCTYPE html>

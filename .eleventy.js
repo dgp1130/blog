@@ -111,7 +111,6 @@ module.exports = function (config) {
     });
 
     // Post-process HTML files.
-    const liveReloadCspSources = getLiveReloadCspSources();
     config.addTransform('html-post-process', (content, path) => {
         // Ignore non-HTML files.
         if (!path.endsWith('.html')) return content;
@@ -125,8 +124,6 @@ module.exports = function (config) {
 
         // Generate and inject a content security policy.
         return injectCsp(minified, {
-            scriptSrc: getEnv() === Environment.DEV ? liveReloadCspSources : [],
-
             // Just use 'unsafe-inline' for styles because Firefox doesn't
             // support adopted style sheets, meaning that inlined CSS in Lit
             // Element falls back to appending a `<style />` tag.
@@ -170,33 +167,6 @@ module.exports = function (config) {
         markdownTemplateEngine: false,
     };
 };
-
-/**
- * Get CSP sources for live reload scripts.
- * @returns {!Array<string>}
- */
-function getLiveReloadCspSources() {
-    // Need a hash of the inject browser sync client. This is fairly stable, but
-    // includes the client's version number. Resolve the `package.json` of the
-    // client and read it's version number to compute the script source and get
-    // its hash.
-    const browserSyncPackage = require.resolve('browser-sync-client/package.json');
-    const { version: browserSyncVersion } = require(browserSyncPackage);
-    const browserSyncScript = `
-//<![CDATA[
-    document.write("<script async src='/browser-sync/browser-sync-client.js?v=${
-        browserSyncVersion}'><\\/script>".replace("HOST", location.hostname));
-//]]>
-    `.trim();
-
-    return [
-        // Live reload inlined script for browser sync 2.26.13.
-        `'sha256-${hash(browserSyncScript)}'`,
-        // The inlined script creates another script that loads browser sync as a
-        // self-hosted script.
-        `'self'`,
-    ];
-}
 
 /**
  * Calculates the CSP hash source for the given string.

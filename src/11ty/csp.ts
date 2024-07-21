@@ -3,17 +3,16 @@ import { createHash } from 'crypto';
 
 /**
  * Injects a Content Security Policy into the given HTML string.
- * 
+ *
  * This parses the HTML document and identifies all the resources loaded by the
  * page. It then generates the strictest CSP it can for the page, using file
  * hashes for inline resources and URLs for hyperlinked resources.
- * 
+ *
  * IMPORTANT SECURITY NOTE: This function assumes that all resources on the page
  * are trusted. Think very carefully before running on a page with user
  * generated content.
- * 
+ *
  * @param html The HTML content to extract a policy from.
- * @param scriptSrc Custom sources to add to the `script-src` policy.
  * @param styleSrc Custom sources to add to the `style-src` policy.
  * @param extractStyles Whether or not to extract styles from the given HTML and
  *     add them to the returned page. Defaults to `true`.
@@ -21,7 +20,6 @@ import { createHash } from 'crypto';
  * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP
  */
 export function injectCsp(html: string, {
-    scriptSrc = [],
     styleSrc = [],
     extractStyles = true,
 }: {
@@ -34,10 +32,7 @@ export function injectCsp(html: string, {
     const document = dom.window.document;
 
     // Extract sources from the document.
-    const scriptSources = Array.from(normalize([
-        ...scriptSrc,
-        ...genScriptSources(document),
-    ]));
+    const scriptSources = Array.from(normalize(genScriptSources(document)));
     const styleSources = Array.from(normalize([
         ...styleSrc,
         ...(extractStyles ? genStyleSources(document) : []),
@@ -90,7 +85,7 @@ function* genScriptSources(document: Document): Iterable<string> {
                 // `<script />` tags.
                 return isJsMimeType(type);
             });
-    
+
     for (const scriptTag of scriptTags) {
         // For a hyperlinked script, yield the source link.
         const src = scriptTag.getAttribute('src');
