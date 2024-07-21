@@ -46,10 +46,10 @@
         </p>
     </section>
 
-    <section>
+    <section id="posts-section">
         <!-- List of posts most-recent first. -->
         <h2>Posts</h2>
-        <ol class="posts">
+        <ol class="post-list">
             {% for post in collections.posts
                 | sort(attr="date")
                 | reverse

@@ -10,12 +10,16 @@ dwac-share {
     margin-bottom: 10px;
 }
 
+#posts-section {
+    margin-top: 10px;
+}
+
 .base-content {
     /* Leave extra room on bottom for last card's drop-shadow. */
     padding-bottom: calc(var(--dwac-base-padding) + 6px);
 }
 
-.posts {
+.post-list {
     list-style: none;
     margin-block-start: 0;
     margin-block-end: 0;
@@ -23,12 +27,12 @@ dwac-share {
     padding: 0 0.5rem;
 }
 
-.posts > li {
+.post-list > li {
     max-width: 512px;
     margin: 0 auto; /* Center the card. */
 }
 
-.posts > li + li {
+.post-list > li + li {
     margin-top: 20px;
 }
 
