@@ -75,7 +75,7 @@
     "karma-chrome-launcher": "^3.1.0",
     "karma-jasmine": "^4.0.1",
     "karma-jasmine-html-reporter": "^1.5.4",
-    "karma-typescript": "^5.5.3",
+    "karma-typescript": "^5.5.4",
     "karma-typescript-es6-transform": "^5.2.0",
     "lit-analyzer": "^2.0.3",
     "marked": "^4.0.12",
@@ -88,7 +88,7 @@
     "rollup-plugin-minify-html-literals": "^1.2.6",
     "rollup-plugin-terser": "^7.0.2",
     "ts-lit-plugin": "^2.0.2",
-    "typescript": "~4.9.0",
+    "typescript": "~5.0.0",
     "zod": "^3.13.4"
   }
 }
