@@ -1,4 +1,5 @@
 {% import "fragments/author.njk" as authorFrag %}
+{% import "fragments/share.njk" as shareFrag %}
 
 {% extends "pages/base.njk" %}
 
@@ -45,20 +46,17 @@
 {% endblock %}
 
 {% block content %}
-    {% macro share(prompt, class="") %}
-        <dwac-share class="{{ class }}"
-                {% if prompt %} prompt="{{ prompt | trim }}" {% endif %}
-                target="{{ page.url | url | trim }}"
-                article-title="{{ title | trim }}">
-        </dwac-share>
-    {% endmacro %}
-
     <div class="post-container">
-        {{ share(class="post-end") }}
+        {{ shareFrag.share(target=page.url, title=title, class="post-end") }}
         <div class="post-content">
             <article class="md">{{ content | safe }}</article>
         </div>
-        {{ share(prompt="Interesting post? Share it!", class="post-center") }}
+        {{ shareFrag.share(
+            target=page.url,
+            title=title,
+            prompt="Interesting post? Share it!",
+            class="post-center"
+        ) }}
         {{ authorFrag.author(class="post-author") }}
     </div>
 {% endblock %}

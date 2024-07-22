@@ -1,0 +1,4 @@
+dwac-share {
+    display: block;
+    height: 44px; /* Set height during initial render to avoid CLS. */
+}

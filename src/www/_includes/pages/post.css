@@ -2,6 +2,7 @@
 @import url("../../styles/theme.css");
 @import url("../../styles/md.css");
 @import url("../fragments/author.css");
+@import url("../fragments/share.css");
 
 .base-content {
     padding-top: 0;

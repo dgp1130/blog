@@ -1,9 +1,10 @@
 {% import "fragments/card.njk" as card %}
+{% import "fragments/share.njk" as share %}
 
 {% extends "pages/base.njk" %}
 
 {% block title %}
-    Devel without a Cause
+    Devel without a Cause - Blog
 {% endblock %}
 
 {% block socialImage %}{% endblock %}
@@ -23,9 +24,7 @@
 {% endblock %}
 
 {% block content %}
-    <dwac-share target="{{ page.url | url | trim }}"
-        article-title="Devel without a Cause - Blog">
-    </dwac-share>
+    {{ share.share(target=page.url, title=title) }}
 
     <section>
         <p>
