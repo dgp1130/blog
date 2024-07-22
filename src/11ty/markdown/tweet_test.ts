@@ -1,6 +1,6 @@
 import 'jasmine';
 
-import { marked } from 'marked';
+import { Marked } from 'marked';
 import * as nunjucks from 'nunjucks';
 import { getImageMimeType } from '../mime_types';
 import { useContext } from './context';
@@ -9,7 +9,20 @@ import { tweetExtension } from './tweet';
 
 describe('tweet', () => {
     describe('tweetExtension', () => {
-        marked.use(tweetExtension);
+        const marked = new Marked(tweetExtension);
+
+        const mockEnvironment = new nunjucks.Environment()
+            .addFilter('mimeImg', (path) => getImageMimeType(path))
+        ;
+
+        function renderTweet(config: unknown): string {
+            const ctx = mockContext({ njk: mockEnvironment });
+            return useContext(ctx, () => marked.parse(`
+\`\`\`tweet
+${JSON.stringify(config, null, 4)}
+\`\`\`
+            `.trim()) as string);
+        }
 
         const goldenConfig = Object.freeze({
             url: 'http://twitter.test/status/abc123/',
@@ -58,7 +71,7 @@ describe('tweet', () => {
         });
 
         it('throws an error when given non-JSON content', () => {
-            expect(() => useContext(mockContext(), () => marked(`
+            expect(() => useContext(mockContext(), () => marked.parse(`
 \`\`\`tweet
 not a json object
 \`\`\`
@@ -170,7 +183,7 @@ not a json object
 
         it('ignores non-tweet code blocks', () => {
             const ctx = mockContext({ njk: mockEnvironment });
-            const html = useContext(ctx, () => marked(`
+            const html = useContext(ctx, () => marked.parse(`
 \`\`\`typescript
 \`\`\`
             `.trim()));
@@ -179,7 +192,7 @@ not a json object
         });
 
         it('throws when no context is set', () => {
-            expect(() => marked(`
+            expect(() => marked.parse(`
 \`\`\`tweet
 ${JSON.stringify(goldenConfig, null, 4)}
 \`\`\`
@@ -187,16 +200,3 @@ ${JSON.stringify(goldenConfig, null, 4)}
         });
     });
 });
-
-const mockEnvironment = new nunjucks.Environment()
-    .addFilter('mimeImg', (path) => getImageMimeType(path))
-;
-
-function renderTweet(config: unknown): string {
-    const ctx = mockContext({ njk: mockEnvironment });
-    return useContext(ctx, () => marked(`
-\`\`\`tweet
-${JSON.stringify(config, null, 4)}
-\`\`\`
-    `.trim()));
-}

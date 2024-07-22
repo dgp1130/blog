@@ -1,6 +1,12 @@
-import { marked } from 'marked';
+import { markedHighlight } from 'marked-highlight';
 import prism from 'prismjs';
 import PrismLoader from 'prismjs/components/index';
+
+const highlightedLanguages = new Set([
+    'html',
+    'rust',
+    'typescript',
+]);
 
 /** Returns the Prism grammar for a given language. */
 function loadGrammar(lang: string): prism.Grammar {
@@ -24,9 +30,10 @@ function loadGrammar(lang: string): prism.Grammar {
 }
 
 /** Marked extension which enables syntax highlighting for code blocks. */
-export const highlightExtension: marked.MarkedExtension = {
+export const highlightExtension = markedHighlight({
     highlight(code: string, lang: string): string {
-        if (lang === '') return code;
+        if (!highlightedLanguages.has(lang)) return code;
+
         return prism.highlight(code, loadGrammar(lang), lang);
     },
-};
+});

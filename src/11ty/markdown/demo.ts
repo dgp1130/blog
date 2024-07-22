@@ -1,4 +1,4 @@
-import { marked } from 'marked';
+import { MarkedExtension, Tokens } from 'marked';
 import * as zod from 'zod';
 import { Context, getContext } from './context';
 
@@ -6,10 +6,10 @@ import { Context, getContext } from './context';
  * A `marked` extension which renders a demo URL in an `<iframe />`. The content
  * of the code block must be a JSON-formatted object with the required
  * information like so:
- * 
+ *
  * ```markdown
  * Check out this demo:
- * 
+ *
  * \`\`\`demo
  * {
  *     "src": "http://demo.test/",
@@ -17,17 +17,18 @@ import { Context, getContext } from './context';
  * }
  * \`\`\`
  * ```
- * 
+ *
  * The configuration object supports the following properties:
  * * `src` - The `src` attribute of the `<iframe />`.
  * * `title` - The `title` attribute of the `<iframe />`, used for a11y.
  */
-export const demoExtension: marked.MarkedExtension = {
+export const demoExtension: MarkedExtension = {
+    useNewRenderer: true,
     renderer: {
-        code(code: string, language?: string): string | false {
-            if (language !== 'demo') return false;
+        code({ text, lang }: Tokens.Code): string | false {
+            if (lang !== 'demo') return false;
 
-            const config = parseConfig(code);
+            const config = parseConfig(text);
             const ctx = getContext();
             return renderDemo(config, ctx);
         }

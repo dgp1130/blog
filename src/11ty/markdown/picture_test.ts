@@ -1,29 +1,30 @@
 import 'jasmine';
 
-import { marked } from 'marked';
+import { Marked } from 'marked';
 import { pictureExtension } from './picture';
 
 describe('picture', () => {
     describe('pictureExtension', () => {
-        marked.use(pictureExtension);
+        const marked = new Marked(pictureExtension);
 
         it('renders an image with a single source as an `<img />`', () => {
-            expect(marked(`![alt](/foo.png)`))
+            expect(marked.parse(`![alt](/foo.png)`))
                 .toContain(`<img src="/foo.png" alt="alt">`);
         });
 
         it('renders an image with multiple sources as a `<picture />`', () => {
-            expect(marked(`![alt](/foo.avif)(/foo.webp)(/foo.png)`)).toContain(`
+            expect(marked.parse(`![alt](/foo.avif)(/foo.webp)(/foo.png)`))
+                .toContain(`
 <picture>
     <source srcset="/foo.avif" type="image/avif" />
     <source srcset="/foo.webp" type="image/webp" />
     <img srcset="/foo.png" alt="alt" />
 </picture>
-            `.trim())
+                `.trim())
         });
 
         it('renders an image with a multiline alt', () => {
-            const html = marked(`
+            const html = marked.parse(`
 ![this is a
 very long
 alt text](/foo.webp)(/foo.png)
@@ -32,19 +33,19 @@ alt text](/foo.webp)(/foo.png)
         });
 
         it('throws an error when given a source with no alt', () => {
-            expect(() => marked(`![](/foo.png)(/bar.png)`))
+            expect(() => marked.parse(`![](/foo.png)(/bar.png)`))
                 .toThrowError(/No image alt/);
         });
 
         it('escapes alt text with quotes', () => {
-            const html = marked(
+            const html = marked.parse(
                 `![this is "alt" text with "quotes"!](/foo.webp)(/foo.png)`);
             expect(html).toContain(
                 `alt="this is &quot;alt&quot; text with &quot;quotes&quot;!"`);
         });
 
         it('trims leading and trailing alt whitespace', () => {
-            const html = marked(`
+            const html = marked.parse(`
 ![
 this is some
 multiline alt text
@@ -57,27 +58,27 @@ with leading and trailing newlines
         });
 
         it('throws an error when given no sources', () => {
-            expect(() => marked(`![alt]`))
+            expect(() => marked.parse(`![alt]`))
                 .toThrowError(/Picture token has zero sources/);
         });
 
         it('throws an error when given a source with an unknown MIME type', () => {
-            expect(() => marked(`![alt](/foo.doesnotexist)(/foo.png)`))
+            expect(() => marked.parse(`![alt](/foo.doesnotexist)(/foo.png)`))
                 .toThrow();
         });
 
         it('throws an error when given a source without an extension', () => {
-            expect(() => marked(`![alt](/foowithoutextension)(/foo.png)`))
+            expect(() => marked.parse(`![alt](/foowithoutextension)(/foo.png)`))
                 .toThrow();
         });
 
         it('renders custom attributes', () => {
-            expect(marked(`![alt](/foo.png)(/bar.png){foo="bar"}`))
+            expect(marked.parse(`![alt](/foo.png)(/bar.png){foo="bar"}`))
                 .toMatch(/<img[^>]*foo="bar"[^>]*>/);
         });
 
         it('renders multiple custom attributes', () => {
-            const rendered = marked(
+            const rendered = marked.parse(
                 `![alt](/foo.png)(/bar.png){foo="bar", hello="world"}`);
 
             expect(rendered).toMatch(/<img[^>]*foo="bar"[^>]*>/);
@@ -85,7 +86,7 @@ with leading and trailing newlines
         });
 
         it('renders custom attributes even when only one source is used', () => {
-            expect(marked(`![alt](/foo.png){foo="bar"}`))
+            expect(marked.parse(`![alt](/foo.png){foo="bar"}`))
                 .toMatch(/<img[^>]*foo="bar"[^>]*>/);
         });
     });

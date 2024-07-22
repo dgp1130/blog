@@ -1,6 +1,6 @@
 import 'jasmine';
 
-import { marked } from 'marked';
+import { Marked } from 'marked';
 import * as nunjucks from 'nunjucks';
 import { getVideoMimeType } from '../mime_types';
 import { useContext } from './context';
@@ -9,7 +9,20 @@ import { videoExtension } from './video';
 
 describe('video', () => {
     describe('videoExtension', () => {
-        marked.use(videoExtension);
+        const marked = new Marked(videoExtension);
+
+        const mockEnvironment = new nunjucks.Environment()
+            .addFilter('mimeVideo', (path) => getVideoMimeType(path))
+        ;
+
+        function renderVideo(config: unknown): string {
+            const ctx = mockContext({ njk: mockEnvironment });
+            return useContext(ctx, () => marked.parse(`
+\`\`\`video
+${JSON.stringify(config, null, 4)}
+\`\`\`
+            `.trim()) as string);
+        }
 
         const goldenConfig = Object.freeze({
             type: 'demo',
@@ -120,7 +133,7 @@ describe('video', () => {
         });
 
         it('throws an error when given non-JSON content', () => {
-            expect(() => useContext(mockContext(), () => marked(`
+            expect(() => useContext(mockContext(), () => marked.parse(`
 \`\`\`video
 not a json object
 \`\`\`
@@ -185,7 +198,7 @@ not a json object
 
         it('ignores non-video code blocks', () => {
             const ctx = mockContext({ njk: mockEnvironment });
-            const html = useContext(ctx, () => marked(`
+            const html = useContext(ctx, () => marked.parse(`
 \`\`\`typescript
 \`\`\`
             `.trim()));
@@ -194,7 +207,7 @@ not a json object
         });
 
         it('throws when no context is set', () => {
-            expect(() => marked(`
+            expect(() => marked.parse(`
 \`\`\`video
 ${JSON.stringify(goldenConfig, null, 4)}
 \`\`\`
@@ -202,16 +215,3 @@ ${JSON.stringify(goldenConfig, null, 4)}
         });
     });
 });
-
-const mockEnvironment = new nunjucks.Environment()
-    .addFilter('mimeVideo', (path) => getVideoMimeType(path))
-;
-
-function renderVideo(config: unknown): string {
-    const ctx = mockContext({ njk: mockEnvironment });
-    return useContext(ctx, () => marked(`
-\`\`\`video
-${JSON.stringify(config, null, 4)}
-\`\`\`
-    `.trim()));
-}

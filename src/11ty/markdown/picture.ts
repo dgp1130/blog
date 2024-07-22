@@ -1,8 +1,8 @@
-import { marked } from 'marked';
+import { MarkedExtension, Tokens } from 'marked';
 import { getImageMimeType } from '../mime_types';
 import { Parser } from './parser';
 
-interface PictureToken extends marked.Tokens.Generic {
+interface PictureToken extends Tokens.Generic {
     type: 'picture';
     alt: string;
     sources: string[];
@@ -17,11 +17,11 @@ const extension = {
         return src.match(/^!\[/)?.index ?? -1;
     },
 
-    tokenizer(raw: string, tokens: marked.Token[]): PictureToken | undefined {
+    tokenizer(raw: string): PictureToken | undefined {
         return PictureParser.parse(raw);
     },
 
-    renderer(inputToken: marked.Tokens.Generic): string {
+    renderer(inputToken: Tokens.Generic): string {
         // Validate input token.
         if (inputToken.type !== 'picture') {
             throw new Error(`Unknown token of type: ${inputToken.type}`);
@@ -56,12 +56,13 @@ ${sources.map((source) => `    <source srcset="${source}" type="${
  * `<picture />` element. Simply append additional sources to an image markdown
  * and it will render a `<picture />` element with a `<source />` for each image
  * in order. The last source will be used as the fallback `<img />` source.
- * 
+ *
  * ```markdown
  * ![alt](/source1.avif)(/source2.webp)(/source3.png)
  * ```
  */
-export const pictureExtension: marked.MarkedExtension = {
+export const pictureExtension: MarkedExtension = {
+    useNewRenderer: true,
     extensions: [ extension ],
 };
 

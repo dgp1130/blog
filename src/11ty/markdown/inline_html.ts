@@ -1,4 +1,4 @@
-import { marked } from 'marked';
+import { MarkedExtension, Tokens } from 'marked';
 
 /**
  * Marked extension which defines an `inline-html` code language which is
@@ -16,12 +16,13 @@ import { marked } from 'marked';
  * preserve the exact text (including whitespace) provided as an input ensuring
  * the rendered output exactly matches the input HTML.
  */
-export const inlineHtmlExtension: marked.MarkedExtension = {
+export const inlineHtmlExtension: MarkedExtension = {
+    useNewRenderer: true,
     renderer: {
-        code(code: string, language?: string): string | false {
-            if (language !== 'inline-html') return false;
+        code({ text, lang }: Tokens.Code): string | false {
+            if (lang !== 'inline-html') return false;
 
-            return code;
+            return text;
         }
     },
 };

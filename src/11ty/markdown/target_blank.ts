@@ -1,13 +1,13 @@
-import { marked } from 'marked';
+import { MarkedExtension, Tokens } from 'marked';
 
 /**
  * A marked extension which renders link tags to other pages with the
  * `target="_blank"` attribute to make them open in a new tab.
  */
-export const targetBlankExtension: marked.MarkedExtension = {
+export const targetBlankExtension: MarkedExtension = {
+    useNewRenderer: true,
     renderer: {
-        link(href: string | null, title: string | null, text: string):
-                string | false {
+        link({ href, title, text }: Tokens.Link): string | false {
             if (!href) throw new Error(`No href for link with text: ${text}`);
 
             const attrs = [

@@ -1,4 +1,4 @@
-import { marked } from 'marked';
+import { MarkedExtension, Tokens } from 'marked';
 import * as zod from 'zod';
 import { Context, getContext } from './context';
 
@@ -35,12 +35,13 @@ import { Context, getContext } from './context';
  * * `loop`      - Whether or not to loop the video. Optional, defaults to
  *                 `false`.
  */
-export const videoExtension: marked.MarkedExtension = {
+export const videoExtension: MarkedExtension = {
+    useNewRenderer: true,
     renderer: {
-        code(code: string, language?: string): string | false {
-            if (language !== 'video') return false;
+        code({ text, lang }: Tokens.Code): string | false {
+            if (lang !== 'video') return false;
 
-            const config = parseConfig(code);
+            const config = parseConfig(text);
             const ctx = getContext()
             return renderVideo(config, ctx);
         }

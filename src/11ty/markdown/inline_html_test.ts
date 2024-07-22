@@ -1,14 +1,14 @@
 import 'jasmine';
 
-import { marked } from 'marked';
+import { Marked } from 'marked';
 import { inlineHtmlExtension } from './inline_html';
 
 describe('inline-html', () => {
     describe('inlineHtmlExtension', () => {
-        marked.use(inlineHtmlExtension);
+        const marked = new Marked(inlineHtmlExtension);
 
         it('returns inlined HTML, including insignificant whitespace', () => {
-            expect(marked(`
+            expect(marked.parse(`
 \`\`\`inline-html
 <div>Hello,          World!</div>
 \`\`\`

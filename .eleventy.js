@@ -34,10 +34,9 @@ module.exports = function (config) {
     );
 
     // Explicitly provide the Markdown library to use `marked`.
-    const renderMd = markdown();
     config.addExtension('md', {
         compile(contents) {
-            return (frontmatter) => renderMd(contents, {
+            return (frontmatter) => markdown(contents, {
                 frontmatter,
                 njk: njkEnv,
             });

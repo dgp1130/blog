@@ -1,13 +1,13 @@
 import 'jasmine';
 
-import { marked } from 'marked';
+import { Marked } from 'marked';
 import { useContext } from './context';
 import { mockContext } from './context_mock';
 import { timestampExtension } from './timestamp';
 
 describe('timestamp', () => {
     describe('timestampExtension', () => {
-        marked.use(timestampExtension);
+        const marked = new Marked(timestampExtension);
 
         it('renders a timestamp from the context frontmatter', () => {
             const ctx = mockContext({
@@ -17,7 +17,7 @@ describe('timestamp', () => {
                     },
                 },
             });
-            const html = useContext(ctx, () => marked(`
+            const html = useContext(ctx, () => marked.parse(`
 \`\`\`timestamp
 \`\`\`
             `.trim()));
@@ -35,7 +35,7 @@ describe('timestamp', () => {
                     },
                 },
             });
-            const html = useContext(ctx, () => marked(`
+            const html = useContext(ctx, () => marked.parse(`
 \`\`\`timestamp
 \`\`\`
             `.trim()));
@@ -47,7 +47,7 @@ describe('timestamp', () => {
 
         it('ignores non-timestamp code blocks', () => {
             const ctx = mockContext();
-            const html = useContext(ctx, () => marked(`
+            const html = useContext(ctx, () => marked.parse(`
 \`\`\`typescript
 \`\`\`
             `.trim()));
@@ -56,7 +56,7 @@ describe('timestamp', () => {
         });
 
         it('throws when no context is set', () => {
-            expect(() => marked(`
+            expect(() => marked.parse(`
 \`\`\`timestamp
 \`\`\`
             `.trim())).toThrowError(/No context available\./);

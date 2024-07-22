@@ -1,6 +1,6 @@
 import 'jasmine';
 
-import { marked } from 'marked';
+import { Marked } from 'marked';
 import * as nunjucks from 'nunjucks';
 import { useContext } from './context';
 import { mockContext } from './context_mock';
@@ -8,7 +8,17 @@ import { demoExtension } from './demo';
 
 describe('demo', () => {
     describe('demoExtension', () => {
-        marked.use(demoExtension);
+        const marked = new Marked(demoExtension);
+
+        const mockEnvironment = new nunjucks.Environment();
+        function renderDemo(config: unknown): string {
+            const ctx = mockContext({ njk: mockEnvironment });
+            return useContext(ctx, () => marked.parse(`
+\`\`\`demo
+${JSON.stringify(config, null, 4)}
+\`\`\`
+            `.trim()) as string);
+        }
 
         const goldenConfig = Object.freeze({
             src: 'http://mock-demo.test/',
@@ -46,7 +56,7 @@ describe('demo', () => {
         });
 
         it('throws an error when given non-JSON content', () => {
-            expect(() => useContext(mockContext(), () => marked(`
+            expect(() => useContext(mockContext(), () => marked.parse(`
 \`\`\`demo
 not a json object
 \`\`\`
@@ -83,7 +93,7 @@ not a json object
 
         it('ignores non-demo code blocks', () => {
             const ctx = mockContext({ njk: mockEnvironment });
-            const html = useContext(ctx, () => marked(`
+            const html = useContext(ctx, () => marked.parse(`
 \`\`\`typescript
 \`\`\`
             `.trim()));
@@ -92,7 +102,7 @@ not a json object
         });
 
         it('throws when no context is set', () => {
-            expect(() => marked(`
+            expect(() => marked.parse(`
 \`\`\`demo
 ${JSON.stringify(goldenConfig, null, 4)}
 \`\`\`
@@ -100,13 +110,3 @@ ${JSON.stringify(goldenConfig, null, 4)}
         });
     });
 });
-
-const mockEnvironment = new nunjucks.Environment();
-function renderDemo(config: unknown): string {
-    const ctx = mockContext({ njk: mockEnvironment });
-    return useContext(ctx, () => marked(`
-\`\`\`demo
-${JSON.stringify(config, null, 4)}
-\`\`\`
-    `.trim()));
-}

@@ -1,4 +1,5 @@
-import { marked } from 'marked';
+import { Marked } from 'marked';
+import { gfmHeadingId } from 'marked-gfm-heading-id';
 import { Context, useContext } from './context';
 import { demoExtension } from './demo';
 import { highlightExtension } from './highlight';
@@ -9,22 +10,27 @@ import { timestampExtension } from './timestamp';
 import { tweetExtension } from './tweet';
 import { videoExtension } from './video';
 
+const marked = new Marked(
+    // Highlight extension must come first, or else it will conflict with other
+    // code block extensions. It does not appear to be possible to have it
+    // ignore certain languages entirely.
+    highlightExtension,
+
+    gfmHeadingId(),
+    demoExtension,
+    inlineHtmlExtension,
+    pictureExtension,
+    targetBlankExtension,
+    timestampExtension,
+    tweetExtension,
+    videoExtension,
+);
+
 /**
  * Returns a function which accepts markdown content as a string parameter and
  * returns the rendered HTML.
  */
-export function markdown(): (md: string, data: Context) => string {
-    marked.use(highlightExtension);
-    marked.use(demoExtension);
-    marked.use(inlineHtmlExtension);
-    marked.use(pictureExtension);
-    marked.use(targetBlankExtension);
-    marked.use(timestampExtension);
-    marked.use(tweetExtension);
-    marked.use(videoExtension);
-
+export function markdown(md: string, data: Context): string | Promise<string> {
     // Set the context and render to HTML.
-    return (md: string, data: Context) => {
-        return useContext(data, () => marked(md));
-    };
+    return useContext(data, () => marked.parse(md));
 }

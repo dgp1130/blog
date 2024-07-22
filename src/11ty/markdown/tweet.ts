@@ -1,4 +1,4 @@
-import { marked } from 'marked';
+import { MarkedExtension, Tokens } from 'marked';
 import * as zod from 'zod';
 import { Context, getContext } from './context';
 
@@ -50,13 +50,14 @@ import { Context, getContext } from './context';
  * Markdown content...
  * ```
  */
-export const tweetExtension: marked.MarkedExtension = {
+export const tweetExtension: MarkedExtension = {
+    useNewRenderer: true,
     renderer: {
-        code(code: string, language?: string): string | false {
+        code({ text, lang }: Tokens.Code): string | false {
             // Ignore any code blocks not labeled as `tweet`.
-            if (language !== 'tweet') return false;
+            if (lang !== 'tweet') return false;
 
-            const config = parseConfig(code);
+            const config = parseConfig(text);
             const ctx = getContext();
             return renderTweet(config, ctx);
         }

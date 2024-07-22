@@ -1,14 +1,14 @@
 import 'jasmine';
 
-import { marked } from 'marked';
+import { Marked, MarkedExtension, Tokens } from 'marked';
 import { highlightExtension } from './highlight';
 
 describe('highlight', () => {
     describe('highlightExtension', () => {
-        marked.use(highlightExtension);
+        const marked = new Marked(highlightExtension);
 
         it('highlights code blocks', () => {
-            expect(marked(`
+            expect(marked.parse(`
 \`\`\`typescript
 export const foo: string = 'bar';
 \`\`\`
@@ -16,11 +16,32 @@ export const foo: string = 'bar';
         });
 
         it('skips highlighting code blocks without a language', () => {
-            expect(marked(`
+            expect(marked.parse(`
 \`\`\`
 Hello, World!
 \`\`\`
             `.trim())).toContain(`<code>Hello, World!\n</code>`);
+        });
+
+        it('ignores unknown languages', () => {
+            const customExtension: MarkedExtension = {
+                useNewRenderer: true,
+                renderer: {
+                    code({ text, lang }: Tokens.Code): string | false {
+                        if (lang !== 'custom') return false;
+
+                        return text.split('').reverse().join('');
+                    },
+                },
+            };
+
+            const marked = new Marked(highlightExtension, customExtension);
+            const html = marked.parse(`
+\`\`\`custom
+Hello!
+\`\`\`
+            `.trim());
+            expect(html).toBe('!olleH');
         });
     });
 });
