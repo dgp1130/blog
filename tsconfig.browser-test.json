@@ -7,12 +7,11 @@
     // exported from `client/` and tested. It would then simply be called from
     // `www/` at the top-level of a file. By not importing `www/` we avoid
     // invoking all the top-level side effects that come with doing so.
-    "include": [ "src/client/**/*.ts" ],
+    "include": [ "src/client/share_test.ts" ],
 
     "compilerOptions": {
         "module": "CommonJS",
-        "types": [ "jasmine" ],
         "noEmitOnError": true, // Karma gives cleaner error messages this way.
-        "experimentalDecorators": true // For lit-element.
+        "experimentalDecorators": true, // For lit-element.
     }
 }
