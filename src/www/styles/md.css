@@ -81,8 +81,6 @@
 .md img {
   display: block;
   max-width: 100%;
-  width: auto;
-  height: auto;
 
   /* Center the image horizontally. */
   margin: auto;
