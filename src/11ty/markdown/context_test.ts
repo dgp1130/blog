@@ -1,6 +1,6 @@
 import 'jasmine';
 
-import { useContext, getContext } from './context';
+import { useContext, getContext, Context } from './context';
 import { mockContext } from './context_mock';
 
 describe('context', () => {
@@ -45,5 +45,52 @@ describe('context', () => {
         // Context should be cleaned up after the callback threw.
         expect(() => getContext())
             .toThrowError('No context available.');
+    });
+
+    it('useContext() waits for the returned `Promise` to resolve', async () => {
+        let resolver!: (result: number) => void;
+        const promise = new Promise<number>((resolve) => {
+            resolver = resolve;
+        });
+
+        const result = useContext(mockContext(), () => promise);
+
+        expect(() => getContext()).not.toThrow();
+
+        resolver(1234);
+        await expectAsync(result).toBeResolved(1234);
+
+        expect(() => getContext()).toThrowError('No context available.');
+    });
+
+    it('useContext() cleans up context when the returned `Promise` rejects', async () => {
+        const error = new Error('Oh noes!');
+        let rejector!: (err: Error) => void;
+        const promise = new Promise<void>((_, reject) => {
+            rejector = reject;
+        });
+
+        const result = useContext(mockContext(), () => promise);
+
+        expect(() => getContext()).not.toThrow();
+
+        rejector(error);
+        await expectAsync(result).toBeRejectedWith(error);
+
+        expect(() => getContext()).toThrowError('No context available.');
+    });
+
+    it('useContext() infers its color from the given callback', () => {
+        // Type only test, only needs to compile, not execute.
+        expect().nothing();
+        () => {
+            const ctx = {} as Context;
+
+            // Synchronous
+            useContext(ctx, () => 1) satisfies number;
+
+            // Asynchronous
+            useContext(ctx, () => Promise.resolve(1)) satisfies Promise<number>;
+        };
     });
 });

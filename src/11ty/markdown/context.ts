@@ -24,17 +24,26 @@ let context: Context | undefined = undefined;
  * Attaches a context object as context to the stack trace of the executed
  * callback. The object given is used as the context and is accessible from
  * {@link getContext}.
- * 
+ *
  * @returns The result of the callback for convenience.
  */
-export function useContext<T>(ctx: Context, callback: () => T): T {
+export function useContext<Result>(ctx: Context, callback: () => Result):
+        Result {
     if (context) throw new Error('Attempting to set context when one already exists.');
 
     context = ctx;
+    let result: Result | undefined;
     try {
-        return callback();
+        result = callback();
+        return result;
     } finally {
-        context = undefined;
+        if (!(result instanceof Promise)) {
+            context = undefined;
+        } else {
+            result.finally(() => {
+                context = undefined;
+            }).catch(() => { /* suppress unhandled rejection */ });
+        }
     }
 }
 
