@@ -38,6 +38,7 @@ module.exports = function (config) {
         compile(contents) {
             return (frontmatter) => markdown(contents, {
                 frontmatter,
+                webRoot: 'src/www',
                 njk: njkEnv,
             });
         },

@@ -10,6 +10,7 @@ interface ContextOverrides {
             date?: Date;
         };
     };
+    webRoot?: string;
     njk?: nunjucks.Environment;
 }
 
@@ -25,6 +26,7 @@ export function mockContext(overrides: ContextOverrides = {}): Context {
                 ...overrides.frontmatter?.page ?? {},
             },
         },
+        webRoot: overrides.webRoot ?? 'path/to/www',
         njk: overrides.njk ?? new nunjucks.Environment(),
     };
 }

@@ -11,6 +11,9 @@ export interface Context {
         };
     };
 
+    /** The directory of the web content root (`www`) relative to CWD. */
+    webRoot: string;
+
     njk: nunjucks.Environment;
 }
 
