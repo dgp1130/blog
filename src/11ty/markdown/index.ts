@@ -30,7 +30,7 @@ const marked = new Marked(
  * Returns a function which accepts markdown content as a string parameter and
  * returns the rendered HTML.
  */
-export function markdown(md: string, data: Context): string | Promise<string> {
+export function markdown(md: string, data: Context): Promise<string> {
     // Set the context and render to HTML.
-    return useContext(data, () => marked.parse(md));
+    return useContext(data, async () => await marked.parse(md));
 }

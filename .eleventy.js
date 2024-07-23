@@ -36,7 +36,7 @@ module.exports = function (config) {
     // Explicitly provide the Markdown library to use `marked`.
     config.addExtension('md', {
         compile(contents) {
-            return (frontmatter) => markdown(contents, {
+            return async (frontmatter) => await markdown(contents, {
                 frontmatter,
                 webRoot: 'src/www',
                 njk: njkEnv,
