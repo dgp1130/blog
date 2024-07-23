@@ -20,7 +20,7 @@ export function mockContext(overrides: ContextOverrides = {}): Context {
         frontmatter: {
             page: {
                 url: '/posts/test/',
-                inputPath: './src/www/posts/test.md',
+                inputPath: './path/to/www/posts/test.md',
                 outputPath: '_site/posts/test/index.html',
                 date: new Date('2022-01-01T00:00:00Z'),
                 ...overrides.frontmatter?.page ?? {},

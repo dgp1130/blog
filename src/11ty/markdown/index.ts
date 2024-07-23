@@ -19,7 +19,7 @@ const marked = new Marked(
     gfmHeadingId(),
     demoExtension,
     inlineHtmlExtension,
-    pictureExtension,
+    pictureExtension(),
     targetBlankExtension,
     timestampExtension,
     tweetExtension,

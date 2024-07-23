@@ -1,15 +1,31 @@
-import { MarkedExtension, Tokens } from 'marked';
+import { imageSize as imageSizeCb } from 'image-size';
+import { MarkedExtension, RendererExtension, Token, TokenizerExtension, Tokens } from 'marked';
+import * as path from 'path';
+import { promisify } from 'util';
 import { getImageMimeType } from '../mime_types';
 import { Parser } from './parser';
+import { getContext } from './context';
+
+const imageSizeFn = promisify(imageSizeCb);
+
+interface Source {
+    path: string,
+    dimensions?: Dimensions;
+}
+
+interface Dimensions {
+    width: number;
+    height: number;
+}
 
 interface PictureToken extends Tokens.Generic {
     type: 'picture';
     alt: string;
-    sources: string[];
+    sources: Source[];
     attrs: Map<string, string>;
 }
 
-const extension = {
+const extension: TokenizerExtension & RendererExtension = {
     name: 'picture',
     level: 'inline',
 
@@ -31,28 +47,54 @@ const extension = {
             throw new Error(`Picture token has zero sources: ${token.raw}`);
         }
 
-        // Extract the final, default source.
-        const [ defaultSource ] = token.sources.slice(-1);
+        // Separate the final, default source.
         const sources = token.sources.slice(0, -1);
-
-        const attrs = Array.from(token.attrs.entries())
-            .map(([name, value]) => ` ${name}="${value}"`)
-            .join('')
-        ;
+        const defaultSource = token.sources.at(-1)!;
 
         // Render the picture.
         return `
 <picture>
-${sources.map((source) => `    <source srcset="${source}" type="${
-        getImageMimeType(source)}" />`).join('\n')}
-    <img srcset="${defaultSource}" alt="${token.alt}"${attrs} />
+    ${sources.map((source) => renderSource(source)).join('\n    ')}
+    ${renderImg(defaultSource, token.alt, token.attrs)}
 </picture>
         `.trim();
     },
 };
 
+/** Renders the `<source>` tag inside a `<picture>` element. */
+function renderSource(source: Source): string {
+    return `
+<source srcset="${source.path}" type="${getImageMimeType(source.path)}"${
+    source.dimensions
+        ? ` width="${source.dimensions.width}" height="${
+            source.dimensions.height}"`
+        : ``
+} />
+    `.trim();
+}
+
+/** Renders the `<img>` tag inside a `<picture>` element. */
+function renderImg(
+    source: Source,
+    alt: string,
+    attrs: ReadonlyMap<string, string>,
+): string {
+    const attrHtml = Array.from(attrs.entries())
+        .map(([name, value]) => ` ${name}="${value}"`)
+        .join('');
+
+    return `
+<img srcset="${source.path}" alt="${alt}"${
+    source.dimensions
+        ? ` width="${source.dimensions.width}" height="${
+            source.dimensions.height}"`
+        : ``
+}${attrHtml} />
+    `.trim();
+}
+
 /**
- * A marked extension which renders images with multiple sources as a
+ * Creates a Marked extension which renders images with multiple sources as a
  * `<picture />` element. Simply append additional sources to an image markdown
  * and it will render a `<picture />` element with a `<source />` for each image
  * in order. The last source will be used as the fallback `<img />` source.
@@ -61,10 +103,94 @@ ${sources.map((source) => `    <source srcset="${source}" type="${
  * ![alt](/source1.avif)(/source2.webp)(/source3.png)
  * ```
  */
-export const pictureExtension: MarkedExtension = {
-    useNewRenderer: true,
-    extensions: [ extension ],
-};
+export function pictureExtension({ imageSize = imageSizeFn }: {
+    imageSize?: typeof imageSizeFn,
+} = {}): MarkedExtension {
+    return {
+        useNewRenderer: true,
+        extensions: [ extension ],
+        async: true,
+
+        // Read the dimensions of the referenced image.
+        async walkTokens(inputToken: Token) {
+            if (inputToken.type !== 'picture') return;
+            const token = inputToken as PictureToken;
+
+            // Get the path of the markdown file from context.
+            const ctx = getContext();
+            const mdPath = ctx.frontmatter.page.inputPath;
+
+            await Promise.all(token.sources.map(async (source) => {
+                // Get the path to the image file.
+                const relImgPath = source.path;
+                const imgExt = relImgPath.split('.').at(-1)!;
+
+                // `image-size` says it supports SVGs, but seems to be buggy.
+                // https://github.com/image-size/image-size/issues/397
+                if (imgExt === 'svg') return;
+
+                // Resolve the image path relative to the markdown file which
+                // references it.
+                const imgPath = resolve({
+                    target: relImgPath,
+                    source: mdPath,
+                    root: ctx.webRoot,
+                });
+
+                // Read image dimensions.
+                const dimensions = await imageSize(imgPath);
+
+                // Validate the result.
+                if (!dimensions) {
+                    throw new Error(`Could not extract dimensions for image \`${
+                        imgPath}\` referenced by \`${mdPath}\``);
+                }
+                const { width, height } = dimensions;
+                if (width === undefined || height === undefined) {
+                    throw new Error(`Missing width (${width}) or height (${
+                        height}) for image \`${imgPath}\` referenced by \`${
+                        mdPath}\`.`)
+                }
+
+                // Save the image size on the token for rendering.
+                source.dimensions = { width, height };
+            }));
+        },
+    };
+}
+
+/**
+ * Resolve a path to the given target file relative to the provided source file.
+ *
+ * @param target A path to a target file to resolve. This can be either an
+ *     absolute path relative to the project root, or a relative path relative
+ *     to the source file.
+ * @param source A path to a source file to resolve the target file from. This
+ *     can be either an absolute path or a relative path, relative to the given
+ *     root directory.
+ * @param root A path relative to the CWD of the root directory to use for
+ *     resolving absolute paths.
+ * @returns The path to the given target relative to the given source (if
+ *     relative) or the given root (if absolute).
+ * @throws If the resolved path exists outside the specified root.
+ */
+function resolve({ target, source, root }: {
+    target: string,
+    source: string,
+    root: string,
+}): string {
+    const resolved = path.normalize(target.startsWith('/')
+        ? path.join(root, target)
+        : path.join(source, '..', target)
+    );
+
+    if (!resolved.startsWith(root)) {
+        throw new Error(`Resolving \`${target}\` from \`${source}\` led to \`${
+            resolved}\` which is outside the root directory (\`${root}\`).`);
+    }
+
+    return resolved;
+}
 
 /** Parses a picture token. */
 class PictureParser {
@@ -133,14 +259,14 @@ class PictureParser {
      * Parses multiple sources:
      * '(/foo.png)(/bar.png)' => [ '/foo.png', '/bar.png' ]
      */
-    private parseSources(): string[] {
+    private parseSources(): Source[] {
         const sources: string[] = [];
         this.parser.trimStart();
         while (this.parser.peek() === '(') {
             sources.push(this.parseSource());
             this.parser.trimStart();
         }
-        return sources;
+        return sources.map((source) => ({ path: source }));
     }
 
     /** Parses a single attribute: 'foo="bar"' => [ 'foo', 'bar' ] */
