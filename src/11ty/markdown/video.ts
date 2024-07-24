@@ -117,12 +117,14 @@ const videoNjkTemplate = `
 
 {% set videoEl %}
     {% if type === 'demo' %}
-        <video {{ options }} playsinline {{ sizes | safe }} controls>
+        <video {{ options }} playsinline {{ sizes | safe }} controls
+                style="aspect-ratio: {{ size[0] | safe }} / {{ size[1] | safe }}; max-height: {{ size[1] | safe }}px;">
             {{ sources | safe }}
             {{ subtitles | safe }}
         </video>
     {% elif type === 'gif' %}
-        <video {{ options }} playsinline {{ sizes | safe }} class="gif">
+        <video {{ options }} playsinline {{ sizes | safe }} class="gif"
+                style="aspect-ratio: {{ size[0] | safe }} / {{ size[1] | safe }}; max-height: {{ size[1] | safe }}px;">
             {{ sources | safe }}
             {{ subtitles | safe }}
         </video>
