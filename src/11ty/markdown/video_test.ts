@@ -90,9 +90,9 @@ ${JSON.stringify(config, null, 4)}
             });
 
             const webmSource = html
-                .indexOf('<source src="/video.webm" type="video/webm" />');
+                .indexOf('<source src="/video.webm" type="video/webm">');
             const mp4Source = html
-                .indexOf('<source src="/video.mp4" type="video/mp4" />');
+                .indexOf('<source src="/video.mp4" type="video/mp4">');
 
             // `.webm` is first and should be preferred over `.mp4`.
             expect(webmSource).not.toBe(-1);

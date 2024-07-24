@@ -106,7 +106,7 @@ const videoNjkTemplate = `
 {% set sizes %}width="{{ size[0] }}" height="{{ size[1] }}"{% endset %}
 {% set sources %}
     {% for url in urls %}
-        <source src="{{ url }}" type="{{ url | mimeVideo }}" />
+        <source src="{{ url }}" type="{{ url | mimeVideo }}">
     {% endfor %}
 {% endset %}
 {% set subtitles %}
