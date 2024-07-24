@@ -45,9 +45,9 @@ describe('picture', () => {
             expect(await renderImage(`![alt](/foo.avif)(/foo.webp)(/foo.png)`))
                 .toContain(`
 <picture>
-    <source srcset="/foo.avif" type="image/avif" width="100" height="100" />
-    <source srcset="/foo.webp" type="image/webp" width="200" height="200" />
-    <img srcset="/foo.png" alt="alt" width="300" height="300" />
+    <source srcset="/foo.avif" type="image/avif" width="100" height="100">
+    <source srcset="/foo.webp" type="image/webp" width="200" height="200">
+    <img srcset="/foo.png" alt="alt" width="300" height="300">
 </picture>
                 `.trim())
         });

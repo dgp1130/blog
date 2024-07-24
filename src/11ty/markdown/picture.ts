@@ -69,7 +69,7 @@ function renderSource(source: Source): string {
         ? ` width="${source.dimensions.width}" height="${
             source.dimensions.height}"`
         : ``
-} />
+}>
     `.trim();
 }
 
@@ -89,7 +89,7 @@ function renderImg(
         ? ` width="${source.dimensions.width}" height="${
             source.dimensions.height}"`
         : ``
-}${attrHtml} />
+}${attrHtml}>
     `.trim();
 }
 
