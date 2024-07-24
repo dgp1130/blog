@@ -135,7 +135,8 @@ const videoNjkTemplate = `
     {% endif %}
 {% endset %}
 
-<dwac-lazy style="display: block; aspect-ratio: {{ size[0] | safe }} / {{ size[1] | safe }}; max-height: {{ size[1] | safe }}px;">
+<dwac-lazy class="video"
+        style="display: block; aspect-ratio: {{ size[0] | safe }} / {{ size[1] | safe }}; max-height: {{ size[1] | safe }}px;">
     <template>{{ videoEl | safe }}</template>
     <noscript>{{ videoEl | safe }}</noscript>
 </dwac-lazy>

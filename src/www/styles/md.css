@@ -97,7 +97,7 @@
   height: auto;
 }
 
-.md dwac-lazy:has(> video) {
+.md dwac-lazy.video {
   margin: 0 auto 1em auto;
 }
 
