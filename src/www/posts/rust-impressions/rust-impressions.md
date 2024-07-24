@@ -31,7 +31,7 @@ what Rust development is really like and had a few observations to share.
 A few years ago I went through [the Rust book](https://doc.rust-lang.org/book/)
 and found a lot to like in the language, but never had an excuse to do much with
 it. Now I was working through an issue to
-[switch `rules_prerender` CSS bundling to use Parcel](https://github.com/dgp1130/rules_prerender/issues/46/)
+[switch <code>@rules_prerender</code> CSS bundling to use Parcel](https://github.com/dgp1130/rules_prerender/issues/46/)
 and required some changes to
 [Parcel's Rust codebase](https://github.com/parcel-bundler/parcel-css/tree/9916cae0499e74ebcfafd5f0367edadbecebf3ca/)
 to make that happen. Specifically, I wanted to add support for a custom
@@ -64,7 +64,7 @@ safety bugs and how to fix them is truly incredible, especially in an
 increasingly security-minded industry. In my entire experience, I never
 encountered any runtime failures. I only ever saw one segmentation fault when I
 tried to use
-[`std::mem::transmute()`](https://doc.rust-lang.org/stable/std/mem/fn.transmute.html)
+[<code>std::mem::transmute()</code>](https://doc.rust-lang.org/stable/std/mem/fn.transmute.html)
 as a hacky workaround for something it was definitely _not_ supposed to
 transmute, so that one is on me.
 
@@ -251,12 +251,13 @@ If you're not familiar with it, Node-API is the system for building native
 NodeJS add-ons and calling them from JavaScript. The biggest constraint with
 this system is that JavaScript only ever runs on the main thread, so any
 Node-API types like
-[`JsString`](https://docs.rs/napi/latest/napi/struct.JsString.html),
-[`JsNumber`](https://docs.rs/napi/latest/napi/struct.JsNumber.html), and
-[`JsFunction`](https://docs.rs/napi/latest/napi/struct.JsFunction.html) can only
-be referenced from the main thread (not sure how JS worker interop works here).
-Since Parcel is multi-threaded, most of the challenge came from figuring out how
-to use these types only from the main thread.
+[<code>JsString</code>](https://docs.rs/napi/latest/napi/struct.JsString.html),
+[<code>JsNumber</code>](https://docs.rs/napi/latest/napi/struct.JsNumber.html),
+and
+[<code>JsFunction</code>](https://docs.rs/napi/latest/napi/struct.JsFunction.html)
+can only be referenced from the main thread (not sure how JS worker interop
+works here). Since Parcel is multi-threaded, most of the challenge came from
+figuring out how to use these types only from the main thread.
 
 Fortunately Rust is really helpful here. Its ownership model ports really well
 to multithreaded programming. The JS types don't implemented `Send` or `Sync`,
@@ -273,7 +274,7 @@ you can look at the
 ### `ThreadsafeFunction`
 
 There is a
-[`ThreadsafeFunction`](https://docs.rs/napi/latest/napi/threadsafe_function/struct.ThreadsafeFunction.html)
+[<code>ThreadsafeFunction</code>](https://docs.rs/napi/latest/napi/threadsafe_function/struct.ThreadsafeFunction.html)
 type for calling JS functions from worker threads, though it took me a while to
 really understand what this is doing and why the API is structure the way it is.
 The [example](https://docs.rs/napi/latest/napi/threadsafe_function/struct.ThreadsafeFunction.html#example)
@@ -340,7 +341,7 @@ type homogenous.
 
 If you want a Rust function to return a `Promise` to JS, you have to use a very
 similar looking API called
-[`execute_tokio_future()`](https://napi.rs/docs/compat-mode/concepts/tokio).
+[<code>execute_tokio_future()</code>](https://napi.rs/docs/compat-mode/concepts/tokio).
 This has a similar pattern of taking a `Future<Output = SomeRustType>` and a
 transformation function running on the main thread which converts the result to
 a Node-API JS type.
@@ -351,7 +352,7 @@ solely to convert the arguments from Rust types into JS types.
 
 One other thing that tripped me up with `ThreadsafeFunction` in particular is
 that Node-API uses
-[`ErrorStrategy::CalleeHandled`](https://docs.rs/napi/latest/napi/threadsafe_function/ErrorStrategy/enum.CalleeHandled.html)
+[<code>ErrorStrategy::CalleeHandled</code>](https://docs.rs/napi/latest/napi/threadsafe_function/ErrorStrategy/enum.CalleeHandled.html)
 by default. This means the JS function should be written to receive the call
 like so:
 
@@ -370,7 +371,7 @@ This follows NodeJS callback conventions, where an optional error is passed as
 the first argument (if the `JsArgs` -> `Result<Vec<JsUnknown>>` conversion
 fails), with the actual data following. In my case, there is no use case where
 the resolver should be called with an error, so
-[`ErrorStrategy::Fatal`](https://docs.rs/napi/latest/napi/threadsafe_function/ErrorStrategy/enum.Fatal.html)
+[<code>ErrorStrategy::Fatal</code>](https://docs.rs/napi/latest/napi/threadsafe_function/ErrorStrategy/enum.Fatal.html)
 made more sense and would just call the function directly with the
 `Result<Vec<JsUnknown>>`.
 
@@ -402,8 +403,8 @@ function myResolver(
 ```
 
 The Rust side then used a
-[`CallbackFuture`](https://crates.io/crates/callback-future) to wait for this
-function to be invoked and capture the result. Since this would be an
+[<code>CallbackFuture</code>](https://crates.io/crates/callback-future) to wait
+for this function to be invoked and capture the result. Since this would be an
 un-ergonomic API on the JS side, I added a small adapter which translated a
 `Promise` API structure into this callback design.
 
@@ -530,7 +531,7 @@ support this, so you'd basically have to re-implement your own version of
 To summarize, `ThreadsafeFunction` doesn't support synchronous callbacks to
 JavaScript from worker threads. The easiest solution is to make the callback
 asynchronous so the main thread returns a `Promise` with
-[`execute_tokio_future()`](https://napi.rs/docs/compat-mode/concepts/tokio).
+[<code>execute_tokio_future()</code>](https://napi.rs/docs/compat-mode/concepts/tokio).
 
 ## Functional Design
 
@@ -597,13 +598,13 @@ fn main() {
 
 I thought it would bother me more than it did, but it actually didn't come up
 too often, so it's a relatively minor complaint. You could use an implementation
-of [`Either`](https://docs.rs/either/latest/either/), though there doesn't seem
-to be a standard version and it doesn't scale too well. I do know that
-`number | string` in TypeScript is not discriminated (no data telling me which
-type is in the variable, I'd have to `typeof` it). By contrast, `NumberOrString`
-is discriminated which allows `match` to work as well as does. That said, I
-would still love to see some kind of union operator in Rust to make this a
-little lighter-weight for simple cases.
+of [<code>Either</code>](https://docs.rs/either/latest/either/), though there
+doesn't seem to be a standard version and it doesn't scale too well. I do know
+that `number | string` in TypeScript is not discriminated (no data telling me
+which type is in the variable, I'd have to `typeof` it). By contrast,
+`NumberOrString` is discriminated which allows `match` to work as well as does.
+That said, I would still love to see some kind of union operator in Rust to make
+this a little lighter-weight for simple cases.
 
 ### Mixing `Option` and `?`
 
@@ -662,9 +663,9 @@ resolver implemented in Rust. I could have stopped there and just written my own
 usage in Rust rather than JavaScript. I did consider this option but ultimately
 decided against it because my use case was itself a JS library for others to
 consume (called
-[`rules_prerender`](https://github.com/dgp1130/rules_prerender/), you should
-check it out if you're into Bazel or static site generators). I could have
-written a resolver there in Rust, but then I would run into the problem of
+[<code>rules_prerender</code>](https://github.com/dgp1130/rules_prerender/), you
+should check it out if you're into Bazel or static site generators). I could
+have written a resolver there in Rust, but then I would run into the problem of
 deployment, how do users depend on the Rust part of the library?
 
 This would have required cross-compiling my Rust resolver and Parcel into a
@@ -726,52 +727,52 @@ almost always what you would want in that situation.
 `map()` functions also had some inconsistencies between types which I found
 quite confusing. For example:
 
-*   [`Iterator`](https://doc.rust-lang.org/std/iter/trait.Iterator.html) uses
-    [`.map()`](https://doc.rust-lang.org/std/iter/trait.Iterator.html#method.map) and
-    [`.flat_map()`](https://doc.rust-lang.org/std/iter/trait.Iterator.html#method.flat_map).
-*   [`Option`](https://doc.rust-lang.org/std/option/enum.Option.html) uses
-    [`.map()`](https://doc.rust-lang.org/std/option/enum.Option.html#method.map),
-    [`.and_then()`](https://doc.rust-lang.org/std/option/enum.Option.html#method.and_then),
-    and [`.or_else()`](https://doc.rust-lang.org/std/option/enum.Option.html#method.or_else).
-*   [`Result`](https://doc.rust-lang.org/std/result/enum.Result.html) uses
-    [`.map()`](https://doc.rust-lang.org/std/result/enum.Result.html#method.map),
-    [`.and_then()`](https://doc.rust-lang.org/std/result/enum.Result.html#method.and_then), and
-    [`.or_else()`](https://doc.rust-lang.org/std/result/enum.Result.html#method.or_else).
-*   [`Future`](https://docs.rs/futures/latest/futures/future/trait.FutureExt.html)
-    uses [`.map()`](https://docs.rs/futures/latest/futures/future/trait.FutureExt.html#method.map)
-    and [`.then()`](https://docs.rs/futures/latest/futures/future/trait.FutureExt.html#method.then).
+*   [<code>Iterator</code>](https://doc.rust-lang.org/std/iter/trait.Iterator.html) uses
+    [<code>.map()</code>](https://doc.rust-lang.org/std/iter/trait.Iterator.html#method.map) and
+    [<code>.flat_map()</code>](https://doc.rust-lang.org/std/iter/trait.Iterator.html#method.flat_map).
+*   [<code>Option</code>](https://doc.rust-lang.org/std/option/enum.Option.html) uses
+    [<code>.map()</code>](https://doc.rust-lang.org/std/option/enum.Option.html#method.map),
+    [<code>.and_then()</code>](https://doc.rust-lang.org/std/option/enum.Option.html#method.and_then),
+    and [<code>.or_else()</code>](https://doc.rust-lang.org/std/option/enum.Option.html#method.or_else).
+*   [<code>Result</code>](https://doc.rust-lang.org/std/result/enum.Result.html) uses
+    [<code>.map()</code>](https://doc.rust-lang.org/std/result/enum.Result.html#method.map),
+    [<code>.and_then()</code>](https://doc.rust-lang.org/std/result/enum.Result.html#method.and_then), and
+    [<code>.or_else()</code>](https://doc.rust-lang.org/std/result/enum.Result.html#method.or_else).
+*   [<code>Future</code>](https://docs.rs/futures/latest/futures/future/trait.FutureExt.html)
+    uses [<code>.map()</code>](https://docs.rs/futures/latest/futures/future/trait.FutureExt.html#method.map)
+    and [<code>.then()</code>](https://docs.rs/futures/latest/futures/future/trait.FutureExt.html#method.then).
 
 `Option` and `Result` seem to be mostly aligned, but `Iterator` and `Future`
 both disagree on the name of their flat map operation. The lack of function
 overloading also makes distinctions like
-[`Future.map()`](https://docs.rs/futures/latest/futures/future/trait.FutureExt.html#method.map)
-vs [`Future.then()`](https://docs.rs/futures/latest/futures/future/trait.FutureExt.html#method.then)
+[<code>Future.map()</code>](https://docs.rs/futures/latest/futures/future/trait.FutureExt.html#method.map)
+vs [<code>Future.then()</code>](https://docs.rs/futures/latest/futures/future/trait.FutureExt.html#method.then)
 much more annoying to use than they really should be.
 
 These adapters are also a bit tricky for documentation. Since many of them are
 implemented as extension functions, some type documentation is fairly minimal
 and unhelpful for typical usage.
-[`Future`](https://docs.rs/futures/latest/futures/future/trait.Future.html) is a
-good example of this which has a great overview of the primitive and how polling
-works, but no details about how to actually use a Future from a practical
-perspective. All the functions you really care about are under
-[`FutureExt`](https://docs.rs/futures/latest/futures/future/trait.FutureExt.html)
+[<code>Future</code>](https://docs.rs/futures/latest/futures/future/trait.Future.html)
+is a good example of this which has a great overview of the primitive and how
+polling works, but no details about how to actually use a Future from a
+practical perspective. All the functions you really care about are under
+[<code>FutureExt</code>](https://docs.rs/futures/latest/futures/future/trait.FutureExt.html)
 and much harder to find.
 
 This is compounded by adapter types that are never actually referenced and only
 ever returned and consumed by adapter functions. For example,
-[`Future.map()`](https://docs.rs/futures/latest/futures/future/trait.FutureExt.html#method.map)
+[<code>Future.map()</code>](https://docs.rs/futures/latest/futures/future/trait.FutureExt.html#method.map)
 makes a lot of sense to me as a function invocation, but
-[`futures::future::Map`](https://docs.rs/futures/latest/futures/future/struct.Map.html)
+[<code>futures::future::Map</code>](https://docs.rs/futures/latest/futures/future/struct.Map.html)
 as a _type_ makes no logical sense to me. It doesn't fit a functional mental
 model and makes it much harder to work with. I'm sure there's a good reason as
 to why these kinds of types need to exist (probably because a `dyn Future` isn't
 `Sized`?) but they clutter the API surface and documentation with noise that
 really doesn't benefit the user. This is particularly annoying when Googling
 "Rust Future map" and finding
-[`futures::future::Map`](https://docs.rs/futures/latest/futures/future/struct.Map.html)
+[<code>futures::future::Map</code>](https://docs.rs/futures/latest/futures/future/struct.Map.html)
 instead of the
-[`Future.map()`](https://docs.rs/futures/latest/futures/future/trait.FutureExt.html#method.map)
+[<code>Future.map()</code>](https://docs.rs/futures/latest/futures/future/trait.FutureExt.html#method.map)
 function that you actually wanted.
 
 ## `async` / `await`

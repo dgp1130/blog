@@ -529,8 +529,8 @@ But these `<li>` tags will be rendered directly into the `<router-outlet>`
 without a `<ul>` parent, which
 [isn't valid HTML](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/li).
 
-In my original streaming post, I tackled this problem by [rendering the `<ul>`
-and `<li>` tags client side](/posts/streamable-html-fragments/#conclusion),
+In my original streaming post, I tackled this problem by rendering the `<ul>`
+and `<li>` tags [client side](/posts/streamable-html-fragments/#conclusion),
 since `streamDomFragment()` returns an `AsyncGenerator` which can be composed,
 so let's try that. We'll let the server return the items in the previous format
 without a `<ul>` or `<li>` tag and instead render those directly in the router.
@@ -679,7 +679,7 @@ and then click a link to navigate while streaming, then navigate back to the
 initial page, the stream restarts. It's not preserved!
 
 The reason for this is actually `type="module"`. ES module scripts are
-[implicitly `defer`-ed](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-defer).
+[implicitly deferred](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-defer).
 Deferred scripts execute after the full document has been downloaded and parsed,
 meaning it won't execute until _after_ the page is fully loaded. By clicking a
 link during streaming, the user is triggering a navigation before the `Router`
@@ -716,7 +716,7 @@ hard navigation.
 That said, we would still want to load the router as soon as it can for
 streaming use cases. To fix this behavior we need to avoid blocking `/router.js`
 on fully parsing the document. We can do this by adding
-[`async`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-async)
+[<code>async</code>](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-async)
 to the script:
 
 ```html

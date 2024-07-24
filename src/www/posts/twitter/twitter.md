@@ -323,7 +323,7 @@ as well as various tools for exporting, managing, and cleaning up raw Twitter
 data (no alt text by default, seriously?!).
 
 Moving forward, you can mostly find me on Mastodon at
-[`@develwithoutacause@techhub.social`](https://techhub.social/@develwithoutacause).
+[<code>@develwithoutacause@techhub.social</code>](https://techhub.social/@develwithoutacause).
 My new year's resolution is to post more consistent content on my blog here as
 well, so look forward to an end of year post about how I failed to do so.
 There's also a new [social](/social/) page here listing out everywhere you can

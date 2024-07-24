@@ -83,7 +83,7 @@ workaround.
 Factories also do not work well with frameworks which often need hooks into
 constructors or need to own them entirely and have to implement their own
 lifecycle methods instead (looking at you,
-[`ngOnInit()`](https://angular.io/api/core/OnInit)).
+[<code>ngOnInit()</code>](https://angular.io/api/core/OnInit)).
 
 These limitations introduce awkward constraints on code which limit options
 available to developers when they inevitably need to change that code. Beyond
@@ -223,8 +223,8 @@ their semantics to set the object to a valid state.
 
 Contrast this with standard C, where allocation is a completely separate step
 from initialization. In C, declaring a `struct` or calling
-[`malloc()`](https://en.cppreference.com/w/c/memory/malloc) allocates the memory
-for it, while developers use the existing features of the language to
+[<code>malloc()</code>](https://en.cppreference.com/w/c/memory/malloc) allocates
+the memory for it, while developers use the existing features of the language to
 set the object to a valid state. Often a static function will take the required
 inputs, validate them, allocate the `struct`, set the data on it, and return the
 result in a simplistic form of a constructor.
@@ -515,7 +515,7 @@ into the subclass. Any number of operations or function calls could be made
 between the `new` invocations. The `ctor<Person>` could be passed in and out of
 functions, saved to a `Map`, retrieved at later time, and then finally
 instantiated into a `Simpson`, or maybe even a
-[`Flanders`](https://simpsons.fandom.com/wiki/Flanders_family).
+[<code>Flanders</code>](https://simpsons.fandom.com/wiki/Flanders_family).
 
 This also provides simple implementations of class modifiers. Using `new` on an
 `abstract` class can *only* create a `ctor<T>` which does not support a direct
@@ -920,8 +920,8 @@ While authoring this post, I wanted to actually play around with these ideas and
 make sure they worked as well as I hoped. A proper implementation would require
 a custom compiler, or at least a compiler plugin, however a library could be
 "good enough" for small experiments. As a result, I published
-[`ctor-exp`](https://github.com/dgp1130/ctor-exp), a simple TypeScript library
-which implements many of the ideas here.
+[<code>ctor-exp</code>](https://github.com/dgp1130/ctor-exp), a simple
+TypeScript library which implements many of the ideas here.
 
 TypeScript has an ~~abusable~~ powerful enough type system to emulate a lot of
 the core concepts without strictly requiring a compiler plugin. This library is
@@ -1240,7 +1240,8 @@ I mainly wanted to explore what the concept of "minimal constructors" means to a
 programming language and present a model for how it could be leveraged to
 enforce best practices without dropping existing object-oriented features. In
 the process I found a few other "interesting" consequences of the design which I
-wanted to share. Try out the [`ctor-exp`](https://github.com/dgp1130/ctor-exp)
-package yourself and see what crazy patterns you can come up with.
+wanted to share. Try out the
+[<code>ctor-exp</code>](https://github.com/dgp1130/ctor-exp) package yourself
+and see what crazy patterns you can come up with.
 
 I believe we can `.construct()` something better.

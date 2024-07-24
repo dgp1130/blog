@@ -40,8 +40,7 @@ my computer locally.
 
 This took most of the day and required multiple approaches and many failed
 attempts, but I did eventually get it installed via the _very cool_
-[`stable-diffusion-webui`](https://github.com/AUTOMATIC1111/stable-diffusion-webui/)
-project. Excited, I immediately start generating a picture of a litter of
+[<code>stable-diffusion-webui</code>](https://github.com/AUTOMATIC1111/stable-diffusion-webui/) project. Excited, I immediately start generating a picture of a litter of
 kittens cuddling and sleeping together, because what else could I possibly
 generate?
 

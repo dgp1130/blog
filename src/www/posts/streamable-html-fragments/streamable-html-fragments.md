@@ -27,7 +27,7 @@ possible to demo, even in a limited capacity.
 However, I recently found [this HTTP 203 video](https://youtu.be/LLRig4s1_yA)
 where [Jake Archibald](https://twitter.com/jaffathecake) discussed some "magic
 tricks" with the HTML parser. Near the end of the video, they mentioned
-[`document.implementation.createHTMLDocument()`](https://developer.mozilla.org/en-US/docs/Web/API/DOMImplementation/createHTMLDocument)
+[<code>document.implementation.createHTMLDocument()</code>](https://developer.mozilla.org/en-US/docs/Web/API/DOMImplementation/createHTMLDocument)
 which can stream dynamic HTML content directly into the page DOM. I'd never
 heard of this API before, and it seemed like a great tool to stream HTML
 fragments, so I was eager to prototype the approach.
@@ -318,7 +318,7 @@ Typically this is done as a one-time transformation over the entire document,
 since DSD is a parser-only feature by design. However, this streaming use case
 breaks that invariant since we might stream DSD into an existing document after
 it has been fully parsed. I adjusted the polyfill to use a
-[`MutationObserver`](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver)
+[<code>MutationObserver</code>](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver)
 and scoped only to the root element of the HTML fragment being pulled into the
 DOM.
 
@@ -792,7 +792,7 @@ console.log(el2.name); // undefined
 
 Yes, you did read that right and I was just as perplexed! The second log
 statement
-[_does_ in fact print `undefined`](https://stackblitz.com/edit/typescript-4atoam?file=index.ts).
+[<em>does</em> in fact print <code>undefined</code>](https://stackblitz.com/edit/typescript-4atoam?file=index.ts).
 Well, it does if you're using `target: 'ES2022'` or greater in your
 `tsconfig.json`. This took me quite a while to wrap my head around and I had to
 call in some air support from
@@ -813,7 +813,7 @@ class User {
 
 This used to be a purely TypeScript feature, but that is no longer the case. If
 you use `target: 'ES2022'` (and don't set
-[`useDefineForClassFields: false`](https://www.typescriptlang.org/tsconfig#useDefineForClassFields)),
+[<code>useDefineForClassFields: false</code>](https://www.typescriptlang.org/tsconfig#useDefineForClassFields)),
 then TypeScript will actually generate this as JS output.
 
 ### Omitted Initializers
@@ -829,7 +829,7 @@ class User {
 
 `new User().name` will be left `undefined` as you might expect. What you might
 not expect is that
-[it is _assigned_ to `undefined`](https://github.com/tc39/proposal-class-fields#fields-without-initializers-are-set-to-undefined).
+[it is <em>assigned</em> to <code>undefined</code>](https://github.com/tc39/proposal-class-fields#fields-without-initializers-are-set-to-undefined).
 That means that regardless of whatever value it had before, it will _now_ be
 `undefined`. This isn't typically easy to observe in practice, since
 constructors generally _construct_ things from scratch. But you can see this by
@@ -913,7 +913,7 @@ is constructed at `document.createElement()` while the second one is constructed
 at `document.body.append()`. The reasoning for this is because
 `document.implementation.createHTMLDocument()` is considered _inert_, meaning
 it's inactive and does not run scripts. This is similar to
-[`HTMLTemplateElement.prototype.contents`](https://html.spec.whatwg.org/multipage/scripting.html#associated-inert-template-document).
+[<code>HTMLTemplateElement.prototype.contents</code>](https://html.spec.whatwg.org/multipage/scripting.html#associated-inert-template-document).
 After all, you wouldn't want a `<template />` tag to execute its contents, bind
 event listeners, and corrupt your global page state. You expect to first _clone_
 the `<template />` _and then_ have it corrupt your global page state.
@@ -936,8 +936,8 @@ While debugging this was quite involved, the fix is relatively straightforward.
 All we need to do is force the element to upgrade when we create it, prior to
 setting any properties. We can do this by adopting the element into the main
 document with either
-[`document.importNode()`](https://developer.mozilla.org/en-US/docs/Web/API/Document/importNode)
-or [`document.adoptNode()`](https://developer.mozilla.org/en-US/docs/Web/API/Document/adoptNode).
+[<code>document.importNode()</code>](https://developer.mozilla.org/en-US/docs/Web/API/Document/importNode)
+or [<code>document.adoptNode()</code>](https://developer.mozilla.org/en-US/docs/Web/API/Document/adoptNode).
 
 We can fix our original snippet by doing:
 
@@ -964,7 +964,7 @@ _copies_ its input while `adoptNode()` actually _moves_ the node by detaching it
 from its current document and attaching it to the new document. Also it seems
 that `importNode()` implicitly upgrades any custom elements while `adoptNode()`
 does not and you need to manually call
-[`customElements.upgrade()`](https://developer.mozilla.org/en-US/docs/Web/API/CustomElementRegistry/upgrade).
+[<code>customElements.upgrade()</code>](https://developer.mozilla.org/en-US/docs/Web/API/CustomElementRegistry/upgrade).
 
 At least all we need to do to solve this is add `document.importNode()` to the
 streaming HTML fragment implementation, so the fix was easy.
@@ -1117,7 +1117,7 @@ streamTweetsBtn.addEventListener('click', () => {
 I'd say that's mission accomplished.
 
 There are a few details I skipped over. For example, did you know that a
-[`ShadowRoot`](https://developer.mozilla.org/en-US/docs/Web/API/ShadowRoot)
+[<code>ShadowRoot</code>](https://developer.mozilla.org/en-US/docs/Web/API/ShadowRoot)
 can't be cloned? This required some hacks to clone the declarative shadow DOM in
 an HTML fragment _before_ it gets converted to a real `ShadowRoot`.
 

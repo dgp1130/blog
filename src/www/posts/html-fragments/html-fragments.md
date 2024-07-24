@@ -94,7 +94,7 @@ Thinking on it some more, servers can return an HTML fragment pretty easily,
 it's the client that's lacking the functionality I want. What I really need is a
 way to parse that HTML into a DOM node. I then learned that this actually
 already exists in the form of
-[`DOMParser`](https://developer.mozilla.org/en-US/docs/Web/API/DOMParser)!
+[<code>DOMParser</code>](https://developer.mozilla.org/en-US/docs/Web/API/DOMParser)!
 
 I started experimenting to see how close I could get to the developer experience
 I wanted using purely native APIs and, after shooting myself in the foot a
@@ -305,7 +305,7 @@ just as well!
 The above code snippets are a bit simplified, so I recommend taking a look at
 the [full example](https://github.com/dgp1130/html-fragments-demo/) to see all
 the nitty-gritty details and actual implementation of
-[`parseDomFragment()`](https://github.com/dgp1130/html-fragments-demo/blob/blog-post/client/dom.ts).
+[<code>parseDomFragment()</code>](https://github.com/dgp1130/html-fragments-demo/blob/blog-post/client/dom.ts).
 
 ## Standardization
 
@@ -633,8 +633,9 @@ highlight is labeled "No tweet.js?", indicating there is no request for
 `/tweet.js` as would be expected.
 ](demos/5-missing-script.avif)(demos/5-missing-script.png)
 
-I looked up the [`DOMParser` spec](https://www.w3.org/TR/DOM-Parsing/) and found
-that scripting is
+I looked up the
+[<code>DOMParser spec</code>](https://www.w3.org/TR/DOM-Parsing/) and found that
+scripting is
 [explicitly disabled](https://www.w3.org/TR/DOM-Parsing/#:~:text=script%20elements%20get%20marked%20unexecutable%20and%20the%20contents%20of%20noscript%20get%20parsed%20as%20markup.)!
 
 > The `parseFromString(str, type)` method must run these steps, depending on type:
@@ -745,7 +746,7 @@ followed by a duplicate request to `/tweet.css`.
 `<script />` tags, putting the same stylesheet in the document twice actually
 fetches it multiple times. The simplest solution I found was to cache the
 stylesheet via
-[`Cache-Control`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control).
+[<code>Cache-Control</code>](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control).
 This was enough to avoid re-requesting the file, though it seems weird to me
 that it is necessary to do this in the first place. I think it also evaluates
 the stylesheet and applies it to the page multiple times, which doesn't seem
@@ -838,7 +839,7 @@ export class MyTweet extends HTMLElement {
 ```
 
 You can use
-[`customElements.whenDefined('my-editable-tweet')`](https://developer.mozilla.org/en-US/docs/Web/API/CustomElementRegistry/whenDefined)
+[<code>customElements.whenDefined('my-editable-tweet')</code>](https://developer.mozilla.org/en-US/docs/Web/API/CustomElementRegistry/whenDefined)
 to wait for the script to load and then be confident that the node has been
 upgraded. However that is an asynchronous operation, and in this particular case
 the user could have moved on to do other things so it would be inappropriate to
@@ -886,7 +887,7 @@ const element2 = template.content.cloneNode(true /* deep */);
 Another easy mistake is to assume that the content is the custom element you
 want when it is actually a `DocumentFragment` which *contains* your custom
 element.
-[`Element.prototype.firstElementChild`](https://developer.mozilla.org/en-US/docs/Web/API/Element/firstElementChild)
+[<code>Element.prototype.firstElementChild</code>](https://developer.mozilla.org/en-US/docs/Web/API/Element/firstElementChild)
 is an easy way of accessing the instantiated custom element.
 
 ```typescript
@@ -907,7 +908,7 @@ const tweet2 = fragment.firstElementChild as MyTweet;
 TypeScript helps for many issues like these, but a lot of the types overlap with
 each other and do not give errors in many invalid situations. One annoying edge
 case for TypeScript specifically is that
-[`DocumentFragment.prototype.cloneNode()`](https://developer.mozilla.org/en-US/docs/Web/API/Node/cloneNode)
+[<code>DocumentFragment.prototype.cloneNode()</code>](https://developer.mozilla.org/en-US/docs/Web/API/Node/cloneNode)
 returns `Node`, requiring an explicit cast to `DocumentFragment`, and giving a
 key opportunity to mistakenly cast to its child node. Ideally,
 `DocumentFragment.prototype.cloneNode()` would return a `DocumentFragment` type.
