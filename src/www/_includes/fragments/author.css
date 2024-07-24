@@ -1,6 +1,8 @@
 @import '../../styles/theme.css';
 
-.frag-author h3 {
+.frag-author h2 {
+    font-size: 1.2em;
+    text-align: left;
     margin-top: 0;
 }
 
