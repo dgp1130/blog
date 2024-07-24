@@ -21,10 +21,6 @@ export class Share extends LitElement {
             padding: 0;
         }
 
-        span + ul {
-            margin-top: 10px;
-        }
-
         li {
             display: inline-block;
         }
@@ -89,8 +85,6 @@ export class Share extends LitElement {
         }
     `;
 
-    @property({ attribute: 'prompt'}) public prompt?: string;
-
     // Required.
     @property({
         converter: {
@@ -115,9 +109,6 @@ export class Share extends LitElement {
         assertDefined(this.articleTitle);
 
         return html`
-            ${when(this.prompt, () => html`
-                <span>${this.prompt}</span>
-            `)}
             <ul>
                 ${when(navigator.share, () => html`
                     <li>

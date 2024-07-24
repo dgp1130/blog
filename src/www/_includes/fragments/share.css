@@ -1,4 +1,12 @@
-dwac-share {
+.frag-share {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    text-align: center;
+}
+
+.frag-share > dwac-share {
     display: block;
     height: 44px; /* Set height during initial render to avoid CLS. */
 }

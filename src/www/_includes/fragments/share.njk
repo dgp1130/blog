@@ -1,7 +1,9 @@
 {% macro share(target, title, prompt="", class="") %}
-    <dwac-share class="{{ class }}"
-        target="{{ target | url | trim }}"
-        article-title="{{ title | trim }}"
-        {% if prompt %} prompt="{{ prompt | trim }}" {% endif %}
-    ></dwac-share>
+    <div class="frag-share">
+        {% if prompt %}<span>{{ prompt | trim }}</span>{% endif %}
+        <dwac-share class="{{ class }}"
+            target="{{ target | url | trim }}"
+            article-title="{{ title | trim }}"
+        ></dwac-share>
+    </div>
 {% endmacro %}
