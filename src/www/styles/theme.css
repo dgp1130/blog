@@ -19,13 +19,22 @@
     /* Text colors. */
     --dwac-text-color-primary: #666;
     --dwac-text-color-secondary: white;
-    
+
     /* Fonts. */
     --dwac-font-primary: Lora, 'Noto Color Emoji', Verdana, sans-serif;
 
     /* Font sizes. */
+    /*
+     * Generated fluid type scale with https://www.fluid-type-scale.com/calculate.
+     *
+     * Scales font from: 1em of a 16px base font at minimum width (400px).
+     * Scales font to: 1.5em of a 19px base font at maximum width (1024px).
+     *
+     * This roughly maintains a line length of ~50-75 characters which aligns
+     * with optimal UX recommendations: https://baymard.com/blog/line-length-readability
+     */
+    --dwac-font-size-medium: clamp(1rem, 2vi + 0.5rem, 1.78rem);
     --dwac-font-size-small: 0.8em;
-    --dwac-font-size-medium: 1.25em;
     --dwac-font-size-title: 32px;
 
     /* Link theme colors. Should not be changed on any elements. */

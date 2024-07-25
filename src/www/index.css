@@ -29,7 +29,8 @@ dwac-share {
 }
 
 .post-list > li {
-    max-width: 512px;
+    width: 100%;
+    max-width: calc(0.75 * (1024px - (2 * var(--dwac-base-padding))));
     margin: 0 auto; /* Center the card. */
 }
 

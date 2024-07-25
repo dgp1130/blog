@@ -6,7 +6,9 @@
 @import url(../fragments/header.css);
 
 :root {
-    --dwac-base-padding: 1em;
+    /* 1rem at base font size. We hard-code this value so the padding doesn't
+     * change as the font size increases with screen width. */
+    --dwac-base-padding: 16px;
 }
 
 body {
