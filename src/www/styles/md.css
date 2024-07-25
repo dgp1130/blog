@@ -415,10 +415,6 @@
   margin-top: 1.2em;
 }
 
-.md a:link, .md a:visited {
-  text-decoration: none;
-}
-
 .md a:hover, .md a:active {
   color: #7bdaff;
 }
