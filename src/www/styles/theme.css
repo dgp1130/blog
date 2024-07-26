@@ -35,7 +35,7 @@
      */
     --dwac-font-size-medium: clamp(1rem, 2vi + 0.5rem, 1.78rem);
     --dwac-font-size-small: 0.8em;
-    --dwac-font-size-title: 32px;
+    --dwac-font-size-title: 1.5em;
 
     /* Link theme colors. Should not be changed on any elements. */
     --dwac-link-color: var(--dwac-color-primary);
