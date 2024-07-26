@@ -8,14 +8,14 @@
 
 dwac-share {
     text-align: right;
-    margin-bottom: 10px;
+    margin-bottom: var(--dwac-base-padding);
 }
 
 #posts-section {
     margin-top: 10px;
 }
 
-.base-content {
+main {
     /* Leave extra room on bottom for last card's drop-shadow. */
     padding-bottom: calc(var(--dwac-base-padding) + 6px);
 }

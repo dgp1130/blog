@@ -3,10 +3,10 @@
 @import url(./_includes/pages/base.css);
 @import url(./styles/theme.css);
 
-.base-content ul {
+main ul {
     list-style: none;
 }
 
-.base-content li + li {
+main li + li {
     margin-top: 0.75em;
 }

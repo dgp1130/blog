@@ -4,10 +4,6 @@
 @import url("../fragments/author.css");
 @import url("../fragments/share.css");
 
-.base-content {
-    padding-top: 0;
-}
-
 .post-container {
     /* Fill available space. */
     flex: 1;
@@ -30,7 +26,6 @@
 
 dwac-share.post-end {
     text-align: right;
-    margin: 10px 0;
 }
 
 dwac-share.post-center {
