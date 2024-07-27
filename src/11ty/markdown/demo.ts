@@ -74,7 +74,7 @@ const demoNjkTemplate = `
     <aside>
         <a href="{{ src }}" target="blank" rel="noopener" title="Open demo in new tab.">
             <img src="/res/img/open-in-new-tab.svg" alt="Open demo in new tab."
-                width="64" height="64">
+                width="64" height="64" loading="lazy" decoding="async">
         </a>
     </aside>
     <iframe src="{{ src }}" title="{{ title }}" class="demo" loading="lazy"></iframe>

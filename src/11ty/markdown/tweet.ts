@@ -138,7 +138,7 @@ const tweetNjkTemplate = `
                     {% for avatar in avatars.slice(0, -1) %}
                         <source srcset="{{ avatar }}" type="{{ avatar | mimeImg }}" />
                     {% endfor %}
-                    <img srcset="{{ avatars | last }}" width="{{ avatarDimensions[0] }}" height="{{ avatarDimensions[1] }}" />
+                    <img srcset="{{ avatars | last }}" width="{{ avatarDimensions[0] }}" height="{{ avatarDimensions[1] }}" loading="lazy" decoding="async" />
                 </picture>
             </a>
         <div class="name">
