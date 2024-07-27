@@ -25,41 +25,56 @@ interface PictureToken extends Tokens.Generic {
     attrs: Map<string, string>;
 }
 
-const extension: TokenizerExtension & RendererExtension = {
-    name: 'picture',
-    level: 'inline',
+function pictureParserExtension(): TokenizerExtension & RendererExtension {
+    let currentMdPage: string | undefined;
+    return {
+        name: 'picture',
+        level: 'inline',
 
-    start(src: string): number {
-        return src.match(/^!\[/)?.index ?? -1;
-    },
+        start(src: string): number {
+            return src.match(/^!\[/)?.index ?? -1;
+        },
 
-    tokenizer(raw: string): PictureToken | undefined {
-        return PictureParser.parse(raw);
-    },
+        tokenizer(raw: string): PictureToken | undefined {
+            return PictureParser.parse(raw);
+        },
 
-    renderer(inputToken: Tokens.Generic): string {
-        // Validate input token.
-        if (inputToken.type !== 'picture') {
-            throw new Error(`Unknown token of type: ${inputToken.type}`);
-        }
-        const token = inputToken as PictureToken;
-        if (token.sources.length === 0) {
-            throw new Error(`Picture token has zero sources: ${token.raw}`);
-        }
+        renderer(inputToken: Tokens.Generic): string {
+            // Validate input token.
+            if (inputToken.type !== 'picture') {
+                throw new Error(`Unknown token of type: ${inputToken.type}`);
+            }
+            const token = inputToken as PictureToken;
+            if (token.sources.length === 0) {
+                throw new Error(`Picture token has zero sources: ${token.raw}`);
+            }
 
-        // Separate the final, default source.
-        const sources = token.sources.slice(0, -1);
-        const defaultSource = token.sources.at(-1)!;
+            // Check if the page we're rendering has changed to know if this is
+            // the first image on it. The first image should
+            const ctx = getContext();
+            const firstImgOfPage =
+                currentMdPage !== ctx.frontmatter.page.inputPath;
+            currentMdPage = ctx.frontmatter.page.inputPath;
 
-        // Render the picture.
-        return `
+            // Separate the final, default source.
+            const sources = token.sources.slice(0, -1);
+            const defaultSource = token.sources.at(-1)!;
+
+            // Render the picture.
+            return `
 <picture>
     ${sources.map((source) => renderSource(source)).join('\n    ')}
-    ${renderImg(defaultSource, token.alt, token.attrs)}
+    ${renderImg(defaultSource, token.alt, {
+        decoding: 'async',
+        loading: firstImgOfPage ? 'eager' : 'lazy',
+        fetchpriority: firstImgOfPage ? 'high' : undefined,
+        ...Object.fromEntries(token.attrs.entries()),
+    })}
 </picture>
-        `.trim();
-    },
-};
+            `.trim();
+        },
+    };
+}
 
 /** Renders the `<source>` tag inside a `<picture>` element. */
 function renderSource(source: Source): string {
@@ -77,10 +92,13 @@ function renderSource(source: Source): string {
 function renderImg(
     source: Source,
     alt: string,
-    attrs: ReadonlyMap<string, string>,
+    attrs: Record<string, string | undefined>,
 ): string {
-    const attrHtml = Array.from(attrs.entries())
-        .map(([name, value]) => ` ${name}="${value}"`)
+    const attrHtml = Array.from(Object.entries(attrs))
+        .filter((attr): attr is [ name: string, value: string ] => {
+            return attr[1] !== undefined;
+        })
+        .map(([ name, value ]) => ` ${name}="${value}"`)
         .join('');
 
     return `
@@ -108,7 +126,7 @@ export function pictureExtension({ imageSize = imageSizeFn }: {
 } = {}): MarkedExtension {
     return {
         useNewRenderer: true,
-        extensions: [ extension ],
+        extensions: [ pictureParserExtension() ],
         async: true,
 
         // Read the dimensions of the referenced image.
