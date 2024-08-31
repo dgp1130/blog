@@ -60,4 +60,16 @@ export default [
         },
         plugins: defaultPlugins,
     },
+
+    // Custom Highlight Test
+    {
+        input: 'src/www/scripts/highlighter.ts',
+        output: {
+            name: 'highlighter',
+            file: 'src/www/scripts/highlighter.js',
+            format: 'es',
+            sourcemap: true,
+        },
+        plugins: defaultPlugins,
+    },
 ];

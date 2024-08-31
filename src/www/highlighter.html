@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Custom Highlight Test</title>
+        <meta charset="utf8">
+        <script src="/scripts/highlighter.js" type="module"></script>
+        <style>
+            ::highlight(code) {
+                background-color: orange;
+            }
+        </style>
+    </head>
+    <body>
+        <dwac-highlight name="code" spans="4-6"><pre><div>0123456789</div></pre></dwac-highlight>
+        <dwac-highlight name="code" spans="4-6">
+            <pre>
+<div>0123456789</div>
+            </pre>
+        </dwac-highlight>
+        <dwac-highlight name="code" spans="4-6">
+            <pre><div>0123456789</div></pre>
+        </dwac-highlight>
+        <dwac-highlight name="code" spans="4-6 15-17 26-28">
+<pre><div>0123456789</div>
+<div>0123456789</div>
+<div>0123456789</div></pre>
+        </dwac-highlight>
+    </body>
+</html>

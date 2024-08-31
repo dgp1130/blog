@@ -15,6 +15,16 @@ additional_styles: [ whitespace ]
 ```timestamp
 ```
 
+<dwac-highlight name="code" spans="11-15">
+
+```
+
+Highlight HERE!
+
+```
+
+</dwac-highlight>
+
 Recently, I was working on a project which required a deeper understanding of
 how whitespace works in HTML. I was never a fan of HTML's whitespace behavior
 before as I've been burned by it a few times. But as I dug into it more deeply,

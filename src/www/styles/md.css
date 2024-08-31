@@ -9,6 +9,14 @@
   Description: Hard on the outside, soft on the inside
 */
 
+dwac-highlight {
+  white-space: pre;
+}
+
+/* .md */ ::highlight(code) {
+  background-color: orange;
+}
+
 .md {
   color: #666666;
   margin: 0 auto;
