@@ -8,6 +8,10 @@ const highlightedLanguages = new Set([
     'typescript',
 ]);
 
+const aliases = new Map(Object.entries({
+    'xml': 'html',
+}));
+
 /** Returns the Prism grammar for a given language. */
 function loadGrammar(lang: string): prism.Grammar {
     // Prism doesn't load all languages immediately. Need to call `PrismLoader`
@@ -31,7 +35,8 @@ function loadGrammar(lang: string): prism.Grammar {
 
 /** Marked extension which enables syntax highlighting for code blocks. */
 export const highlightExtension = markedHighlight({
-    highlight(code: string, lang: string): string {
+    highlight(code: string, unaliasedLang: string): string {
+        const lang = aliases.get(unaliasedLang) ?? unaliasedLang;
         if (!highlightedLanguages.has(lang)) return code;
 
         return prism.highlight(code, loadGrammar(lang), lang);

@@ -43,5 +43,16 @@ Hello!
             `.trim());
             expect(html).toBe('!olleH');
         });
+
+        it('aliases XML to HTML', () => {
+            const html = marked.parse(`
+\`\`\`xml
+<doc>Hello, World!</doc>
+\`\`\`
+            `);
+
+            expect(html).toContain('language-xml');
+            expect(html).toContain('class="token tag"');
+        });
     });
 });

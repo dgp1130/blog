@@ -1,21 +1,21 @@
 /** @fileoverview Styles for syntax highlighting of HTML code. */
 
-code.language-html {
+code:is(.language-html, .language-xml) {
     color: #405d40;
 }
 
-code.language-html .punctuation {
+code:is(.language-html, .language-xml) .punctuation {
     color: black;
 }
 
-code.language-html .tag {
+code:is(.language-html, .language-xml) .tag {
     color: blue;
 }
 
-code.language-html .attr-name {
+code:is(.language-html, .language-xml) .attr-name {
     color: #0073dd;
 }
 
-code.language-html .attr-value {
+code:is(.language-html, .language-xml) .attr-value {
     color: #a55828;
 }
