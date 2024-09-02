@@ -214,11 +214,11 @@
 
 .md figure {
   position: relative;
-  margin: 1rem 0 2rem;
-}
+  margin: 1rem 0;
 
-.md figure + figure {
-  margin: 3rem 0;
+  border: 1px solid currentColor;
+  padding: 1rem;
+  border-radius: 1rem;
 }
 
 .md figcaption {
