@@ -58,13 +58,11 @@
   font-size: 100%;
   margin: 0;
   vertical-align: baseline;
-  *vertical-align: middle;
 }
 
 .md button, .md input[type="button"], .md input[type="reset"],
 .md input[type="submit"] {
   cursor: pointer;
-  *overflow: visible;
 }
 
 .md button::-moz-focus-inner, .md input::-moz-focus-inner {
