@@ -1457,6 +1457,10 @@ Manageable?
 }
 ```
 
+Shout out to [Nathan Knowler](https://knowler.dev/) who helped me understand the
+layering between HTML and CSS, precise behavior of `&nbsp;`, as well as some of
+the finer points of the `white-space` property.
+
 ## Appendix
 
 ### Whitespace of Flexbox Elements
