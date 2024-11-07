@@ -225,13 +225,13 @@ links with extra spaces. Consider this example:
 
 ```html
 Hello, <a href="#">
-    here is some long link text goes on its own line
+    here is some long link text that goes on its own line
 </a> please take a look at it!
 ```
 
 ```inline-html
 Hello, <a href="#">
-    here is some long link text goes on its own line
+    here is some long link text that goes on its own line
 </a> please take a look at it!
 ```
 
@@ -252,19 +252,19 @@ limits be dammed.
 
 ```html
 Hello,
-<a href="#">here is some long link text goes on its own line</a>
+<a href="#">here is some long link text that goes on its own line</a>
 please take a look at it!
 ```
 
 ```inline-html
 Hello,
-<a href="#">here is some long link text goes on its own line</a>
+<a href="#">here is some long link text that goes on its own line</a>
 please take a look at it!
 ```
 
 </figure>
 
-You're formatter might not like this solution, but we'll
+Your formatter might not like this solution, but we'll
 [get to that later](#automated-formatting).
 
 ### Block Elements
