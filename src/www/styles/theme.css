@@ -21,7 +21,7 @@
     --dwac-text-color-secondary: white;
 
     /* Fonts. */
-    --dwac-font-primary: Lora, 'Noto Color Emoji', 'Lora Fallback', 'Times New Roman', serif;
+    --dwac-font-primary: Lora, 'Lora Fallback', 'Times New Roman', serif, 'Noto Color Emoji', emoji;
 
     /* Font sizes. */
     /*
