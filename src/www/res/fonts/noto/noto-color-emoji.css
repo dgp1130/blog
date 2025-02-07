@@ -9,7 +9,7 @@
     src: url('/res/fonts/noto/noto-color-emoji.woff2') format('woff2');
     /* Defines what code points are supported by this font, so the browser can
        skip downloading it if no emojis are actually on the page. This must be
-       kept in sync with the unicodes.txt file which subsets the font. */
+       kept in sync with the `./emojis.txt` file which subsets the font. */
     unicode-range:
         U+1F389 /* 🎉 - Popper */,
         U+1F3D6️ U+FE0F /* 🏖️ - Beach with umbrella */,
