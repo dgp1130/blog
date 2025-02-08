@@ -591,6 +591,14 @@ that, but up until now spaces and newlines have used the same collapsing
 behavior. This shows us that newlines and spaces can sometimes be treated
 distinctly from each other.
 
+**Addendum:** Several readers have pointed out that the behavior for `<pre>` to
+collapse leading and trailing newlines is actually implemented by the
+[HTML parser](https://html.spec.whatwg.org/multipage/parsing.html#parsing-main-inbody),
+not CSS. This makes it even more fun because `white-space: pre;`
+([discussed later](#white-space)) does _not_ apply the same behavior. This
+means `<pre>` and `<div style="white-space: pre;">` actually differ in this
+respect.
+
 `<pre>` is also just generally unergonomic. While the whitespace behavior is
 definitely more intuitive, you can't indent it at all without affecting its
 content. Compare these two examples:
@@ -1060,6 +1068,13 @@ will be. Therefore they need to retain a bunch of spaces which likely don't
 matter to make sure they retain the one space which does matter and accept a
 larger output file size, penalizing all users of the page.
 
+**Addendum:** After publishing this blog post I came to realize that
+[example 31](#whitespace-of-inline-block-elements) was broken in production
+because my blog's HTML minification process
+[dropped a required space](https://github.com/dgp1130/blog/commit/e94a9c4c6efc39c36d8ba115925aa1891ca35f72).
+If that doesn't prove that automated tools are worse for HTML's whitespace
+semantics, I'm not sure what does.
+
 ## How Could we Fix This?
 
 Since this is all so complicated and involved, it would be great to fix HTML so
@@ -1328,6 +1343,12 @@ character specifically to solve an HTML rendering bug.
 I [filed an issue](https://github.com/w3c/csswg-drafts/issues/10821) with the
 CSS working group to discuss adding an `&ncsp;` entity. Please share your own
 thoughts on this particular idea.
+
+**Addendum:** I am aware the set of HTML entities is effectively closed and
+adding a new one is unlikely to happen. Don't overindex on `&ncsp;`, the point
+is to have a specific syntax for defining an individual, non-collapsible space.
+Whether that's an HTML entity or anything else (`<sp>`?) is effectively an
+implementation detail.
 
 ## Practical Advice
 
@@ -1787,26 +1808,28 @@ You can't think of HTML code like a plain text document.
 If you really don't like quoting strings in HTML, one potential alternative
 approach to is to borrow an idea from HTML preprocessors which have whitespace
 control characters. For example, [Nunjucks](https://mozilla.github.io/nunjucks/)
-uses `{% expr %}` to denote interpolations, but you can use `{%- expr -%}` to
+uses `{% expr %}` to denote block interpolations, but you can use `{%- expr -%}`
+to
 [trim whitespace](https://mozilla.github.io/nunjucks/templating.html#whitespace-control)
 surrounding the content.
 
 ```njk
-<div>
-    Say hello to
-    {%- username -%}
-    and welcome them to the team!
-</div>
+First
+{%- if (false) -%}
+    Second
+{%- endif -%}
+Third
 ```
 
-Here, the whitespace around `{%- username -%}` is removed because `{%-` and
-`-%}` are used, meaning this will output:
+Here, the whitespace around the `if` and `endif` are unused, meaning this will
+output:
 
-```html
-<div>
-    Say hello to Devel and welcome them to the team!
-</div>
+```inlinehtml
+FirstThird
 ```
+
+Without the `{%- ... -%}`, developers would be forced into a space between the
+two words, or required to write their `if` statement on a single line.
 
 You could add a similar syntax to HTML to trim whitespace around particular
 elements, maybe `<-tag->` and `<-/tag->`? I don't know, that looks way worse
