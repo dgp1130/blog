@@ -1576,7 +1576,7 @@ default behavior of its tag. Therefore, whitespace between them is dropped, even
 though we're using `<span>` elements which are natively `display: inline;`. Grid
 actually works the same as flexbox in this respect too.
 
-What this tells us is that not just can CSS inform the whitespace processing
+What this tells us is that not only can CSS inform the whitespace processing
 behavior of an HTML element, but the CSS of a _different_ element can have the
 same influence.
 
