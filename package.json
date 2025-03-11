@@ -84,7 +84,7 @@
     "netlify-cli": "^17.37.1",
     "nunjucks": "^3.2.4",
     "plausible-tracker": "^0.3.5",
-    "prismjs": "^1.27.0",
+    "prismjs": "^1.30.0",
     "rollup": "^2.38.1",
     "rollup-plugin-minify-html-literals": "^1.2.6",
     "rollup-plugin-terser": "^7.0.2",
