@@ -225,6 +225,10 @@
   margin: 0 0 0.5rem;
 }
 
+.md figure aside {
+  margin: 1rem 0;
+}
+
 .md pre {
   overflow: auto;
   display: block;
