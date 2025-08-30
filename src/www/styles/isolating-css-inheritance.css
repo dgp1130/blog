@@ -1,0 +1,9 @@
+@layer parent {
+  #revert-layer-demo.parent-root {
+    font-weight: bold;
+  }
+
+  #revert-layer-demo .child-root {
+    font-weight: revert-layer;
+  }
+}
