@@ -2,6 +2,10 @@
 # See: https://docs.netlify.com/configure-builds/file-based-configuration/
 
 [build]
+
+# Don't do anything to build, site should already be built.
+command = ""
+
 # Root directory of the output is _site/.
 publish = "_site/"
 
