@@ -22,6 +22,8 @@ const { markdown } = require('./src/11ty/markdown');
 const { getImageMimeType, getVideoMimeType } = require('./src/11ty/mime_types');
 
 module.exports = function (config) {
+    console.log(`DWAC_ENV=${getEnv()}`); // DEBUG
+
     // Process markdown and Nunjucks templates.
     config.setTemplateFormats(['md', 'njk']);
     const njkEnv = new Nunjucks.Environment(
