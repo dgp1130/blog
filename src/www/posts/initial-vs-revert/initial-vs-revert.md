@@ -331,6 +331,14 @@ TODO
 
 TODO
 
+## Acknowledgements
+
+**HUGE** shout out to
+[Jeremy Elbourn](https://bsky.app/profile/jelbourn.bsky.social) who initially
+caught that `all: revert;` was the wrong solution for this problem and for
+several deeply technical conversations on the topic to help me understand the
+nuances here. I definitely could not have figured this out without him.
+
 ## Appendix
 
 A few related topics for your reading pleasure:
