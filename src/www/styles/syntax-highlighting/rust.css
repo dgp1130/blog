@@ -1,4 +1,4 @@
-/** @fileoverview Styles for syntax highlighting of TypeScript code. */
+/** @fileoverview Styles for syntax highlighting of Rust code. */
 
 code.language-rust {
     --dwac-code-base-color: #0073dd;
