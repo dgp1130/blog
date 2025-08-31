@@ -7,6 +7,7 @@ excerpt: |
   TODO
 # TODO: CSS
 languages: [ html ]
+additional_styles: [ isolating-css-inheritance ]
 ---
 
 # Isolating CSS Inheritance
@@ -731,20 +732,6 @@ app's layer.
     </div>
 </div>
 ```
-
-<!-- JSDom doesn't like `@layer` despite claiming to support it, so we'll
-just inline this for now to leave it completely unbundled. -->
-<style>
-@layer parent {
-  #revert-layer-demo.parent-root {
-    font-weight: bold;
-  }
-
-  #revert-layer-demo .child-root {
-    font-weight: revert-layer;
-  }
-}
-</style>
 
 </figure>
 
