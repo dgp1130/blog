@@ -310,10 +310,11 @@
 .md h1, .md h2, .md h3, .md h4, .md h5, .md h6 {
   font: inherit;
   font-weight: bold;
-  cursor: pointer;
 }
 
-.md :is(h1, h2, h3, h4, h5, h6):hover::after {
+/* Ignore `role="none"` elements as these are from demos and aren't real headers
+in the markdown. */
+.md :is(h1, h2, h3, h4, h5, h6):not([role="none"]):hover::after {
   content: ' 🔗';
   cursor: pointer;
   font-size: 0.75em;
