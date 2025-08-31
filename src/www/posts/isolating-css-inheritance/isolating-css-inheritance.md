@@ -12,6 +12,8 @@ additional_styles: [ isolating-css-inheritance ]
 
 # Isolating CSS Inheritance
 
+TODO: Test Firefox / Safari and/or call out Chrome-specific UA.
+
 I was recently looking into tackling CSS isolation between multiple applications
 running on the same web page and came away with a much better understanding of
 the CSS `initial` and `revert` keywords which I wanted to share.
