@@ -3,6 +3,7 @@ import prism from 'prismjs';
 import PrismLoader from 'prismjs/components/index';
 
 const highlightedLanguages = new Set([
+    'css',
     'html',
     'rust',
     'typescript',

@@ -1,0 +1,41 @@
+/** @fileoverview Styles for syntax highlighting of TypeScript code. */
+
+code.language-css {
+    color: #0073dd;
+}
+
+code.language-css .selector {
+    color: #a10052;
+}
+
+code.language-css .property {
+    color: #db027e;
+}
+
+code.language-css .keyword {
+    color: blue;
+}
+
+code.language-css .atrule {
+    color: #a00;
+}
+
+code.language-css .comment {
+    color: #006800;
+}
+
+code.language-css .string {
+    color: #405d40;
+}
+
+code.language-css .url {
+    color: #a00;
+}
+
+code.language-css .important {
+    color: red;
+}
+
+code.language-css .punctuation {
+    color: black;
+}
