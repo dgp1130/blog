@@ -5,8 +5,7 @@ title: Isolating CSS Inheritance
 date: 2025-08-29T12:00:00-07:00 # TODO
 excerpt: |
   TODO
-# TODO: CSS
-languages: [ html ]
+languages: [ html, css ]
 additional_styles: [ isolating-css-inheritance ]
 ---
 
@@ -14,17 +13,42 @@ additional_styles: [ isolating-css-inheritance ]
 
 TODO: Test Firefox / Safari and/or call out Chrome-specific UA.
 
-I was recently looking into tackling CSS isolation between multiple applications
-running on the same web page and came away with a much better understanding of
-the CSS `initial` and `revert` keywords which I wanted to share.
+I was recently looking into CSS isolation between multiple applications running
+on the same web page and it turned into a deep dive of the CSS `initial` and
+`revert` keywords which I wanted to share in a "short" post on the subject.
 
 ## The Problem
 
-When running multiple applications, built at different commits and deployed at
-arbitrary times on the same web page, we need to take care that CSS styling does
-not leak from app into the other. This is extra complicated because one
-application may be rendered _inside_ another, meaning CSS properties may inherit
-from one app to another.
+I was tasked with running multiple web applications on the same page at the same
+time. These applications are decoupled from one another, developed by different
+teams and deployed independently at different times and built from different
+commits. Effectively a microfrontend deployment.
+
+Given this setup, how can we ensure that internal CSS styling from one app does
+not unexpectedly leak into the other? To make this even more complicated, this
+particular use case allows one application to be rendered _inside_ another,
+meaning CSS properties may inherit across applications.
+
+A parent application might write:
+
+```html
+<div id="parent-root" style="color: red;">
+    <div>I'm red, just like I expected!</div>
+
+    ${renderChildApp()}
+</div>
+```
+
+And then the team maintaining the child application might write:
+
+```html
+<div id="child-root">
+    <div>I expect to default to black.</div>
+<div>
+```
+
+In isolation, both of these look perfectly reasonable. But when rendered
+together, we can see:
 
 <figure>
     <figcaption>Example TODO: Leaking Properties.</figcaption>
@@ -55,9 +79,9 @@ from one app to another.
 
 </figure>
 
-In this scenario, since the child app is independently built and deployed from
-the parent app, they should be very well isolated from each other, and arbitrary
-internal changes in one app (such as text color) should not affect the other.
+Because these apps are independently built and deployed, they should be
+generally isolated from each other, and arbitrary internal changes in one app
+(such as text color) should not affect the other.
 
 However in this case, the parent's `color: red;` style is inherited into the
 child app and color its text. This style is effectively _leaked_ across
@@ -107,7 +131,7 @@ a single value to _all_ CSS properties (with some exceptions) for a particular
 element.
 
 Each CSS property has a different type, meaning there is no specific value you
-can provide which is meaningful to _every_ property. But there are CSS base
+can provide which is meaningful to _every_ property. But there a few CSS base
 keywords you can use which do apply to every property.
 
 * [<code>initial</code>](https://developer.mozilla.org/en-US/docs/Web/CSS/initial)
@@ -140,22 +164,22 @@ look at each.
 > The `initial` CSS keyword applies the initial (or default) value of a property
 to an element.
 
-Ok, seems straightforward. Every CSS property has a default value and setting it
-to `initial` uses that default value.
+Every CSS property has a default value and setting it to `initial` uses the
+default value for its associated property.
 
-Let's look at `display` as an example.
-[MDN will tell you](https://developer.mozilla.org/en-US/docs/Web/CSS/display#formal_definition)
-that the default value of `display` according to the CSS spec is `inline`. So
-setting `display: initial;` is really just using `display: inline;`, simple as
-that.
+Let's look at `display` as an example. The default value of `display`
+[according to the CSS spec](https://developer.mozilla.org/en-US/docs/Web/CSS/display#formal_definition)
+is `inline`. So setting `display: initial;` is equivalent to `display: inline;`.
 
-If `inline` sounds weird because you expected `block` to be the default, that's
-likely because you're thinking of `div`, which is an exception we'll get to
-shortly. Create an element with an arbitrary tag name like `my-random-element`
-and check DevTools and you can confirm the default is indeed `display: inline;`.
+You might be surprised to here that `inline` is the default and not `block`,
+however that's likely because you're thinking of `div`, which is an exception
+we'll get to shortly. Create an element with an arbitrary tag name like
+`my-random-element` and check DevTools and you can confirm the default is indeed
+`display: inline;`. This is the reason so many components include
+`:host { display: block; }` in their styles.
 
-The context of `all`, we're using the default value for every property as
-specified by the CSS standard.
+The context of `all: initial;`, we're using the default value for every property
+as specified by the CSS standard.
 
 ## `revert`
 
@@ -177,17 +201,18 @@ need to first discuss the user-agent stylesheet.
 ### The User-Agent Stylesheet
 
 Every browser includes a
-["user-agent stylesheet"](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_cascade/Cascade#user-agent_stylesheets),
-(UA stylesheet) this is an additional set of CSS selectors applied to all web
-pages with some browser specific styling.
+["user-agent stylesheet"](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_cascade/Cascade#user-agent_stylesheets)
+(UA stylesheet), this is an additional set of CSS styles applied to all web
+pages with some browser-specific styling.
 
 This stylesheet is why a plain `<button>` element with no CSS looks just a
 _little_ different between browsers in order to match the system UI users expect
 on their particular platform. For example, consider the visual design of a
-default button on desktop Windows vs mobile iOS.
+default button on desktop Windows vs mobile iOS. Those differences are managed
+by the UA stylesheet.
 
-This is literally a stylesheet, and one you can observe in DevTools or just
-looking at
+These UA styles are literally defined as a stylesheet, and one you can observe
+it in DevTools or by just looking at
 [browser source code](https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/html/resources/html.css;drc=5606f221713df59faee4d92851998db4d9d15aeb).
 This is also how the `div` exception gets handled. Browsers include in their
 user-agent stylesheet:
@@ -198,10 +223,10 @@ div {
 }
 ```
 
-This is why `div` elements always default to `block`, even though the initial
-value of `display` is actually `inline`.
+The UA stylesheet is why `div` elements always default to `block`, even though
+the initial value of `display` is actually `inline`.
 
-Some browsers / extensions even allow you to modify the user-agent stylesheet
+Some browsers and extensions even allow you to modify the user-agent stylesheet
 to apply some CSS to every page you visit.
 
 Ideally, we want to respect the user's intent and configured settings. If they
@@ -210,7 +235,7 @@ because they genuinely find that easier to read, then more power to them, and
 our website should follow that preference.
 
 Stepping back to `revert`, recall that it resets to the "user agent set value",
-meaning it resets a CSS property to the default
+meaning it resets a CSS property to its default
 _after taking the user-agent stylesheet into account_.
 
 We can demonstrate the difference with `initial` using the `div` example:
@@ -222,25 +247,23 @@ We can demonstrate the difference with `initial` using the `div` example:
     </figcaption>
 
 ```html
-<!-- Two elements stack horizontally because they're inline. -->
+<!-- Two elements stack horizontally because they're `inline`. -->
 <div style="display: initial;">I'm `inline`!</div>
 <div style="display: initial;">I'm to the side!</div>
 
 <br><br>
 
-<!-- Two elements stacked vertically because they're block. -->
+<!-- Two elements stack vertically because they're `block`. -->
 <div style="display: revert;">I'm `block`!</div>
 <div style="display: revert;">I'm underneath!</div>
 ```
 
 ```inline-html
-<!-- Two elements stack horizontally because they're inline. -->
 <div style="display: initial;">I'm `inline`!</div>
 <div style="display: initial;">I'm to the side!</div>
 
 <br><br>
 
-<!-- Two elements stacked vertically because they're block. -->
 <div style="display: revert;">I'm `block`!</div>
 <div style="display: revert;">I'm underneath!</div>
 ```
@@ -248,12 +271,11 @@ We can demonstrate the difference with `initial` using the `div` example:
 </figure>
 
 Based on this description and our desire to respect the user-agent stylesheet,
-it seems like the obvious answer to isolating CSS inheritance is `revert`, but
-it's surprisingly more nuanced than that.
+it seems like the obvious answer to isolating CSS inheritance is `all: revert;`
+rather than `all: initial;`, right? Well, it's surprisingly more nuanced than
+that.
 
-Recall that the goal here is to isolate multiple apps such that inherited
-properties from one don't leak into the other. But let's break down a few
-sub-cases and see what actually happens in practice.
+Let's break down a few sub-cases and see what actually happens in practice.
 
 ## Non-Inherited Properties
 
@@ -299,12 +321,9 @@ defined `initial` value, each property is defined as either inherited or not.
 
 </figure>
 
-In this case, `initial` vs `revert` doesn't actually make a difference! Other,
-inherited styles like `font-size` are different which we'll get to in a moment,
-but the important part here is that `display` is the same.
-
-Since `display` isn't inherited, the `inline-block` on `#parent-root` _only_
-applies to that element. All leaf `<div>` elements ultimately use `block`.
+In this case, `initial` vs `revert` doesn't actually make a difference! Since
+`display` isn't inherited, the `inline-block` on `#parent-root` _only_ applies
+to that element. All leaf `<div>` elements ultimately use `block`.
 
 The one difference is that `#child-root-initial` is actually `inline` (uses the
 default value of `display`), while `#child-root-revert` is `block` (uses the UA
@@ -327,6 +346,9 @@ as easily get the opposite behavior by explicitly specifying `display`:
 Either approach flips the `display` value of the container without affecting any
 descendant elements. So from an isolation perspective, this is a fairly
 irrelevant difference.
+
+So there is no meaningful difference between `initial` and `revert` with respect
+to non-inherited properties.
 
 ## Inherited Properties _on_ UA Elements
 
@@ -366,12 +388,14 @@ all.
 
 </figure>
 
-TODO: Showing link chip on demo `h1` tags.
-
 Since the UA stylesheet explicitly defines `font-weight: bold;` through an
 `h1` selector, the property is applied _directly_ to the `h1` element.
 Therefore, there is no need for the browser to check ancestors and no way to
 accidentally inherit another value.
+
+So there is no difference between `initial` and `revert` for inherited
+properties _on_ elements with UA styles, as inheritance doesn't affect this use
+case at all.
 
 ## Inherited Properties _from_ UA Elements
 
@@ -421,8 +445,8 @@ style.
 
 </figure>
 
-This is one difference which matters for this multi-app use case and begs the
-question: Do we _want_ the child app to be bold in this scenario?
+This example begs the question: Do we _want_ the child app to be bold in this
+scenario?
 
 I can actually see an argument for both. Since the parent and child applications
 are intended to be independently developed by different teams and deployed with
@@ -446,9 +470,9 @@ inherited properties in there, and the ones which are present tend to be on
 "leaf" elements like `<input>` or `<select>`. So the practical situations in
 which this matters are unlikely to ever come up in practice.
 
-Of course Chrome is only one browser, and others may use more inherited
-properties or some user / tools may expressly customize their UA stylesheet with
-more inherited properties where this might be more of a practical issue.
+Of course, Chrome is only one browser, and others may use more inherited
+properties or some users / tools may expressly customize their UA stylesheet
+with more inherited properties where this might be more of a practical issue.
 
 ## Non-UA Inherited Properties
 
@@ -458,8 +482,7 @@ because
 [<code>color</code>](https://developer.mozilla.org/en-US/docs/Web/CSS/color)
 hits a different edge case I want to discuss here.
 
-If we try the same demo with `color`, we notice that `revert` doesn't actually
-revert anything.
+Let's try the same demo with `color`:
 
 <figure>
     <figcaption>Example TODO: Non-UA Inherited Properties.</figcaption>
@@ -494,8 +517,12 @@ revert anything.
 
 </figure>
 
-This `revert` ain't reverting, so what's going on? Well, let's look at the
-[definition of `revert`](https://developer.mozilla.org/en-US/docs/Web/CSS/revert)
+`initial` seems to be doing its job and isolating from the parent's
+`color: red;` style.
+
+However, this `revert` ain't reverting, so what's going on? Well, let's look at
+the
+[definition of <code>revert</code>](https://developer.mozilla.org/en-US/docs/Web/CSS/revert)
 once more (emphasis mine):
 
 > \[`revert`\] resets the property either to user agent set value, to user set
@@ -507,7 +534,7 @@ ancestors before using the `initial` value.
 
 You might expect something like `html { color: black; }` in the UA stylesheet,
 but this is not the case.
-[Chrome](https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/html/resources/html.css;drc=5606f221713df59faee4d92851998db4d9d15aeb)
+[Chrome's UA stylesheet](https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/html/resources/html.css;drc=5606f221713df59faee4d92851998db4d9d15aeb)
 has some usage of `color` in certain form elements, but no general "use `black`
 as the default text color" style. The default value of `color` is handled
 through a different abstraction than UA stylesheets.
@@ -528,23 +555,25 @@ the value rather than reset it to its `initial`. Therefore in the above example,
 the child app incorrectly inherits the `red` color from its parent rather than
 using the default `black`.
 
+So `revert` basically just does not work for this use case for any inherited
+properties not affecting the current element from the UA stylesheet.
+
 ## Takeaways
 
-Ultimately, we decided to go with `all: initial;` to reset styles. The risk of
-breaking another application's UI based on where you render it seemed like the
-bigger issue. If a child app wants to support such a "bold" use case, it should
-expose this functionality as an explicit option configured by the parent
-application.
+After building a deeper understanding of the nuances here, it was clear that
+`all: initial;` was the best approach to reset styles and isolate applications.
 
 My biggest surprise from this investigation was how little the difference
 between `initial` and `revert` actually is. The only two cases this comes into
 play is:
-1. when inheriting a style from an element with a UA style (which is a that
-situation just doesn't come up as often as you might think).
-2. when a style is _not_ in the UA stylesheet.
+1.  when inheriting a property from an element with a UA style
+    *   Such a situation just doesn't come up as often as you might think given
+        the general lack of inherited properties in the UA stylesheet.
+2.  when inheriting a property which is _not_ in the UA stylesheet.
 
 If you're trying to reset a specific property on a specific element, I suspect
-`revert` is likely closer to what you'd want most of the time.
+`revert` is likely closer to what you'd want most of the time, given the way it
+respects the UA stylesheet.
 
 But if you're trying to reset all properties (and thus, likely trying to isolate
 a subtree from CSS inheritance), you really want `initial` largely because
@@ -562,7 +591,8 @@ interpreting "default" as including the UA stylesheet).
 
 So I wonder if there would be value in a property which actually does that. Not
 to introduce even more confusion into this space, but what if we had a
-`revert-initial` value which just skips the inheritance step of `revert`:
+(tentatively named) `revert-initial` value which just skips the inheritance step
+of `revert`:
 
 > `revert-initial` resets the property either to user agent set value, to
 user set value, ~~to its inherited value (if it is inheritable),~~ or to initial
@@ -573,10 +603,10 @@ before the `initial` value and likely my use case just isn't quite what the
 original intent of `revert` was.
 
 But `revert-initial` as I'm describing it would eliminate the issue for non-UA
-styles mentioned above and I think simplify the intent of the feature. For any
+styles mentioned above and I think simplify the intent of the feature. Any
 developer who wants to "use the default value, while taking the UA stylesheet
 into account" would likely not expect inheritance to come into play and
-`revert-initial` is likely closer to what they actually want.
+`revert-initial` is probably closer to what they actually want.
 
 I also think the above argument for `initial` over `revert` is noticeably
 weakened when we switch to debating `initial` vs `revert-initial`. I'm still not
@@ -646,8 +676,7 @@ described here.
 
 Similar to [shadow DOM](#shadow-dom),
 [<code>@scope</code>](https://developer.mozilla.org/en-US/docs/Web/CSS/@scope)
-prevents a different form of CSS leaking by limiting selectors to a specific
-subtree.
+also prevents CSS selectors from leaking out of a specific subtree:
 
 ```css
 @scope (#parent-root) to (#child-root) {
@@ -657,7 +686,7 @@ subtree.
 }
 ```
 
-The above example ensures the `div` selector is only against elements within the
+The above example ensures the `div` selector only matches elements within the
 parent app, but it does nothing to prevent the `color: red;` style from
 inheriting down into the child application. `@scope` is just solving a different
 problem than the one we have here.
@@ -665,20 +694,6 @@ problem than the one we have here.
 `@scope` is also not supported in all browsers just yet, but I'm excited to see
 broader support for it and suspect it will be useful for the wider CSS isolation
 story once it becomes Baseline.
-
-### CSS Variables
-
-`all` applies to all CSS properties (with minor exceptions), but does _not_
-apply to CSS variables. As a foundational primitive, it makes sense to support
-resetting all CSS properties while still allowing CSS variables to inherit.
-However for this use case of CSS isolation between multiple apps, this
-limitation is actually _incredibly_ frustrating, as there is no equivalent
-property which does apply to CSS variables. This forces us into an entirely
-different and much more complicated solution to isolate CSS variables.
-
-I really wish there was some kind of `all-vars: initial;` property which would
-do this, but unfortunately the web platform just doesn't have the right
-primitives to make this viable right now.
 
 ### `revert-layer`
 
@@ -738,9 +753,9 @@ app's layer.
 </figure>
 
 This _feels_ like it would work, but actually doesn't, because `revert-layer`
-does only resets styles for the particular elements matched by its selector.
-This reset the entire property for that element, it does not prevent inheritance
-for an arbitrary descendant.
+only resets styles for the particular elements matched by its selector. This
+resets the entire property for that element, it does not prevent inheritance for
+an arbitrary descendant.
 
 The correct usage would be:
 
@@ -753,24 +768,47 @@ The correct usage would be:
 }
 ```
 
-This does revert the style and renders `font-weight: normal;` as a result,
+This does revert the style and renders with `font-weight: normal;` as a result,
 however this gets applied to the `#parent-root` element, meaning we've broken
 the `font-weight` styling for the _parent app_.
 
-I suppose that's one way to isolate the child app.
+I suppose that's one way to isolate an application, just break the styling of
+all the other apps on the page so their CSS can never leak into you.
 
 The net result is that you can't use `revert-layer` as a mechanism to prevent
 CSS inheritance. This is somewhat to be expected really, it reverts layers, not
 inheritance.
+
+### CSS Variables
+
+`all` applies to all CSS properties (with minor exceptions), but does _not_
+apply to CSS variables. As a foundational primitive, it makes sense to support
+resetting all CSS properties while still allowing CSS variables to inherit.
+However for this use case of CSS isolation between multiple apps, preventing
+variable inheritance is equally as important. The fact that `all` does not apply
+to variables is actually _incredibly_ frustrating, as there is no equivalent
+property which does. This forces us into an entirely different and much more
+complicated solution to isolate CSS variables.
+
+[Lea Verou](https://lea.verou.me/) has
+[a great post](https://lea.verou.me/blog/2025/style-observer/) on the history of
+observing CSS variables and the current state-of-the-art solution. But even that
+solution requires up front knowledge of all the variables you want to observe,
+which isn't really viable for this use case, and isn't really compatible with
+SSR without a form of DOM emulation.
+
+I really wish there was some kind of `all-vars: initial;` property which would
+do this. But as of now, I just don't believe the web platform has the right
+primitives to isolate CSS variables right now.
 
 ### The Case Against User-Agent Stylesheets
 
 Hot take: I'm not convinced user-agent stylesheets are a good idea.
 
 I understand the general goal for UA stylesheets and I'm enough of a proponent
-of the open web to want to support different browsers innovating in different
-ways, or users customizing their interfaces to fit their personal preferences or
-accessibility needs.
+of the open web to want to support different browsers innovating with different
+presentations, or users customizing their interfaces to fit their personal
+preferences or accessibility needs.
 
 But I struggle to see how these can practically be practically managed as a web
 developer.
@@ -784,13 +822,13 @@ in how
 [flow content should be rendered](https://html.spec.whatwg.org/multipage/rendering.html#flow-content-3).
 
 Therefore I believe it would technically be consistent with the spec for a
-browser to set something like `div { display: flex; }` in the UA stylesheet.
-Imagine how breaking that would be on the entirety of the web! Is there any
-viable world in which the browser vendor could argue, "Meh, the fact that this
-web page renders incorrectly with `div { display: flex; }` in the UA stylesheet
-is a bug in that page, it's relying on the non-standard `block` default." No one
-would support that browser and users would justifiably complain until the vendor
-relented and switched to `block`.
+browser to set something like `div { display: inline-flex; }` in the UA
+stylesheet. Imagine how breaking that would be on the entirety of the web! Is
+there any viable world in which the browser vendor could argue, "Meh, the fact
+that this web page renders incorrectly with `div { display: inline-flex; }` in
+the UA stylesheet is a bug in that page, it's relying on the non-standard
+`block` default." No one would support that browser and users would justifiably
+complain until the vendor relented and switched to `block`.
 
 More realistically, if a vendor creates a new device with its own UX standard
 and tweaks the UA stylesheet to fit their design (think Android or iOS), what
@@ -799,7 +837,7 @@ not visibly break layouts when applied to the vast majority of existing
 applications with their own custom styling?
 
 When each browser has a different "default stylesheet", it just makes for
-unreliable default values. It is quite common for developers to use a
+unreliable default values. Many developers use a
 [CSS reset](https://en.wikipedia.org/wiki/Reset_style_sheet) specifically to
 normalize these kinds of browser differences into a uniform default state,
 effectively negating the intent behind UA styles in the first place.
@@ -813,3 +851,5 @@ the platform without necessarily relying on unpredictable UA stylesheets, though
 I'm certainly no expert and would be interested to hear if there are more
 accessibility use cases with a harder dependency on UA stylesheets than I'm
 aware of.
+
+Anyways, thanks for coming to my Ted talk.
