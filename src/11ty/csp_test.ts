@@ -1,4 +1,3 @@
-import { JSDOM as JsDom } from 'jsdom';
 import { injectCsp } from './csp';
 
 describe('csp', () => {
@@ -268,7 +267,7 @@ describe('csp', () => {
         });
 
         it('injects the policy as the first child of <head />', () => {
-            const { document } = new JsDom(injectCsp(`
+            const html = injectCsp(`
                 <!DOCTYPE html>
                 <html>
                     <head>
@@ -276,19 +275,27 @@ describe('csp', () => {
                     </head>
                     <body></body>
                 </html>
-            `)).window;
+            `);
 
-            const firstChild = document.head.children[0]!;
-            expect(firstChild.tagName).toBe('META');
-            expect(firstChild.getAttribute('http-equiv'))
-                    .toBe('Content-Security-Policy');
+            expect(html)
+                .toContain('<head><meta http-equiv="Content-Security-Policy"');
+        });
+
+        it('throws an error if it fails to find the head tag', () => {
+            expect(() => injectCsp(`
+                <!DOCTYPE html>
+                <html>
+                    <body></body>
+                </html>
+            `)).toThrowError(/Failed to inject CSP/);
         });
     });
 });
 
+const cspRegex = /<meta *http-equiv="Content-Security-Policy" *content="(?<csp>[^"]*)">/;
 function getInjectedCsp(html: string): string|undefined {
-    const { document } = new JsDom(html).window;
-    const meta = document.querySelector(
-        'meta[http-equiv="Content-Security-Policy"]');
-    return meta?.getAttribute('content') ?? undefined;
+    const match = cspRegex.exec(html);
+    if (!match) return undefined;
+
+    return match.groups!['csp'];
 }

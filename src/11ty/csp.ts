@@ -1,5 +1,10 @@
-import { JSDOM as JsDom } from 'jsdom';
+import { DefaultTreeAdapterTypes, parse } from 'parse5';
+import { getTextContent, isElementNode, isParentNode } from '@parse5/tools';
 import { createHash } from 'crypto';
+
+type Document = DefaultTreeAdapterTypes.Document;
+type Element = DefaultTreeAdapterTypes.Element;
+type Node = DefaultTreeAdapterTypes.Node;
 
 /**
  * Injects a Content Security Policy into the given HTML string.
@@ -28,8 +33,7 @@ export function injectCsp(html: string, {
     extractStyles?: boolean,
 } = {}): string {
     // Parse the HTML into a manipulatable document.
-    const dom = new JsDom(html);
-    const document = dom.window.document;
+    const document = parse(html);
 
     // Extract sources from the document.
     const scriptSources = Array.from(normalize(genScriptSources(document)));
@@ -45,18 +49,25 @@ export function injectCsp(html: string, {
         genDirective('style-src', styleSources),
         genDirective('img-src', imageSources),
         genDirective('object-src', [`'none'`]),
-    ].filter((directive) => !!directive).join(' ');
+    ].filter((directive) => Boolean(directive)).join(' ');
 
     // Inject the CSP into the HTML.
-    const cspNode = document.createElement('meta');
-    cspNode.setAttribute('http-equiv', 'Content-Security-Policy');
-    cspNode.setAttribute('content', csp);
     // CSP node must come **before** other scripts!
     // Resources that preceed the CSP may not be appropriately blocked.
-    document.head.prepend(cspNode);
+    let cspInjected = false;
+    const injected = html.replace(
+        /<head[^>]*>/,
+        (match) => {
+            cspInjected = true;
+            return `${match}<meta http-equiv="Content-Security-Policy" content="${csp}">`;
+        },
+    );
 
-    // Return the document modified with a new CSP value.
-    return dom.serialize();
+    // `String.prototype.replace` will no-op if the search string isn't found,
+    // so explicitly verify that the CSP was injected as expected.
+    if (!cspInjected) throw new Error('Failed to inject CSP, could not match `<head>` element.');
+
+    return injected;
 }
 
 /**
@@ -68,60 +79,94 @@ function genDirective(directive: string, sources: string[]): string|undefined {
     return `${directive} ${sources.join(' ')};`;
 }
 
+/** Yields all the `<script>` tags in the document. */
+function* walkScripts(document: Document): Iterable<Element> {
+    for (const node of walkTree(document)) {
+        // Ignore non-script elements.
+        if (!isElementNode(node) || node.tagName !== 'script') continue;
+
+        const type = node.attrs.find((attr) => attr.name === 'type');
+
+        // Emit only JS script tags.
+        if (!type || type.value === 'module' || isJsMimeType(type.value)) {
+            yield node;
+        }
+    }
+}
+
 /** Yields sources for the `script-src` directive from the given document. */
 function* genScriptSources(document: Document): Iterable<string> {
-    // Get all JavaScript `<script />` tags.
-    const scriptTags = Array.from(document.querySelectorAll('script'))
-            .filter((script) => {
-                const type = script.getAttribute('type');
-
-                // Bare `<script />` tags are JavaScript.
-                if (!type) return true;
-
-                // `<script type="module" />` are JavaScript.
-                if (type === 'module') return true;
-
-                // Known MIME types are JavaScript, unknown are unrelated
-                // `<script />` tags.
-                return isJsMimeType(type);
-            });
-
-    for (const scriptTag of scriptTags) {
+    for (const scriptTag of walkScripts(document)) {
         // For a hyperlinked script, yield the source link.
-        const src = scriptTag.getAttribute('src');
-        if (src) yield src;
+        const src = scriptTag.attrs.find((attr) => attr.name === 'src');
+        if (src) {
+            yield src.value;
+            continue;
+        }
 
         // For an inline script, yield a hash of its contents.
-        const { textContent } = scriptTag;
-        if (!!textContent && textContent !== '') yield hash(textContent);
+        const textContent = getTextContent(scriptTag);
+        if (textContent) yield hash(textContent);
+    }
+}
+
+/** Yields all the `<style>` tags in the document. */
+function* walkStyles(document: Document): Iterable<Element> {
+    for (const node of walkTree(document)) {
+        if (isElementNode(node) && node.tagName === 'style') yield node;
+    }
+}
+
+/** Yields all the `<link>` tags in the document. */
+function* walkLinks(document: Document): Iterable<Element> {
+    for (const node of walkTree(document)) {
+        if (isElementNode(node) && node.tagName === 'link') yield node;
     }
 }
 
 /** Yields sources for the `style-src` directive from the given document. */
 function* genStyleSources(document: Document): Iterable<string> {
-    const styles = document.querySelectorAll('style');
-
     // For an inlined style tag, yield a hash of its contents.
-    for (const style of styles) {
-        const { textContent } = style;
+    for (const style of walkStyles(document)) {
+        const textContent = getTextContent(style);
         if (textContent) yield hash(textContent);
     }
 
     // For a hyperlinked source, yield the source link.
-    const links = document.querySelectorAll('link[rel="stylesheet"]');
-    for (const link of links) {
-        const href = link.getAttribute('href');
-        if (href) yield href;
+    for (const link of walkLinks(document)) {
+        // Filter to just stylesheets.
+        const rel = link.attrs.find((attr) => attr.name === 'rel');
+        if (!rel || rel.value !== 'stylesheet') continue;
+
+        // Emit the source link.
+        const href = link.attrs.find((attr) => attr.name === 'href');
+        if (href) yield href.value;
+    }
+}
+
+/** Yields all the `<img>` tags in the document. */
+function* walkImages(document: Document): Iterable<Element> {
+    for (const node of walkTree(document)) {
+        if (isElementNode(node) && node.tagName === 'img') yield node;
     }
 }
 
 /** Yields sources for the `img-src` directive from the given document. */
 function* genImageSources(document: Document): Iterable<string> {
-    const images = document.querySelectorAll('img');
-    for (const image of images) {
+    for (const image of walkImages(document)) {
         // For a hyperlinked source, yield the source link.
-        const { src } = image;
-        if (src) yield src;
+        const src = image.attrs.find((attr) => attr.name === 'src');
+        if (src) yield src.value;
+    }
+}
+
+/** Yields the node and all its transitive descendents. */
+function* walkTree(node: Node): Iterable<Node> {
+    yield node;
+    if (isParentNode(node)) {
+        for (const child of node.childNodes) {
+            yield* walkTree(child);
+        }
     }
 }
 
