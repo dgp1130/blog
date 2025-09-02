@@ -287,7 +287,7 @@ describe('csp', () => {
                 <html>
                     <body></body>
                 </html>
-            `)).toThrowError(/Failed to inject CSP/);
+            `)).toThrowError(/Failed to parse `<head>` tag./);
         });
     });
 });
