@@ -31,8 +31,7 @@
     "netlify": "netlify"
   },
   "engines": {
-    "node": "22.5.1",
-    "npm": "10.8.2"
+    "node": "24.7.0"
   },
   "repository": {
     "type": "git",
