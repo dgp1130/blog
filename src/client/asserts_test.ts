@@ -1,6 +1,11 @@
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { assertDefined } from './asserts';
 
 describe('asserts', () => {
+    afterEach(() => {
+        vi.restoreAllMocks();
+    });
+
     describe('assertDefined()', () => {
         it('narrows the type of the provided element when defined', () => {
             const foo = ('test' as string|undefined);
@@ -12,7 +17,7 @@ describe('asserts', () => {
 
             // Typescript validates that `foo` must be defined.
             const str: string = foo;
-            expect().nothing(); // If this compiles, test passed.
+            expect(true).toBe(true);
         });
 
         it('throws when given an undefined value', () => {

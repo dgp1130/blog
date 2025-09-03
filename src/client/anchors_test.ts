@@ -1,31 +1,43 @@
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { handleHeaderLinkOnClick } from './anchors';
 import * as browserEnv from './browser_env';
 import * as snackbar from './components/snackbar';
 
+vi.mock('./browser_env', () => ({
+    getLocation: vi.fn(),
+}));
+vi.mock('./components/snackbar', () => ({
+    show: vi.fn(),
+}));
+
 describe('anchors', () => {
+    afterEach(() => {
+        vi.restoreAllMocks();
+    });
+
     describe('handleHeaderLinkOnClick()', () => {
         it('copies header URL on `<h* />` tag click', () => {
             const root = document.createElement('div');
-    
+
             const header = document.createElement('h2');
             header.id = 'foo-bar';
             root.appendChild(header);
 
-            spyOn(browserEnv, 'getLocation').and.returnValue({
+            vi.mocked(browserEnv.getLocation).mockReturnValue({
                 href: 'http://blog.dwac.test/post/',
             } as Location);
-            spyOn(history, 'replaceState');
-            spyOn(navigator.clipboard, 'writeText');
-            spyOn(snackbar, 'show').and.resolveTo();
-    
+            vi.spyOn(history, 'replaceState').mockImplementation(() => {});
+            vi.spyOn(navigator.clipboard, 'writeText');
+            vi.mocked(snackbar.show).mockResolvedValue(undefined);
+
             handleHeaderLinkOnClick(root);
             header.click();
 
-            expect(history.replaceState).toHaveBeenCalledOnceWith(
+            expect(history.replaceState).toHaveBeenCalledExactlyOnceWith(
                 {}, '', new URL('http://blog.dwac.test/post/#foo-bar'));
-            expect(navigator.clipboard.writeText).toHaveBeenCalledOnceWith(
+            expect(navigator.clipboard.writeText).toHaveBeenCalledExactlyOnceWith(
                 'http://blog.dwac.test/post/#foo-bar');
-            expect(snackbar.show).toHaveBeenCalledOnceWith(
+            expect(snackbar.show).toHaveBeenCalledExactlyOnceWith(
                 'Copied URL to clipboard.', 2_000 /* ms */);
         });
 
@@ -35,9 +47,8 @@ describe('anchors', () => {
             const child = document.createElement('div');
             root.appendChild(child);
 
-            spyOn(history, 'replaceState');
-            spyOn(navigator.clipboard, 'writeText');
-            spyOn(snackbar, 'show');
+            vi.spyOn(history, 'replaceState');
+            vi.spyOn(navigator.clipboard, 'writeText');
 
             handleHeaderLinkOnClick(root);
             child.click();
@@ -49,14 +60,13 @@ describe('anchors', () => {
 
         it('ignores clicks on `<h* />` tags without an `id` attribute', () => {
             const root = document.createElement('div');
-    
+
             const header = document.createElement('h2'); // No `id` attribute.
             root.appendChild(header);
 
-            spyOn(history, 'replaceState');
-            spyOn(navigator.clipboard, 'writeText');
-            spyOn(snackbar, 'show');
-    
+            vi.spyOn(history, 'replaceState').mockImplementation(() => {});
+            vi.spyOn(navigator.clipboard, 'writeText');
+
             handleHeaderLinkOnClick(root);
             header.click();
 

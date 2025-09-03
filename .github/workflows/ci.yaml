@@ -25,7 +25,9 @@ jobs:
         node-version: 24.7.0
 
     - name: Install
-      run: npm ci
+      run: |
+        npm ci
+        node_modules/.bin/playwright install chromium
 
     - name: Test
       run: npm test

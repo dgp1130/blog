@@ -10,9 +10,11 @@
     "include": [ "src/client/**/*.ts" ],
 
     "compilerOptions": {
-        "module": "CommonJS",
-        "types": [ "jasmine" ],
-        "noEmitOnError": true, // Karma gives cleaner error messages this way.
+        "module": "ES2022",
+        "types": [
+            "@vitest/browser/providers/playwright",
+            "@vitest/browser/matchers"
+        ],
         "experimentalDecorators": true // For lit-element.
     }
 }

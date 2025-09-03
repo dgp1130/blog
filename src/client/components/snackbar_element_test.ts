@@ -1,3 +1,6 @@
+import './snackbar_element'; // Side-effectful import of `<dwac-snackbar>`.
+
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { fadeOutTimeoutMs, Snackbar } from './snackbar_element';
 
 describe('Snackbar Element', () => {
@@ -22,8 +25,11 @@ describe('Snackbar Element', () => {
         snackbar?.parentElement?.removeChild(snackbar);
     });
 
-    beforeEach(() => { jasmine.clock().install(); });
-    afterEach(() => { jasmine.clock().uninstall(); });
+    beforeEach(() => { vi.useFakeTimers(); });
+    afterEach(() => {
+        vi.useRealTimers();
+        vi.restoreAllMocks();
+    });
 
     it('is defined', async () => {
         const snackbar = await init();
@@ -59,8 +65,8 @@ describe('Snackbar Element', () => {
         const promise = snackbar.fadeOut();
         expect(Array.from(snackbar.classList.values())).toContain('fade-out');
 
-        jasmine.clock().tick(fadeOutTimeoutMs);
-        await expectAsync(promise).toBeResolved();
+        vi.advanceTimersByTime(fadeOutTimeoutMs);
+        await expect(promise).resolves.toBeUndefined();
     });
 
     it('sets the fade-in and fade-out duration CSS properties', async () => {
@@ -68,12 +74,12 @@ describe('Snackbar Element', () => {
 
         const fadeInDuration =
             snackbar.style.getPropertyValue('--dwac-snackbar-fade-in-duration');
-        expect(fadeInDuration).toBeInstanceOf(String);
+        expect(typeof fadeInDuration).toBe('string');
         expect(fadeInDuration).not.toBe('');
 
         const fadeOutDuration =
             snackbar.style.getPropertyValue('--dwac-snackbar-fade-out-duration');
-        expect(fadeOutDuration).toBeInstanceOf(String);
+        expect(typeof fadeOutDuration).toBe('string');
         expect(fadeOutDuration).not.toBe('');
     });
 });

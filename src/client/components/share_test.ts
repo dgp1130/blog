@@ -1,6 +1,16 @@
+import './share'; // Side-effectful import of `<dwac-share>`.
+
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import * as browserEnv from '../browser_env';
 import { Share } from './share';
 import * as snackbar from './snackbar';
+
+vi.mock('../browser_env', () => ({
+    getLocation: vi.fn(),
+}));
+vi.mock('./snackbar', () => ({
+    show: vi.fn(),
+}));
 
 describe('Share', () => {
     let share: Share|undefined;
@@ -36,6 +46,7 @@ describe('Share', () => {
 
     afterEach(() => {
         share?.parentElement?.removeChild(share);
+        vi.restoreAllMocks();
     });
 
     it('is defined', async () => {
@@ -45,7 +56,7 @@ describe('Share', () => {
     });
 
     it('shows share UI when supported', async () => {
-        spyOn(navigator, 'share');
+        vi.spyOn(navigator, 'share');
 
         const share = await init();
 
@@ -55,7 +66,7 @@ describe('Share', () => {
     });
 
     it('hides share UI when not supported', async () => {
-        navigator.share = undefined as any;
+        delete (navigator as Partial<typeof navigator>).share;
 
         const share = await init();
 
@@ -63,7 +74,7 @@ describe('Share', () => {
     });
 
     it('shares the given full URL when the user clicks "Share"', async () => {
-        spyOn(navigator, 'share').and.returnValue(Promise.resolve());
+        vi.spyOn(navigator, 'share').mockReturnValue(Promise.resolve());
 
         const share = await init({
             target: new URL('https://shared.test/'),
@@ -84,10 +95,10 @@ describe('Share', () => {
     });
 
     it('shares the given path when the user clicks "Share"', async () => {
-        spyOn(browserEnv, 'getLocation').and.returnValue({
+        vi.mocked(browserEnv.getLocation).mockReturnValue({
             href: 'https://shared.test/',
         } as Location);
-        spyOn(navigator, 'share').and.returnValue(Promise.resolve());
+        vi.spyOn(navigator, 'share').mockReturnValue(Promise.resolve());
 
         const share = await init({
             target: '/foo',
@@ -108,11 +119,9 @@ describe('Share', () => {
     });
 
     it('shows copy UI when supported', async () => {
-        const clipboard = jasmine.createSpyObj('clipboard', {
-            writeText: () => {},
-        });
-        spyOnProperty(navigator, 'clipboard', 'get')
-                .and.returnValue(clipboard);
+        const clipboard = { writeText: vi.fn() };
+        vi.spyOn(navigator, 'clipboard', 'get')
+                .mockReturnValue(clipboard as any);
 
         const share = await init();
 
@@ -122,12 +131,10 @@ describe('Share', () => {
     });
 
     it('copies the given full URL when the user presses "Copy"', async () => {
-        const clipboard = jasmine.createSpyObj('clipboard', {
-            writeText: () => {},
-        });
-        spyOnProperty(navigator, 'clipboard', 'get')
-                .and.returnValue(clipboard);
-        spyOn(snackbar, 'show').and.resolveTo();
+        const clipboard = { writeText: vi.fn() };
+        vi.spyOn(navigator, 'clipboard', 'get')
+                .mockReturnValue(clipboard as any);
+        vi.mocked(snackbar.show).mockResolvedValue(undefined);
 
         const share = await init({
             target: new URL('https://copied.test/'),
@@ -146,14 +153,12 @@ describe('Share', () => {
     });
 
     it('copies the given path when the user presses "Copy"', async () => {
-        spyOn(browserEnv, 'getLocation').and.returnValue({
+        vi.mocked(browserEnv.getLocation).mockReturnValue({
             href: 'https://copied.test/',
         } as Location);
-        const clipboard = jasmine.createSpyObj('clipboard', {
-            writeText: () => {},
-        });
-        spyOnProperty(navigator, 'clipboard', 'get')
-                .and.returnValue(clipboard);
+        const clipboard = { writeText: vi.fn() };
+        vi.spyOn(navigator, 'clipboard', 'get')
+                .mockReturnValue(clipboard as any);
 
         const share = await init({
             target: '/foo',

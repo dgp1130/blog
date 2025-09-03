@@ -1,35 +1,38 @@
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { show as showSnackbar } from './snackbar';
 import { fadeInTimeoutMs, Snackbar } from './snackbar_element'
 
 describe('Snackbar', () => {
-    beforeEach(() => { jasmine.clock().install(); });
-    afterEach(() => { jasmine.clock().uninstall(); });
+    beforeEach(() => { vi.useFakeTimers(); });
+    afterEach(() => {
+        vi.useRealTimers();
+        vi.restoreAllMocks();
+    });
 
     describe('show()', () => {
         it('shows the given text in a snackbar', async () => {
-            spyOn(Snackbar, 'of').and.returnValue(mockSnackbar());
+            vi.spyOn(Snackbar, 'of').mockReturnValue(mockSnackbar());
 
             const promise = showSnackbar('Hello, World!', 1_000 /* ms */);
             expect(Snackbar.of).toHaveBeenCalledWith('Hello, World!');
 
             const snackbar = document.querySelector('dwac-mock-snackbar')!;
-            expect(snackbar)
-                .withContext('Failed to find snackbar').toBeDefined();
+            expect(snackbar).toBeDefined();
 
             // Pass time snackbar fades in and is fully visible.
-            jasmine.clock().tick(fadeInTimeoutMs);
-            jasmine.clock().tick(1_000 /* ms */);
+            vi.advanceTimersByTime(fadeInTimeoutMs);
+            vi.advanceTimersByTime(1_000 /* ms */);
             await Promise.resolve(); // Flush pending async operations.
             await Promise.resolve(); // Flush mocked fade out task.
 
             expect(document.querySelector('dwac-mock-snackbar')).toBeNull();
-            await expectAsync(promise).toBeResolved();
+            await expect(promise).resolves.toBeUndefined();
         });
     });
 });
 
 function mockSnackbar(): Snackbar {
     const mock = document.createElement('dwac-mock-snackbar') as Snackbar;
-    mock.fadeOut = jasmine.createSpy('fadeOut').and.resolveTo();
+    mock.fadeOut = vi.fn().mockResolvedValue(undefined);
     return mock;
 }

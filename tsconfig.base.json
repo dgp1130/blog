@@ -44,6 +44,10 @@
     "noPropertyAccessFromIndexSignature": true, /* Report errors when using dot syntax to read an index property (`{[key: string]: string}`). */
     "noUncheckedIndexedAccess": true,         /* Report `undefined` in the value of index types (`{[key: string]: string}`) */
 
+    // Vitest seems to break Lit for some reason and requires this as an opt-out.
+    // https://lit.dev/docs/components/properties/#avoiding-issues-with-class-fields
+    "useDefineForClassFields": false,
+
     /* Module Resolution Options */
     "moduleResolution": "node",               /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */
     // "baseUrl": "./",                       /* Base directory to resolve non-absolute module names. */

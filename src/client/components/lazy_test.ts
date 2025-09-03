@@ -1,3 +1,6 @@
+import './lazy'; // Side-effectful import of `<dwac-lazy>`.
+
+import { afterEach, beforeAll, describe, expect, it, vi, Mocked } from 'vitest';
 import { Lazy } from './lazy';
 
 describe('Lazy', () => {
@@ -15,12 +18,14 @@ describe('Lazy', () => {
     // Mock the global `IntersectionObserver`. This needs to be done exactly
     // once at the start of the tests because `<dwac-lazy />` will construct the
     // `IntersectionObserver` once and cache it between component instances.
-    const mockObserver: jasmine.SpyObj<IntersectionObserver> =
-        jasmine.createSpyObj(Object.keys(IntersectionObserver.prototype));
+    const mockObserver = {
+        observe: vi.fn(),
+        unobserve: vi.fn(),
+    } as unknown as Mocked<IntersectionObserver>;
     let triggerIntersection:
         (...args: Parameters<IntersectionObserverCallback>) => void;
     beforeAll(() => {
-        spyOn(globalThis, 'IntersectionObserver').and.callFake(function (cb) {
+        vi.spyOn(globalThis, 'IntersectionObserver').mockImplementation((cb) => {
             triggerIntersection = cb;
             return mockObserver;
         });
@@ -28,10 +33,7 @@ describe('Lazy', () => {
 
     afterEach(() => {
         lazy?.remove();
-
-        (IntersectionObserver as unknown as jasmine.Spy).calls.reset();
-        mockObserver.observe.calls.reset();
-        mockObserver.unobserve.calls.reset();
+        vi.restoreAllMocks();
     });
 
     it('is defined', () => {
@@ -43,9 +45,9 @@ describe('Lazy', () => {
     it('observes intersection with viewport', () => {
         const lazy = init({ childNodes: [] });
 
-        expect(mockObserver.observe).toHaveBeenCalledOnceWith(lazy);
+        expect(mockObserver.observe).toHaveBeenCalledExactlyOnceWith(lazy);
         lazy.remove();
-        expect(mockObserver.unobserve).toHaveBeenCalledOnceWith(lazy);
+        expect(mockObserver.unobserve).toHaveBeenCalledExactlyOnceWith(lazy);
     });
 
     it('renders child template on intersection', () => {
@@ -180,7 +182,7 @@ describe('Lazy', () => {
         // Should resume observing when reattached.
         document.body.append(lazy);
         expect(mockObserver.observe).toHaveBeenCalledTimes(2);
-        
+
         // Should still be lazy, no intersection yet.
         expect(lazy.childNodes.length).toBe(1);
         expect(lazy.childNodes[0]).toBeInstanceOf(HTMLTemplateElement);

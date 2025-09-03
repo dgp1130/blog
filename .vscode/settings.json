@@ -57,6 +57,8 @@
         "subclassing",
         "Threadsafe",
         "unicodes",
+        "Vite",
+        "Vitest",
         "vtable",
         "vtables",
         "webm",

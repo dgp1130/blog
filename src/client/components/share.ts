@@ -1,6 +1,6 @@
 import { LitElement, TemplateResult, html, css } from 'lit';
-import { customElement, property } from 'lit/decorators';
-import { when } from 'lit/directives/when';
+import { customElement, property } from 'lit/decorators.js';
+import { when } from 'lit/directives/when.js';
 import { assertDefined } from '../asserts';
 import { makeShareable } from '../share';
 import { show as showSnackbar } from './snackbar';

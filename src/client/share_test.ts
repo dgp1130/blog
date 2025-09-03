@@ -1,10 +1,19 @@
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import * as browserEnv from './browser_env';
 import { makeShareable } from './share';
 
+vi.mock('./browser_env', () => ({
+    getLocation: vi.fn(),
+}));
+
 describe('share', () => {
+    afterEach(() => {
+        vi.restoreAllMocks();
+    });
+
     describe('makeShareable()', () => {
         it('returns a URL from the current window origin', () => {
-            spyOn(browserEnv, 'getLocation').and.returnValue({
+            vi.mocked(browserEnv.getLocation).mockReturnValue({
                 href: 'https://example.com/',
             } as Location);
 
@@ -14,7 +23,7 @@ describe('share', () => {
         });
 
         it('returns a URL with non-shareable information santitized from the current window origin', () => {
-            spyOn(browserEnv, 'getLocation').and.returnValue({
+            vi.mocked(browserEnv.getLocation).mockReturnValue({
                 // Most of this information isn't shareable.
                 href: 'https://user:pass@example.com:80/test?foo=bar#something',
             } as Location);
