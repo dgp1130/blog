@@ -7,10 +7,14 @@ module.exports.htmlMinifierConfig = {
     caseSensitive: true,
     collapseBooleanAttributes: true,
 
-    // HTML Whitespace post, Example 31 depends on whitespace collapsing not
-    // happening. Also the size benefit of this seems minimal anyways (~126KB vs
-    // ~128KB) for that page. Therefore I have decided I don't care.
-    collapseWhitespace: false,
+    // Collapse whitespace for improved performance (admittedly minor). But we
+    // want conservative collapsing as example 31 of the HTML whitespace post
+    // depends on it specifically, but also it just leads to a whole host of
+    // potential whitespace issues we don't want to deal with for minimal
+    // performance gain. Destructive whitespace optimizations just aren't worth
+    // the effort.
+    collapseWhitespace: true,
+    conservativeCollapse: true,
 
     decodeEntities: true,
     removeAttributeQuotes: true,
