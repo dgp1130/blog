@@ -4,7 +4,7 @@
 [build]
 
 # Don't do anything to build, site should already be built.
-command = ""
+command = "echo \"Do not build in Netlify, run deployment with \\`--no-build\\`.\""
 
 # Root directory of the output is _site/.
 publish = "_site/"
@@ -15,6 +15,15 @@ publish = "_site/"
 # problems with CSP. It's just easier to disable Netlify's optimizations and use
 # the real resources generated.
 skip_processing = true
+
+# `netlify dev` errors if framework is not specified because it can't decide
+# between Eleventy and Vite since both config files exist. Setting it to
+# Eleventy doesn't seem to work, so I guess we must use a custom framework?
+# https://docs.netlify.com/build/configure-builds/file-based-configuration/#netlify-dev
+[dev]
+command = "npm start"
+targetPort = 8080
+framework = "#custom"
 
 [[redirects]]
 # Serve the 404 page at any unhandled URLs. This technically isn't a redirect,

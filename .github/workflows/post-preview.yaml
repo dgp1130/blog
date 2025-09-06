@@ -34,6 +34,7 @@ jobs:
     - name: Deploy Post Preview
       run: |
         npm run -- netlify deploy -s "${{ secrets.NETLIFY_SITE_ID }}" \
+          --no-build \
           --alias post-$(echo "${{ github.ref }}" | sed "s,^refs/heads/posts/,,g") \
           -m "Automated PR preview deployment from GitHub actions."
       env:
