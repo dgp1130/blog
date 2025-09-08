@@ -46,6 +46,7 @@ jobs:
       # independent of a deployment alias.
       run: |
         npm run -- netlify deploy -s "${{ secrets.NETLIFY_SITE_ID }}" \
+          --no-build \
           --alias main-preview \
           -m "Automated preview deployment from GitHub actions."
       env:
