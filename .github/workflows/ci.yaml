@@ -26,7 +26,8 @@ jobs:
 
     - name: Install
       run: |
-        npm ci
+        npm install -g pnpm@10.11.0
+        pnpm install --frozen-lockfile
         node_modules/.bin/playwright install chromium
 
     - name: Test

@@ -32,6 +32,7 @@
     "font:update": "pyftsubset src/www/res/fonts/noto/noto-color-emoji-all.ttf --output-file=\"src/www/res/fonts/noto/noto-color-emoji.woff2\" --flavor=woff2 --text-file=\"src/www/res/fonts/noto/emojis.txt\"",
     "netlify": "netlify"
   },
+  "packageManager": "pnpm@10.11.0",
   "engines": {
     "node": "24.7.0",
     "pnpm": "10.11.0"

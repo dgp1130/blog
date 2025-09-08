@@ -25,7 +25,9 @@ jobs:
         node-version: 24.7.0
 
     - name: Install
-      run: npm ci
+      run: |
+        npm install -g pnpm@10.11.0
+        pnpm install --frozen-lockfile
 
     - name: Build
       run: npm run build:dev
