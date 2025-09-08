@@ -60,9 +60,10 @@ configuration, while the rest is done on
     * Hosted at https://blog.dwac.dev/ and https://dwac-blog.netlify.app/.
 * The `main` branch is auto-deployed on GitHub push.
     * Only deployed if CI passes.
-    * Hosted at [https://main-preview--dwac-blog.netlify.app/](https://main-preview--dwac-blog.netlify.app).
+    * Hosted at https://main-preview--dwac-blog.netlify.app.
 * Any `posts/*` branches are auto-deployed on GitHub push.
     * These are previews of in-progress posts, so tests are not executed here.
+    * Listed at https://blog.dwac.dev/preview/.
     * Hosted at https://post-${branch-name}--dwac-blog.netlify.app.
 
 You can also perform one-off test deployments to verify the Netlify

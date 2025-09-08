@@ -60,4 +60,16 @@ export default [
         },
         plugins: defaultPlugins,
     },
+
+    // Preview page entry point.
+    {
+        input: 'src/www/scripts/preview.ts',
+        output: {
+            name: 'preview',
+            file: 'src/www/scripts/preview.js',
+            format: 'es',
+            sourcemap: true,
+        },
+        plugins: defaultPlugins,
+    },
 ];

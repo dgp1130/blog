@@ -1,0 +1,30 @@
+{% extends "pages/base.njk" %}
+
+{% block title %}
+    Preview - Devel without a Cause
+{% endblock %}
+
+{% block description %}
+    Preview draft blog posts.
+{% endblock %}
+
+{% block socialImage %}{% endblock %}
+{% block socialImageAlt %}{% endblock %}
+
+{% block scripts %}
+    /scripts/preview.js
+{% endblock %}
+
+{% block styles %}
+    ./preview.css
+{% endblock %}
+
+{% block content %}
+    <h1>Preview</h1>
+    <p>
+        Preview in-progress draft blog posts. This is mostly a utility for
+        myself and not really intended for others. Please don't over-index on my
+        words here, I haven't decided to say them yet!
+    </p>
+    <ul id="preview-list"></ul>
+{% endblock %}
