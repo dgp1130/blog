@@ -28,7 +28,7 @@ pip install fonttools brotli lxml
 Then run:
 
 ```shell
-npm run font:update
+pnpm run font:update
 ```
 
 This reads all the code points in `emojis.txt` and subsets the font to only

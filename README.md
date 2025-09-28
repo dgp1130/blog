@@ -9,13 +9,18 @@ My personal blog, hosted at [https://blog.dwac.dev/](https://blog.dwac.dev/).
 ## Local Builds
 
 This project uses [NodeJS](https://nodejs.org/) and must be installed. You can
-install it directly or install [`nvm`](https://github.com/nvm-sh/nvm) and run
-`nvm use` to switch to the version of Node supported in this project.
+install it directly or install [`nvm`](https://github.com/nvm-sh/nvm).
 
-Run a hot-reloading server with `npm start`. Open
+```shell
+nvm install
+npm install -g pnpm@10.11.0
+pnpm install --frozen-lockfile
+```
+
+Run a hot-reloading server with `pnpm start`. Open
 [`http://localhost:8080/`](http://localhost:8080/) to view the local site.
 
-You can make a one-off build with `npm run build`. This is not all that useful
+You can make a one-off build with `pnpm run build`. This is not all that useful
 for local development, but CI takes advantage of it.
 
 You can debug the build in VSCode with the `11ty Build` launch configuration.
@@ -23,26 +28,26 @@ This will run a build and attach the VSCode debugger to each process as it
 executes. This should trigger breakpoints in [`.eleventy.js`](.eleventy.js) and
 any related files.
 
-You can also run `npm run build:debug` to run the build pipeline with
+You can also run `pnpm run build:debug` to run the build pipeline with
 `--inspect-brk` on the relevant command to breakpoint on the 11ty execution.
 
-You can run/build for production by using `npm run start:prod` and
-`npm run build:prod`. These enable various optimizations for production use.
-Note that `npm run start:prod` will encounter a CSP error and live reload will
+You can run/build for production by using `pnpm run start:prod` and
+`pnpm run build:prod`. These enable various optimizations for production use.
+Note that `pnpm run start:prod` will encounter a CSP error and live reload will
 not work, as browser sync is not included in prod.
 
 ## Tests
 
-Run all tests once with `npm test`.
+Run all tests once with `pnpm test`.
 
 There are two sets of tests that are executed:
 1. Tests of the NodeJS code used in the 11ty build.
-    * Run directly with `npm run test:11ty`.
+    * Run directly with `pnpm run test:11ty`.
     * Debug with the `11ty Test` launch configuration in VSCode.
 1. Tests of the client browser code.
-    * Run directly with `npm run test:browser`.
-    * Watch with `npm run test:browser:dev`.
-    * Debug with `npm run test:browser:dev` and open
+    * Run directly with `pnpm run test:browser`.
+    * Watch with `pnpm run test:browser:dev`.
+    * Debug with `pnpm run test:browser:dev` and open
       [`http://localhost:9876/debug.html`](http://localhost:9876/debug.html).
       This should include include an HTML reporter, live reloads, and
       functioning source maps.
@@ -68,7 +73,7 @@ configuration, while the rest is done on
 
 You can also perform one-off test deployments to verify the Netlify
 configuration and the real production environment. Build the application first,
-then use `npm run deploy-test ${alias}` to deploy it to Netlify. This should
+then use `pnpm run deploy-test ${alias}` to deploy it to Netlify. This should
 generate a URL for you to visit and test the site with. It is also an easy way
 to test on mobile phones without having to run the site locally.
 

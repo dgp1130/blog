@@ -21,7 +21,7 @@ skip_processing = true
 # Eleventy doesn't seem to work, so I guess we must use a custom framework?
 # https://docs.netlify.com/build/configure-builds/file-based-configuration/#netlify-dev
 [dev]
-command = "npm start"
+command = "pnpm start"
 targetPort = 8080
 framework = "#custom"
 

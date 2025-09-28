@@ -6,13 +6,13 @@
     "configurations": [
         {
             "name": "11ty Build",
-            "command": "npm run build",
+            "command": "pnpm run build",
             "request": "launch",
             "type": "node-terminal"
         },
         {
             "name": "11ty Test",
-            "command": "npm test",
+            "command": "pnpm test",
             "request": "launch",
             "type": "node-terminal"
         }

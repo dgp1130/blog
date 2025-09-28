@@ -30,12 +30,12 @@ jobs:
         pnpm install --frozen-lockfile
 
     - name: Build
-      run: npm run build:dev
+      run: pnpm run build:dev
 
     # Deploy a preview to https://post-${branch-name}--dwac.netlify.app/.
     - name: Deploy Post Preview
       run: |
-        npm run -- netlify deploy -s "${{ secrets.NETLIFY_SITE_ID }}" \
+        pnpm run -- netlify deploy -s "${{ secrets.NETLIFY_SITE_ID }}" \
           --no-build \
           --alias post-$(echo "${{ github.ref }}" | sed "s,^refs/heads/posts/,,g") \
           -m "Automated PR preview deployment from GitHub actions."
