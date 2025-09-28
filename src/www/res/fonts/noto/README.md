@@ -22,7 +22,7 @@ Next, subset the font to only include the emoji listed in that file. Install
 `pyftsubset` if it is not already available:
 
 ```shell
-pip install fonttools brotli
+pip install fonttools brotli lxml
 ```
 
 Then run:
