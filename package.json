@@ -4,10 +4,10 @@
   "private": true,
   "description": "Personal blog for https://github.com/dgp1130.",
   "scripts": {
-    "start": "pnpm run -s clean && pnpm run -s build:11ty && pnpm run -s build:browser && pnpm run -s 11ty -- --serve",
-    "start:dev": "pnpm run -s clean && pnpm run -s build:11ty && pnpm run -s build:browser:dev && pnpm run -s 11ty:dev -- --serve",
-    "start:prod": "pnpm run -s clean && pnpm run -s build:11ty && pnpm run -s build:browser:prod && pnpm run -s 11ty:prod -- --serve",
-    "11ty": "pnpm run -s 11ty:dev --",
+    "start": "pnpm run -s clean && pnpm run -s build:11ty && pnpm run -s build:browser && pnpm run -s 11ty --serve",
+    "start:dev": "pnpm run -s clean && pnpm run -s build:11ty && pnpm run -s build:browser:dev && pnpm run -s 11ty:dev --serve",
+    "start:prod": "pnpm run -s clean && pnpm run -s build:11ty && pnpm run -s build:browser:prod && pnpm run -s 11ty:prod --serve",
+    "11ty": "pnpm run -s 11ty:dev",
     "11ty:dev": "eleventy",
     "11ty:prod": "DWAC_ENV='prod' eleventy",
     "11ty:debug": "node --inspect-brk node_modules/@11ty/eleventy/cmd.js",
@@ -28,7 +28,7 @@
     "test:browser:dev": "pnpm run -s check:browser-test && vitest watch --browser.headless false",
     "test:lit": "lit-analyzer --strict --rules.no-unknown-tag-name error --rules.no-missing-import error --rules.no-missing-element-type-definition error --rules.no-unknown-attribute error --rules.no-unknown-property error --rules.no-unknown-event error --rules.no-unknown-slot error --rules.no-legacy-attribute error --rules.no-unintended-mixed-binding error --rules.no-property-visibility-mismatch error --rules.no-invalid-css error",
     "clean": "rm -rf _site/ && find src/ \\( -name '*.js' -o -name '*.js.map' \\) -delete",
-    "deploy-test": "pnpm run -s netlify -- deploy -m \"Test deployment\" --alias",
+    "deploy-test": "pnpm run -s netlify deploy -m \"Test deployment\" --alias",
     "font:update": "pyftsubset src/www/res/fonts/noto/noto-color-emoji-all.ttf --output-file=\"src/www/res/fonts/noto/noto-color-emoji.woff2\" --flavor=woff2 --text-file=\"src/www/res/fonts/noto/emojis.txt\"",
     "netlify": "netlify"
   },
