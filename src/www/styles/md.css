@@ -353,18 +353,15 @@ in the markdown. */
 }
 
 .md h6 {
-  font-size: 1.0em;
   margin: 0 0 0.5em 0;
 }
 
 .md p, .md pre, .md label {
-  font-size: 1.0em;
   line-height: 1.5em;
   margin: 0 0 1em 0;
 }
 
 .md ol, .md ul {
-  font-size: 1.0em;
   line-height: 1.5em;
 }
 
@@ -384,7 +381,7 @@ in the markdown. */
    * Shift bullet spacing to the margin, so long bullet line wrap at consistent
    * left-margins, rather than wrapping around the bullet itself.
    */
-  margin-inline-start: 40px;
+  margin-inline-start: 2.5em;
   padding-inline-start: 0;
 }
 
