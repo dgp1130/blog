@@ -20,6 +20,9 @@
     --dwac-text-color-primary: #666;
     --dwac-text-color-secondary: white;
 
+    /* Keyboard color. */
+    --dwac-key-color: #666666d0;
+
     /* Fonts. */
     --dwac-font-primary: Lora, 'Lora Fallback', 'Times New Roman', serif, 'Noto Color Emoji', emoji;
 
