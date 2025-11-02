@@ -1,0 +1,50 @@
+{# Lists all series in the blog. #}
+
+{% import "fragments/card.njk" as card %}
+
+{% extends "pages/base.njk" %}
+
+{% set desc = "List of all series containing several blog posts following a"
+    + " similar theme."
+%}
+
+{% block title %}
+    Series - Devel without a Cause
+{% endblock %}
+
+{% block description %}
+    {{ desc }}
+{% endblock %}
+
+{% block socialImage %}{% endblock %}
+{% block socialImageAlt %}{% endblock %}
+
+{% block scripts %}
+    /scripts/base.js
+{% endblock %}
+
+{% block styles %}
+    ./series.css
+{% endblock %}
+
+{% block content %}
+    <h1>Series</h1>
+
+    <p>{{ desc }}</p>
+
+    {# List all series in cards like the home page. #}
+    <ol>
+        {% for tag, data in series %}
+            <li>
+                {% call card.card(link = "/series/" + tag) %}
+                    <h3 class="card-title">
+                        {{- data.name -}}
+                    </h3>
+                    <p class="card-content">
+                        {{ data.description }}
+                    </p>
+                {% endcall %}
+            </li>
+        {% endfor %}
+    </ol>
+{% endblock %}
