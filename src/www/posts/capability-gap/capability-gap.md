@@ -8,7 +8,6 @@ date: 2025-11-01T12:00:00-07:00
 excerpt: |
   Some musings about AI as a new user type, API surfaces which support it, the
   core capabilities we need, and the gap which exists today.
-languages: [ html, css ]
 ---
 
 # The AI Capability Gap
