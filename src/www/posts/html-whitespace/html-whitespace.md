@@ -1,5 +1,8 @@
 ---
-tags: posts
+tags:
+    - posts
+    - series/design-docs
+    - series/way-too-deep-dives
 layout: pages/post
 title: HTML Whitespace is Broken
 date: 2024-09-02T12:00:00-07:00

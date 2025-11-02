@@ -1,5 +1,7 @@
 ---
-tags: posts
+tags:
+  - posts
+  - series/way-too-deep-dives
 layout: pages/post
 title: Construct Better
 date: 2022-02-13T12:00:00-07:00

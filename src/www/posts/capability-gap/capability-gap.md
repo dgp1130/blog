@@ -1,5 +1,7 @@
 ---
-tags: posts
+tags:
+  - posts
+  - series/ai
 layout: pages/post
 title: The AI Capability Gap
 date: 2025-11-01T12:00:00-07:00

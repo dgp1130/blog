@@ -1,5 +1,7 @@
 ---
-tags: posts
+tags:
+    - posts
+    - series/html-fragments
 layout: pages/post
 title: HTML Fragments Routing
 date: 2023-01-24T12:00:00-07:00

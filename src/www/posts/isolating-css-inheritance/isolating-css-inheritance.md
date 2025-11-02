@@ -1,5 +1,7 @@
 ---
-tags: posts
+tags:
+  - posts
+  - series/design-docs
 layout: pages/post
 title: Isolating CSS Inheritance
 date: 2025-09-07T12:00:00-07:00

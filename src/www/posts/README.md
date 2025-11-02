@@ -8,6 +8,8 @@ markdown with a YAML front matter section.
 The front matter **must** contain the following values:
 
 * `tags: posts` - This makes it show up in the home page list.
+  * `tags: series/foo` - Marks a post as belonging to the noted series. Choose
+    from the [defined list](/src/11ty/_data/series.json).
 * `layout: pages/post` - This makes it use the standard post template.
 * `title` - The title to generate for the page.
 * `date` - The ISO 8601 date when the post is first published to prod.

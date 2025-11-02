@@ -1,5 +1,7 @@
 ---
-tags: posts
+tags:
+    - posts
+    - series/html-fragments
 layout: pages/post
 title: A Simpler HTML-over-the-Wire
 date: 2022-03-19T12:00:00-07:00

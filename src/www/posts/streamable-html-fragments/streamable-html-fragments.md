@@ -1,5 +1,7 @@
 ---
-tags: posts
+tags:
+    - posts
+    - series/html-fragments
 layout: pages/post
 title: Streamable HTML Fragments
 date: 2022-09-24T12:00:00-07:00
