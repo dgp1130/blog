@@ -1,0 +1,8 @@
+/** Style sheet for the AI disclaimer. */
+
+@import url(./styles/theme.css);
+@import url(./_includes/pages/base.css);
+
+.strikethrough {
+    text-decoration: line-through;
+}

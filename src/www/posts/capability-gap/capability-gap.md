@@ -12,9 +12,6 @@ excerpt: |
 
 # The AI Capability Gap
 
-_Disclaimer: AI played no part in authoring this blog post, however I did ask
-Gemini for a review and incorporated some of its feedback._
-
 Ever since the launch of ChatGPT, the software industry has, like it or not,
 been obsessed with AI and invested millions of dollars into building tools and
 infrastructure to support it.
