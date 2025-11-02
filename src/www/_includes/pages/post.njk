@@ -45,9 +45,44 @@
     <meta property="og:article:author:username" content="develwithoutacause">
 {% endblock %}
 
+{% set seriesList = tags
+    | filterRegexMatch(r/^series\//)
+    | mapRegexReplace(r/^series\/(.*)/)
+%}
+
+{% macro seriesLink(seriesTag) -%}
+    <a href="/series/{{ seriesTag }}/">"{{ series[seriesTag].name }}"</a>
+{%- endmacro %}
+
+{% set seriesNote %}
+    {% if seriesList.length === 0 %}
+        {# No note. #}
+    {% elseif seriesList.length === 1 %}
+        {# Single series note. #}
+        <aside class="post-series">
+            From the series: {{ seriesLink(seriesList[0]) }}.
+        </aside>
+    {% elseif seriesList.length === 2 %}
+        {# Two series note, uses an "and" with no comma. #}
+        <aside class="post-series">
+            From the series: {{ seriesLink(seriesList[0]) }} and {{ seriesLink(seriesList[1]) }}.
+        </aside>
+    {% else %}
+        {# Three series or more, uses a comma separated list with an "and". #}
+        <aside class="post-series">
+            From the series:
+            {% for seriesTag in seriesList %}
+                {{ seriesLink(seriesTag) }}
+                {%- if loop.index0 < seriesList.length - 2 %}, {% elseif loop.index0 === seriesList.length - 2 %}, and {% else %}.{% endif %}
+            {% endfor %}
+        </aside>
+    {% endif %}
+{% endset %}
+
 {% block content %}
     <div class="post-container">
         {{ shareFrag.share(target=page.url, title=title, class="post-end") }}
+        {{ seriesNote | safe }}
         <div class="post-content">
             <article class="md">{{ content | safe }}</article>
         </div>

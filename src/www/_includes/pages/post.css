@@ -12,6 +12,12 @@
     flex-direction: column;
 }
 
+.post-series {
+    font-size: 0.8em;
+    font-style: italic;
+    margin: 0.5em 0;
+}
+
 .post-content {
     /* Fill available space. */
     flex: 1;

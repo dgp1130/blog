@@ -80,6 +80,26 @@ module.exports = function (config) {
     config.addFilter('split', (data, splitter) => {
         return data.split(splitter);
     });
+    config.addFilter('filterRegexMatch', (data, regex) => {
+        return data.filter((item) => regex.test(item));
+    });
+    config.addFilter('mapRegexReplace', (data, regex) => {
+        return data.map((item) => {
+            const match = item.match(regex);
+            if (!match) {
+                throw new Error(`Item "${item}" did not match "${regex}".`);
+            }
+
+            // `match` includes:
+            // [0] - Whole text match.
+            // [1] - First group.
+            if (match.length !== 2) {
+                throw new Error(
+                    `Expected regex "${regex}" to match exactly one group.`);
+            }
+            return match[1];
+        });
+    });
     config.addFilter('oneline', (data) => {
         return data.trim().split('\n').map((line) => line.trim()).join(' ');
     });
