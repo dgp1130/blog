@@ -49,6 +49,18 @@ export default [
         plugins: defaultPlugins,
     },
 
+    // Index page entry point.
+    {
+        input: 'src/www/scripts/index.ts',
+        output: {
+            name: 'index',
+            file: 'src/www/scripts/index.js',
+            format: 'es',
+            sourcemap: true,
+        },
+        plugins: defaultPlugins,
+    },
+
     // Post page entry point.
     {
         input: 'src/www/scripts/post.ts',

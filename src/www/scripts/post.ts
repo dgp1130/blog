@@ -1,3 +1,5 @@
+/** Entry point for blog post pages. */
+
 import './base';
 import '../../client/components/share';
 import '../../client/components/lazy';

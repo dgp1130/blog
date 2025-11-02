@@ -1,7 +1,5 @@
-import '../../client/components/share';
+/** Entry point for content inherited from the base template. */
 
 import { trackAll } from '../../client/analytics';
 
-// Start analytics on the page. Run them for the lifetime of the page, so we
-// drop the "stop tracking" return value of this function.
-trackAll();
+void trackAll();
