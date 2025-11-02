@@ -1,0 +1,18 @@
+{
+    "way-too-deep-dives": {
+        "name": "Way too deep dives",
+        "description": "Digging into a problem to reveal all its hidden nuances, and then digging a little more just to be sure, and then a little more just in case."
+    },
+    "html-fragments": {
+        "name": "HTML fragments",
+        "description": "Experimenting with shipping HTML content over the wire post-initial page load using web standards."
+    },
+    "design-docs": {
+        "name": "This design doc should have been a blog post",
+        "description": "Design docs inspired by my day-to-day work which have been expanded into full blog posts for the wider community."
+    },
+    "ai": {
+        "name": "My AI journey",
+        "description": "My journey figuring out what to do with this AI thing..."
+    }
+}
