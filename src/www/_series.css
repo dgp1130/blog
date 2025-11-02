@@ -1,0 +1,10 @@
+/** Style sheet for the individual series page. */
+
+@import url(./styles/theme.css);
+@import url(./_includes/pages/base.css);
+@import url(./_includes/fragments/post-card-list.css);
+
+h1 {
+    /* Shrink the font size slightly for the longer-than-average titles. */
+    font-size: 1.5em;
+}
