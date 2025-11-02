@@ -1,0 +1,6 @@
+@import url(./card.css);
+
+.frag-post-card .post-card-timestamp {
+    text-decoration: underline;
+    color: black;
+}

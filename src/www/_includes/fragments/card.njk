@@ -2,8 +2,8 @@
     Renders a card UI. Content may **not** contain an anchor tag, or else
     formatting explodes. See: https://stackoverflow.com/a/9325634.
 #}
-{% macro card(link) %}
-    <a href="{{ link }}" class="frag-card">
+{% macro card(link, class = "") %}
+    <a href="{{ link }}" class="frag-card {{ class }}">
         {{ caller() }}
     </a>
 {% endmacro %}

@@ -2,8 +2,8 @@
 
 @import url(./styles/theme.css);
 @import url(./_includes/pages/base.css);
-@import url(./_includes/fragments/card.css);
 @import url(./_includes/fragments/header.css);
+@import url(./_includes/fragments/post-card.css);
 @import url(./_includes/fragments/share.css);
 
 dwac-share {
@@ -36,9 +36,4 @@ main {
 
 .post-list > li + li {
     margin-top: 20px;
-}
-
-.post-timestamp {
-    text-decoration: underline;
-    color: black;
 }

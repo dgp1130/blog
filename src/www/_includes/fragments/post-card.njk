@@ -1,0 +1,21 @@
+{# Renders a card linking to a post. #}
+
+{% import "./card.njk" as card %}
+
+{% macro postCard(post, class = "") %}
+    {% call card.card(link = post.url, class = "frag-post-card " + class) %}
+        <h3 class="card-title">
+            {{- post.data.title -}}
+        </h3>
+        <p class="card-content">
+            <time class="post-card-timestamp">
+                {{- post.date | date({
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric'
+                }) -}}
+            </time>
+            - {{ post.data.excerpt }}
+        </p>
+    {% endcall %}
+{% endmacro %}

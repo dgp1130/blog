@@ -1,4 +1,4 @@
-{% import "fragments/card.njk" as card %}
+{% import "fragments/post-card.njk" as postCard %}
 {% import "fragments/share.njk" as share %}
 
 {% extends "pages/base.njk" %}
@@ -53,23 +53,7 @@
                 | sort(attr="date")
                 | reverse
             %}
-                <li>
-                    {% call card.card(link = post.url) %}
-                        <h3 class="card-title">
-                            {{- post.data.title -}}
-                        </h3>
-                        <p class="card-content">
-                            <time class="post-timestamp">
-                                {{- post.date | date({
-                                    day: 'numeric',
-                                    month: 'short',
-                                    year: 'numeric'
-                                }) -}}
-                            </time>
-                            - {{ post.data.excerpt }}
-                        </p>
-                    {% endcall %}
-                </li>
+                <li>{% call postCard.postCard(post) %}{% endcall %}</li>
             {% endfor %}
         </ol>
     </section>
