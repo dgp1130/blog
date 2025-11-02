@@ -54,23 +54,50 @@
     <a href="/series/{{ seriesTag }}/">"{{ series[seriesTag].name }}"</a>
 {%- endmacro %}
 
-{% set seriesNote %}
+{% set seriesHeader %}
     {% if seriesList.length === 0 %}
         {# No note. #}
     {% elseif seriesList.length === 1 %}
         {# Single series note. #}
-        <aside class="post-series">
+        <aside id="post-series-start">
             From the series: {{ seriesLink(seriesList[0]) }}.
         </aside>
     {% elseif seriesList.length === 2 %}
         {# Two series note, uses an "and" with no comma. #}
-        <aside class="post-series">
+        <aside id="post-series-start">
             From the series: {{ seriesLink(seriesList[0]) }} and {{ seriesLink(seriesList[1]) }}.
         </aside>
     {% else %}
         {# Three series or more, uses a comma separated list with an "and". #}
-        <aside class="post-series">
+        <aside id="post-series-start">
             From the series:
+            {% for seriesTag in seriesList %}
+                {{ seriesLink(seriesTag) }}
+                {%- if loop.index0 < seriesList.length - 2 %}, {% elseif loop.index0 === seriesList.length - 2 %}, and {% else %}.{% endif %}
+            {% endfor %}
+        </aside>
+    {% endif %}
+{% endset %}
+
+{% set seriesFooter %}
+    {% if seriesList.length === 0 %}
+        {# No note. #}
+    {% elseif seriesList.length === 1 %}
+        {# Single series note. #}
+        <aside id="post-series-end">
+            Learned something new? Check out other posts in this series:
+            {{ seriesLink(seriesList[0]) }}.
+        </aside>
+    {% elseif seriesList.length === 2 %}
+        {# Two series note, uses an "and" with no comma. #}
+        <aside id="post-series-end">
+            Learned something new? Check out other posts from its series:
+            {{ seriesLink(seriesList[0]) }} and {{ seriesLink(seriesList[1]) }}.
+        </aside>
+    {% else %}
+        {# Three series or more, uses a comma separated list with an "and". #}
+        <aside id="post-series-end">
+            Learned something new? Check out other posts from its series:
             {% for seriesTag in seriesList %}
                 {{ seriesLink(seriesTag) }}
                 {%- if loop.index0 < seriesList.length - 2 %}, {% elseif loop.index0 === seriesList.length - 2 %}, and {% else %}.{% endif %}
@@ -82,10 +109,11 @@
 {% block content %}
     <div class="post-container">
         {{ shareFrag.share(target=page.url, title=title, class="post-end") }}
-        {{ seriesNote | safe }}
+        {{ seriesHeader | safe }}
         <div class="post-content">
             <article class="md">{{ content | safe }}</article>
         </div>
+        {{ seriesFooter | safe }}
         {{ shareFrag.share(
             target=page.url,
             title=title,

@@ -12,10 +12,14 @@
     flex-direction: column;
 }
 
-.post-series {
+#post-series-start, #post-series-end {
     font-size: 0.8em;
     font-style: italic;
     margin: 0.5em 0;
+}
+
+#post-series-end {
+    margin-bottom: 1em;
 }
 
 .post-content {
