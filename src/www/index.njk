@@ -1,4 +1,4 @@
-{% import "fragments/post-card.njk" as postCard %}
+{% import "fragments/post-card-list.njk" as postCardList %}
 {% import "fragments/share.njk" as share %}
 
 {% extends "pages/base.njk" %}
@@ -46,15 +46,13 @@
     </section>
 
     <section id="posts-section">
-        <!-- List of posts most-recent first. -->
+        <!-- List of all posts, most-recent first. -->
         <h2>Posts</h2>
-        <ol class="post-list">
-            {% for post in collections.posts
+
+        {% set posts = collections.posts
                 | sort(attr="date")
                 | reverse
-            %}
-                <li>{% call postCard.postCard(post) %}{% endcall %}</li>
-            {% endfor %}
-        </ol>
+        %}
+        {% call postCardList.postCardList(posts) %}{% endcall %}
     </section>
 {% endblock %}

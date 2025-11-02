@@ -1,0 +1,11 @@
+{# Renders a list of cards linking to posts. #}
+
+{% import "./post-card.njk" as postCard %}
+
+{% macro postCardList(posts, class = "") %}
+    <ol class="frag-post-list">
+        {% for post in posts %}
+            <li>{% call postCard.postCard(post) %}{% endcall %}</li>
+        {% endfor %}
+    </ol>
+{% endmacro %}

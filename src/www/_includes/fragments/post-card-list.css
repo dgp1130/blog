@@ -1,0 +1,19 @@
+@import url(./post-card.css);
+
+.frag-post-list {
+    list-style: none;
+    margin-block-start: 0;
+    margin-block-end: 0;
+    padding-inline-start: 0;
+    padding: 0 0.5rem;
+}
+
+.frag-post-list > li {
+    width: 100%;
+    max-width: calc(0.75 * (1024px - (2 * var(--dwac-base-padding))));
+    margin: 0 auto; /* Center the card. */
+}
+
+.frag-post-list > li + li {
+    margin-top: 20px;
+}
