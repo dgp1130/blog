@@ -33,10 +33,10 @@ identify a few key takeaways I want to share here which can help guide our
 thinking about building AI-enabled tooling.
 
 This post itself is a slightly more generic version of a section from our
-[AngularConnect](https://angularconnect.com/) 2025 keynote (which I don't think
-has been posted publicly yet?). If you're not familiar with Angular, don't
-worry, this post doesn't _really_ have anything to do with it, beyond some loose
-examples you don't really need any background to understand.
+[AngularConnect 2025 keynote](https://youtu.be/XSfbOT2shyQ?si=hCv9SW92-zh8Ne68&t=1323).
+If you're not familiar with Angular, don't worry, this post doesn't _really_
+have anything to do with it, beyond some loose examples you don't really need
+any background to understand.
 
 ## User Types
 
