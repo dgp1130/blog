@@ -14,5 +14,9 @@
     "ai": {
         "name": "My AI journey",
         "description": "My journey figuring out what to do with this AI thing..."
+    },
+    "game-design": {
+        "name": "Game Design",
+        "description": "Thoughts on video game design and development."
     }
 }
