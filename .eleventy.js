@@ -53,6 +53,7 @@ export default function(config) {
     // Copy pre-built client JavaScript and sourcemaps to the output directory.
     config.addPassthroughCopy('src/www/**/*.js');
     config.addPassthroughCopy('src/www/**/*.js.map');
+    config.addPassthroughCopy('src/www/.well-known/**');
 
     // Copy image resources to the output directory.
     config.addPassthroughCopy('src/www/**/*.avif');
