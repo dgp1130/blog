@@ -41,3 +41,14 @@ minimumReleaseAgeExclude:
   - "playwright@1.61.0"
   - "rollup@4.62.2"
   - "serialize-javascript@7.0.6"
+
+# Disallow downgrading trust levels in a package (ex. dropping providence).
+trustPolicy: no-downgrade
+trustPolicyExclude:
+  - "@netlify/edge-bundler@14.9.5"
+  - "@netlify/images@1.2.5"
+  - "@netlify/serverless-functions-api@2.10.0"
+  - "@netlify/zip-it-and-ship-it@14.3.1 || 14.4.1"
+  - chokidar@4.0.3
+  - nanoid@3.3.14
+  - semver@6.3.1
