@@ -1,5 +1,5 @@
 import { MarkedExtension, Tokens } from 'marked';
-import { getContext } from './context';
+import { getContext } from './context.js';
 
 /**
  * A `marked` extension which renders the timestamp of the current page when it

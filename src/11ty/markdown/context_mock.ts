@@ -1,5 +1,5 @@
 import * as nunjucks from 'nunjucks';
-import { Context } from './context';
+import { Context } from './context.js';
 
 interface ContextOverrides {
     frontmatter?: {

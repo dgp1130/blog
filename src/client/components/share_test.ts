@@ -1,9 +1,9 @@
 import './share'; // Side-effectful import of `<dwac-share>`.
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import * as browserEnv from '../browser_env';
-import { Share } from './share';
-import * as snackbar from './snackbar';
+import * as browserEnv from '../browser_env.js';
+import { Share } from './share.js';
+import * as snackbar from './snackbar.js';
 
 vi.mock('../browser_env', () => ({
     getLocation: vi.fn(),

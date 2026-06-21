@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { trackScrollDepth } from './analytics';
-import * as browserEnv from './browser_env';
-import * as plausible from './plausible';
+import { trackScrollDepth } from './analytics.js';
+import * as browserEnv from './browser_env.js';
+import * as plausible from './plausible.js';
 
 vi.mock('./browser_env', () => ({
     getLocation: vi.fn(),

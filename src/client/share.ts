@@ -1,4 +1,4 @@
-import { getLocation } from "./browser_env";
+import { getLocation } from './browser_env.js';
 
 /**
  * Returns a shareable URL for the given path. It uses the domain currently on

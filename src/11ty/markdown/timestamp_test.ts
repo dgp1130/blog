@@ -1,9 +1,9 @@
 import 'jasmine';
 
 import { Marked } from 'marked';
-import { useContext } from './context';
-import { mockContext } from './context_mock';
-import { timestampExtension } from './timestamp';
+import { useContext } from './context.js';
+import { mockContext } from './context_mock.js';
+import { timestampExtension } from './timestamp.js';
 
 describe('timestamp', () => {
     describe('timestampExtension', () => {

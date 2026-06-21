@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import * as browserEnv from './browser_env';
-import { makeShareable } from './share';
+import * as browserEnv from './browser_env.js';
+import { makeShareable } from './share.js';
 
 vi.mock('./browser_env', () => ({
     getLocation: vi.fn(),

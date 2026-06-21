@@ -3,8 +3,8 @@
  * header.
  */
 
-import { getLocation } from './browser_env';
-import { show as showSnackbar } from './components/snackbar';
+import { getLocation } from './browser_env.js';
+import { show as showSnackbar } from './components/snackbar.js';
 
 /**
  * Adds an event listener to the given `Node` which detects clicks to header

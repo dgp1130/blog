@@ -1,5 +1,5 @@
-import { execFilter } from '../testing/filters';
-import { asyncFilter } from './utils';
+import { execFilter } from '../testing/filters.js';
+import { asyncFilter } from './utils.js';
 
 describe('utils', () => {
     describe('asyncFilter()', () => {

@@ -2,9 +2,9 @@ import { imageSize as imageSizeCb } from 'image-size';
 import { MarkedExtension, RendererExtension, Token, TokenizerExtension, Tokens } from 'marked';
 import * as path from 'path';
 import { promisify } from 'util';
-import { getImageMimeType } from '../mime_types';
-import { Parser } from './parser';
-import { getContext } from './context';
+import { getImageMimeType } from '../mime_types.js';
+import { Parser } from './parser.js';
+import { getContext } from './context.js';
 
 const imageSizeFn = promisify(imageSizeCb);
 

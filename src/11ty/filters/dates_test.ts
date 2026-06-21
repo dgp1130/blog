@@ -1,4 +1,4 @@
-import { format } from './dates';
+import { format } from './dates.js';
 
 describe('dates', () => {
     describe('format()', () => {

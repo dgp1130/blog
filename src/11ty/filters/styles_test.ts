@@ -1,6 +1,6 @@
-import * as cleanCssLib from '../clean_css';
-import { execFilter } from '../testing/filters';
-import { bundleStyles } from './styles';
+import * as cleanCssLib from '../clean_css.js';
+import { execFilter } from '../testing/filters.js';
+import { bundleStyles } from './styles.js';
 
 describe('styles', () => {
     describe('minifyStyles', () => {

@@ -1,5 +1,5 @@
-import { fadeInTimeoutMs, Snackbar } from './snackbar_element';
-import { timeout } from '../time';
+import { fadeInTimeoutMs, Snackbar } from './snackbar_element.js';
+import { timeout } from '../time.js';
 
 /**
  * Shows a "snackbar" alert message to the user for the given duration. This is

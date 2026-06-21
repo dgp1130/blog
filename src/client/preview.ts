@@ -1,6 +1,6 @@
 /** Implementation of the `/preview/` page. */
 
-import { Branch, listBranches } from './github_branches';
+import { Branch, listBranches } from './github_branches.js';
 
 const user = 'dgp1130';
 const repo = 'blog';

@@ -1,4 +1,4 @@
-import { getImageMimeType, getVideoMimeType } from './mime_types';
+import { getImageMimeType, getVideoMimeType } from './mime_types.js';
 
 describe('mime_types', () => {
     describe('getImageMimeType()', () => {

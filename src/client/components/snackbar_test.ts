@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { show as showSnackbar } from './snackbar';
-import { fadeInTimeoutMs, Snackbar } from './snackbar_element'
+import { show as showSnackbar } from './snackbar.js';
+import { fadeInTimeoutMs, Snackbar } from './snackbar_element.js'
 
 describe('Snackbar', () => {
     beforeEach(() => { vi.useFakeTimers(); });

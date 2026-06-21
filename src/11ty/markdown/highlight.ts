@@ -1,6 +1,6 @@
 import { markedHighlight } from 'marked-highlight';
 import prism from 'prismjs';
-import PrismLoader from 'prismjs/components/index';
+import PrismLoader from 'prismjs/components/index.js';
 
 const highlightedLanguages = new Set([
     'css',

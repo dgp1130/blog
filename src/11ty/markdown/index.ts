@@ -1,14 +1,14 @@
 import { Marked } from 'marked';
 import { gfmHeadingId } from 'marked-gfm-heading-id';
-import { Context, useContext } from './context';
-import { demoExtension } from './demo';
-import { highlightExtension } from './highlight';
-import { inlineHtmlExtension } from './inline_html';
-import { pictureExtension } from './picture';
-import { targetBlankExtension } from './target_blank';
-import { timestampExtension } from './timestamp';
-import { tweetExtension } from './tweet';
-import { videoExtension } from './video';
+import { Context, useContext } from './context.js';
+import { demoExtension } from './demo.js';
+import { highlightExtension } from './highlight.js';
+import { inlineHtmlExtension } from './inline_html.js';
+import { pictureExtension } from './picture.js';
+import { targetBlankExtension } from './target_blank.js';
+import { timestampExtension } from './timestamp.js';
+import { tweetExtension } from './tweet.js';
+import { videoExtension } from './video.js';
 
 const marked = new Marked(
     // Highlight extension must come first, or else it will conflict with other

@@ -1,4 +1,4 @@
 /** Entry point for the index page. */
 
-import './base';
-import '../../client/components/share';
+import './base.js';
+import '../../client/components/share.js';

@@ -1,5 +1,5 @@
-import { execFilter } from './filters';
-import { FilterCallback } from '../filters/utils';
+import { execFilter } from './filters.js';
+import { FilterCallback } from '../filters/utils.js';
 
 // Variance bites us for testing simple filters because most implementations of
 // a filter will be a subtype for a particular set of inputs, rather than

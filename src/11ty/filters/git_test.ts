@@ -1,4 +1,4 @@
-import { short } from './git';
+import { short } from './git.js';
 
 describe('git', () => {
     describe('short()', () => {

@@ -3,9 +3,9 @@ import 'jasmine';
 import { imageSize as imageSizeCb } from 'image-size';
 import { Marked } from 'marked';
 import { promisify } from 'util';
-import { pictureExtension } from './picture';
-import { Context, useContext } from './context';
-import { mockContext } from './context_mock';
+import { pictureExtension } from './picture.js';
+import { Context, useContext } from './context.js';
+import { mockContext } from './context_mock.js';
 
 const imageSizeFn = promisify(imageSizeCb);
 

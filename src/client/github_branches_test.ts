@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { Branch, listBranches } from './github_branches';
-import { mockBranch } from './github_branches_mock';
+import { Branch, listBranches } from './github_branches.js';
+import { mockBranch } from './github_branches_mock.js';
 
 describe('github_branches', () => {
     afterEach(() => {

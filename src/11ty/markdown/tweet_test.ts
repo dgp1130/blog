@@ -2,10 +2,10 @@ import 'jasmine';
 
 import { Marked } from 'marked';
 import * as nunjucks from 'nunjucks';
-import { getImageMimeType } from '../mime_types';
-import { useContext } from './context';
-import { mockContext } from './context_mock';
-import { tweetExtension } from './tweet';
+import { getImageMimeType } from '../mime_types.js';
+import { useContext } from './context.js';
+import { mockContext } from './context_mock.js';
+import { tweetExtension } from './tweet.js';
 
 describe('tweet', () => {
     describe('tweetExtension', () => {

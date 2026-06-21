@@ -1,7 +1,7 @@
 /** Entry point for the `/preview/` page. */
 
-import './base';
+import './base.js';
 
-import { main } from '../../client/preview';
+import { main } from '../../client/preview.js';
 
 void main();

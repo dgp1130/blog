@@ -1,6 +1,6 @@
 /** Mocks for GitHub branches types. */
 
-import { Branch, Commit } from './github_branches';
+import { Branch, Commit } from './github_branches.js';
 
 /** Mocks a {@link Branch} object. */
 export function mockBranch(overrides: Partial<Branch> = {}): Branch {

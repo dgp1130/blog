@@ -1,6 +1,6 @@
 import { MarkedExtension, Tokens } from 'marked';
 import * as zod from 'zod';
-import { Context, getContext } from './context';
+import { Context, getContext } from './context.js';
 
 /**
  * A `marked` extension which renders a demo URL in an `<iframe />`. The content

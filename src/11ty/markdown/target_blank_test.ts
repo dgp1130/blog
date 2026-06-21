@@ -1,7 +1,7 @@
 import 'jasmine';
 
 import { Marked } from 'marked';
-import { targetBlankExtension } from './target_blank';
+import { targetBlankExtension } from './target_blank.js';
 
 describe('target blank', () => {
     describe('targetBlankExtension', () => {

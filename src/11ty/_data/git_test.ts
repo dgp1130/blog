@@ -1,6 +1,6 @@
 import { ChildProcess, execFile as execFileCb, PromiseWithChild } from 'child_process';
 import { promisify } from 'util';
-import git from './git';
+import git from './git.js';
 
 const execFile = promisify(execFileCb);
 

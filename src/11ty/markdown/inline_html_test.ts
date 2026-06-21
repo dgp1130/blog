@@ -1,7 +1,7 @@
 import 'jasmine';
 
 import { Marked } from 'marked';
-import { inlineHtmlExtension } from './inline_html';
+import { inlineHtmlExtension } from './inline_html.js';
 
 describe('inline-html', () => {
     describe('inlineHtmlExtension', () => {

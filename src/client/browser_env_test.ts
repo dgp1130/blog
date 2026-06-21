@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { getLocation } from './browser_env';
+import { getLocation } from './browser_env.js';
 
 describe('browser_env', () => {
     afterEach(() => {

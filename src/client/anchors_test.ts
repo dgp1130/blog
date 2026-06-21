@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { handleHeaderLinkOnClick } from './anchors';
-import * as browserEnv from './browser_env';
-import * as snackbar from './components/snackbar';
+import { handleHeaderLinkOnClick } from './anchors.js';
+import * as browserEnv from './browser_env.js';
+import * as snackbar from './components/snackbar.js';
 
 vi.mock('./browser_env', () => ({
     getLocation: vi.fn(),

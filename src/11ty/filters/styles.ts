@@ -2,8 +2,8 @@ import * as path from 'path';
 
 import { OptionsOutput as CssOptions } from 'clean-css';
 
-import { getCleanCss } from '../clean_css';
-import { AsyncFilter, asyncFilter } from './utils';
+import { getCleanCss } from '../clean_css.js';
+import { AsyncFilter, asyncFilter } from './utils.js';
 
 /**
  * Generates a filter to concatenate and minify the CSS at the given file paths

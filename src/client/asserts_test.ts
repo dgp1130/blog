@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { assertDefined } from './asserts';
+import { assertDefined } from './asserts.js';
 
 describe('asserts', () => {
     afterEach(() => {

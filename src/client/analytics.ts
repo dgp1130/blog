@@ -1,6 +1,6 @@
-import { getLocation } from './browser_env';
-import { debounce } from './debounce';
-import { trackEvent } from './plausible';
+import { getLocation } from './browser_env.js';
+import { debounce } from './debounce.js';
+import { trackEvent } from './plausible.js';
 
 /**
  * Runs all trackers on the page to report user behavior to analytics.

@@ -1,9 +1,9 @@
 import { LitElement, TemplateResult, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { when } from 'lit/directives/when.js';
-import { assertDefined } from '../asserts';
-import { makeShareable } from '../share';
-import { show as showSnackbar } from './snackbar';
+import { assertDefined } from '../asserts.js';
+import { makeShareable } from '../share.js';
+import { show as showSnackbar } from './snackbar.js';
 
 /** Displays a share UI to allow users to easily share the given URL. */
 @customElement('dwac-share')

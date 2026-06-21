@@ -1,4 +1,4 @@
-import { Environment, getEnv } from './environment';
+import { Environment, getEnv } from './environment.js';
 
 describe('environment', () => {
     beforeEach(() => {

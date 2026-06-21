@@ -1,4 +1,4 @@
-import { injectCsp } from './csp';
+import { injectCsp } from './csp.js';
 
 describe('csp', () => {
     describe('injectCsp()', () => {

@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { listBranches } from './github_branches';
-import { mockBranch } from './github_branches_mock';
-import { main } from './preview';
+import { listBranches } from './github_branches.js';
+import { mockBranch } from './github_branches_mock.js';
+import { main } from './preview.js';
 
 vi.mock('./github_branches', async () => ({
     listBranches: vi.fn(),

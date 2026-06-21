@@ -1,6 +1,6 @@
 import { MarkedExtension, Tokens } from 'marked';
 import * as zod from 'zod';
-import { Context, getContext } from './context';
+import { Context, getContext } from './context.js';
 
 /**
  * A `marked` extension which renders an optimized video when it encounters a

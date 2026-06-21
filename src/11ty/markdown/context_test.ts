@@ -1,7 +1,7 @@
 import 'jasmine';
 
-import { useContext, getContext, Context } from './context';
-import { mockContext } from './context_mock';
+import { useContext, getContext, Context } from './context.js';
+import { mockContext } from './context_mock.js';
 
 describe('context', () => {
     it('context is shared between `useContext()` and `getContext()`', () => {

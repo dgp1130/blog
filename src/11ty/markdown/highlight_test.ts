@@ -1,7 +1,7 @@
 import 'jasmine';
 
 import { Marked, MarkedExtension, Tokens } from 'marked';
-import { highlightExtension } from './highlight';
+import { highlightExtension } from './highlight.js';
 
 describe('highlight', () => {
     describe('highlightExtension', () => {

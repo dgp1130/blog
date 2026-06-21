@@ -1,6 +1,6 @@
 import { css, html, LitElement, TemplateResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { timeout } from '../time';
+import { timeout } from '../time.js';
 
 /** @testonly */
 export const fadeInTimeoutMs = 100;

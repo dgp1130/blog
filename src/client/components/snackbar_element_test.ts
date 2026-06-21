@@ -1,7 +1,7 @@
 import './snackbar_element'; // Side-effectful import of `<dwac-snackbar>`.
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { fadeOutTimeoutMs, Snackbar } from './snackbar_element';
+import { fadeOutTimeoutMs, Snackbar } from './snackbar_element.js';
 
 describe('Snackbar Element', () => {
     let snackbar: Snackbar|undefined;

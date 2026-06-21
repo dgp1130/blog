@@ -2,10 +2,10 @@ import 'jasmine';
 
 import { Marked } from 'marked';
 import * as nunjucks from 'nunjucks';
-import { getVideoMimeType } from '../mime_types';
-import { useContext } from './context';
-import { mockContext } from './context_mock';
-import { videoExtension } from './video';
+import { getVideoMimeType } from '../mime_types.js';
+import { useContext } from './context.js';
+import { mockContext } from './context_mock.js';
+import { videoExtension } from './video.js';
 
 describe('video', () => {
     describe('videoExtension', () => {

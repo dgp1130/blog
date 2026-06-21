@@ -2,9 +2,9 @@ import 'jasmine';
 
 import { Marked } from 'marked';
 import * as nunjucks from 'nunjucks';
-import { useContext } from './context';
-import { mockContext } from './context_mock';
-import { demoExtension } from './demo';
+import { useContext } from './context.js';
+import { mockContext } from './context_mock.js';
+import { demoExtension } from './demo.js';
 
 describe('demo', () => {
     describe('demoExtension', () => {

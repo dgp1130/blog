@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { timeout } from './time';
+import { timeout } from './time.js';
 
 describe('time', () => {
     describe('timeout()', () => {

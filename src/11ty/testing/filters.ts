@@ -1,4 +1,4 @@
-import { FilterCallback } from '../filters/utils';
+import { FilterCallback } from '../filters/utils.js';
 
 /**
  * Executes the given filter with the provided arguments and returns a
