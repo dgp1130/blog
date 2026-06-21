@@ -22,7 +22,7 @@ jobs:
       uses: actions/setup-node@v4
       with:
         # From `.nvmrc`.
-        node-version: 24.7.0
+        node-version: 24.17.0
 
     - name: Install
       run: |
