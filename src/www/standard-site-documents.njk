@@ -1,0 +1,27 @@
+---
+pagination:
+  data: collections.posts
+  size: 1
+  alias: post
+permalink: "../standard-site-documents/{{ post.date | tid }}.json"
+eleventyExcludeFromCollections: true
+---
+{#  Generates https://standard.site/ documents for each post using pagination
+    with a size of one. #}
+
+{%- set desc %}
+    {% filter oneline %}
+        {{- post.data.excerpt -}}
+    {% endfilter %}
+{% endset -%}
+
+{%- set document = {
+    "$type": "site.standard.document",
+    "site": author.standard_site_publication,
+    "title": post.data.title,
+    "path": post.page.url,
+    "description": desc,
+    "publishedAt": post.date.toISOString()
+} -%}
+
+{{- document | dump(2) | safe -}}

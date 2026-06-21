@@ -10,6 +10,7 @@ import { minify as minifyHtml } from 'html-minifier-terser';
 import { Environment as NunjucksEnvironment, FileSystemLoader } from 'nunjucks';
 import syntaxHighlight from '@11ty/eleventy-plugin-syntaxhighlight';
 import pluginRss from '@11ty/eleventy-plugin-rss';
+import { TID } from '@atproto/common-web';
 
 import { cleanCssConfig, cleanCssConfigDev } from './configs/clean_css.js';
 import { htmlMinifierConfig } from './configs/html_minifier.js';
@@ -20,6 +21,12 @@ import { short } from './src/11ty/filters/git.js';
 import { bundleStyles } from './src/11ty/filters/styles.js';
 import { markdown } from './src/11ty/markdown/index.js';
 import { getImageMimeType, getVideoMimeType } from './src/11ty/mime_types.js';
+
+// Clock IDs are used in atproto `tid` values to disambiguate multiple values
+// created at the same time. That's not likely to happen here, and we want to be
+// hermetic across multiple builds, so we just hard-code an arbitrary value.
+// https://atproto.com/specs/tid
+const CLOCK_ID = 4; // Chosen by fair dice roll: https://xkcd.com/221/
 
 export default function(config) {
     // Process markdown and Nunjucks templates.
@@ -53,7 +60,6 @@ export default function(config) {
     // Copy pre-built client JavaScript and sourcemaps to the output directory.
     config.addPassthroughCopy('src/www/**/*.js');
     config.addPassthroughCopy('src/www/**/*.js.map');
-    config.addPassthroughCopy('src/www/.well-known/**');
 
     // Copy image resources to the output directory.
     config.addPassthroughCopy('src/www/**/*.avif');
@@ -110,6 +116,13 @@ export default function(config) {
 
     config.addShortcode('buildDate', () => {
         return new Date().toISOString();
+    });
+    config.addFilter('tid', (date) => {
+        // Technically multiple `tid` values could conflict if generated less
+        // than 1 millsecond apart, but one `tid` per millisecond 'ought to be
+        // enough for anyone.
+        const microseconds = date.getTime() * 1_000;
+        return TID.fromTime(microseconds, CLOCK_ID);
     });
 
     // Aggregate a list of CSS file references into a de-duplicated and

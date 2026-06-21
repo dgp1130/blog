@@ -39,10 +39,14 @@
 {% block ogTypeBlock %}article{% endblock %}
 
 {% block head %}
+    {# Open graph tags. #}
     <meta property="og:article:published_time" content="{{ date.toISOString() }}">
     <meta property="og:article:author:first_name" content="Doug">
     <meta property="og:article:author:last_name" content="Parker">
     <meta property="og:article:author:username" content="develwithoutacause">
+
+    {# https://standard.site/ tags. #}
+    <link rel="site.standard.document" href="at://{{ author.atproto_repo }}/site.standard.document/{{ date | tid }}">
 {% endblock %}
 
 {% set seriesList = tags

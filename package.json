@@ -59,6 +59,7 @@
     "@11ty/eleventy": "^3.1.6",
     "@11ty/eleventy-plugin-rss": "^1.2.0",
     "@11ty/eleventy-plugin-syntaxhighlight": "^3.0.6",
+    "@atproto/common-web": "^0.5.0",
     "@parse5/tools": "^0.7.0",
     "@rollup/plugin-alias": "^5.1.1",
     "@rollup/plugin-node-resolve": "^15.3.1",
