@@ -1,8 +1,6 @@
 // @ts-check
 
-import HtmlMinifier from 'html-minifier-terser';
-
-/** @type {!HtmlMinifier.Options} */
+/** @type {!import('html-minifier-terser').Options} */
 export const htmlMinifierConfig = {
     caseSensitive: true,
     collapseBooleanAttributes: true,

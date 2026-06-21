@@ -5,8 +5,8 @@ import resolve from '@rollup/plugin-node-resolve';
 import typescript from '@rollup/plugin-typescript';
 import minifyHtmlTemplateLiterals from 'rollup-plugin-minify-html-literals';
 import terser from '@rollup/plugin-terser';
-import { cleanCssConfig } from './configs/clean_css.mjs';
-import { htmlMinifierConfig } from './configs/html_minifier.cjs';
+import { cleanCssConfig } from './configs/clean_css.js';
+import { htmlMinifierConfig } from './configs/html_minifier.js';
 
 const prodMode = process.env.DWAC_ENV === 'prod';
 

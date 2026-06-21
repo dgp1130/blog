@@ -11,8 +11,8 @@ import { Environment as NunjucksEnvironment, FileSystemLoader } from 'nunjucks';
 import syntaxHighlight from '@11ty/eleventy-plugin-syntaxhighlight';
 import pluginRss from '@11ty/eleventy-plugin-rss';
 
-import { cleanCssConfig, cleanCssConfigDev } from './configs/clean_css.mjs';
-import { htmlMinifierConfig } from './configs/html_minifier.mjs';
+import { cleanCssConfig, cleanCssConfigDev } from './configs/clean_css.js';
+import { htmlMinifierConfig } from './configs/html_minifier.js';
 import { injectCsp } from './src/11ty/csp.js';
 import { Environment, getEnv } from './src/11ty/environment.js';
 import { format as formatDate } from './src/11ty/filters/dates.js';
