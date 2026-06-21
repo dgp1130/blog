@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "description": "Personal blog for https://github.com/dgp1130.",
+  "type": "module",
   "scripts": {
     "start": "pnpm run -s clean && pnpm run -s build:11ty && pnpm run -s build:browser && pnpm run -s 11ty --serve",
     "start:dev": "pnpm run -s clean && pnpm run -s build:11ty && pnpm run -s build:browser:dev && pnpm run -s 11ty:dev --serve",

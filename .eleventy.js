@@ -3,29 +3,29 @@
  * @see https://www.11ty.dev/docs/config/
  */
 
-const { createHash } = require('crypto');
-const { promises: fs } = require('fs');
+import { createHash } from 'crypto';
+import { promises as fs } from 'fs';
 
-const { minify: minifyHtml } = require('html-minifier-terser');
-const Nunjucks = require('nunjucks');
-const syntaxHighlight = require('@11ty/eleventy-plugin-syntaxhighlight');
-const pluginRss = require('@11ty/eleventy-plugin-rss');
+import { minify as minifyHtml } from 'html-minifier-terser';
+import { Environment as NunjucksEnvironment, FileSystemLoader } from 'nunjucks';
+import syntaxHighlight from '@11ty/eleventy-plugin-syntaxhighlight';
+import pluginRss from '@11ty/eleventy-plugin-rss';
 
-const { cleanCssConfig, cleanCssConfigDev } = require('./configs/clean_css.cjs');
-const { htmlMinifierConfig } = require('./configs/html_minifier.cjs');
-const { injectCsp } = require('./src/11ty/csp');
-const { Environment, getEnv } = require('./src/11ty/environment');
-const { format: formatDate } = require('./src/11ty/filters/dates');
-const { short } = require('./src/11ty/filters/git');
-const { bundleStyles } = require('./src/11ty/filters/styles');
-const { markdown } = require('./src/11ty/markdown');
-const { getImageMimeType, getVideoMimeType } = require('./src/11ty/mime_types');
+import { cleanCssConfig, cleanCssConfigDev } from './configs/clean_css.mjs';
+import { htmlMinifierConfig } from './configs/html_minifier.mjs';
+import { injectCsp } from './src/11ty/csp.js';
+import { Environment, getEnv } from './src/11ty/environment.js';
+import { format as formatDate } from './src/11ty/filters/dates.js';
+import { short } from './src/11ty/filters/git.js';
+import { bundleStyles } from './src/11ty/filters/styles.js';
+import { markdown } from './src/11ty/markdown/index.js';
+import { getImageMimeType, getVideoMimeType } from './src/11ty/mime_types.js';
 
-module.exports = function (config) {
+export default function(config) {
     // Process markdown and Nunjucks templates.
     config.setTemplateFormats(['md', 'njk']);
-    const njkEnv = new Nunjucks.Environment(
-        new Nunjucks.FileSystemLoader('src/www/_includes'),
+    const njkEnv = new NunjucksEnvironment(
+        new FileSystemLoader('src/www/_includes'),
         {
             throwOnUndefined: true,
             trimBlocks: true,

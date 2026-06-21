@@ -63,7 +63,7 @@ async function isClean({ execFile = execFilePromise }: {
  *     only.
  * @returns The {@link RepoStatus} of the current Git repo.
  */
-async function git({ execFile = execFilePromise }: {
+export default async function({ execFile = execFilePromise }: {
     execFile?: typeof execFilePromise,
 } = {}): Promise<RepoStatus> {
     const [ sha, clean ] = await Promise.all([
@@ -73,7 +73,3 @@ async function git({ execFile = execFilePromise }: {
 
     return { sha, clean };
 }
-
-// Must use this syntax rather than `export default` so 11ty can pick up the
-// value. See: https://github.com/microsoft/TypeScript/issues/2719#issuecomment-310969161
-export = git;

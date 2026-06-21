@@ -10,7 +10,8 @@
     "include": [ "src/client/**/*.ts" ],
 
     "compilerOptions": {
-        "module": "ES2022",
+        "module": "ESNext",
+        "moduleResolution": "bundler",
         "types": [
             "@vitest/browser/providers/playwright",
             "@vitest/browser/matchers"
