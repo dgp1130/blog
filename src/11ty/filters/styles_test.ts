@@ -1,6 +1,21 @@
-import * as cleanCssLib from '../clean_css.js';
+import CleanCss, { MinifierOutput, MinifierPromise, OptionsOutput } from 'clean-css';
 import { execFilter } from '../testing/filters.js';
 import { bundleStyles } from './styles.js';
+
+function mockCleanCss({constructorSpy, minifySpy}: {
+    constructorSpy?: jasmine.Spy<(options?: OptionsOutput) => MinifierOutput>,
+    minifySpy?: jasmine.Spy<MinifierOutput['minify'] & MinifierPromise['minify']>,
+} = {}): typeof CleanCss {
+    // @ts-ignore CleanCss constructor is weird and not worth fighting.
+    return class CleanCssMock extends CleanCss {
+        constructor(...args: ConstructorParameters<typeof CleanCss>) {
+            super(...args);
+            constructorSpy?.(...args);
+        }
+
+        override minify = minifySpy ?? super.minify;
+    }
+}
 
 describe('styles', () => {
     describe('minifyStyles', () => {
@@ -13,19 +28,14 @@ describe('styles', () => {
                     warnings: [],
                 }),
             );
-            spyOn(cleanCssLib, 'getCleanCss').and.returnValue(class {
-                constructor(...args: unknown[]) {
-                    // Proxy calls to constructor spy so they can be asserted.
-                    constructorSpy.apply(this, args);
-                }
-                minify = minifySpy;
-            });
 
+            // @ts-ignore CleanCss constructor is weird and not worth fighting.
             const minifyFilter = bundleStyles({
                 cleanCssOptions: {
                     level: 2,
                 },
-            });
+            }, {CleanCss: mockCleanCss({constructorSpy, minifySpy})});
+
             expect(constructorSpy).toHaveBeenCalledTimes(1);
             expect(constructorSpy).toHaveBeenCalledWith({
                 level: 2,
@@ -48,11 +58,11 @@ describe('styles', () => {
                     warnings: [],
                 }),
             );
-            spyOn(cleanCssLib, 'getCleanCss').and.returnValue(class {
-                minify = minifySpy;
-            });
 
-            const minifyFilter = bundleStyles();
+            const minifyFilter = bundleStyles(
+                /* options */ undefined,
+                {CleanCss: mockCleanCss({minifySpy})},
+            );
             await expectAsync(execFilter(minifyFilter, 'foo.css'))
                     .toBeRejectedWithError(Error, `
 Failed to minify [src/www/foo.css]:
@@ -68,11 +78,11 @@ Styles are too ugly to minify.
                     warnings: [ 'Styles are looking very ugly...' ],
                 }),
             );
-            spyOn(cleanCssLib, 'getCleanCss').and.returnValue(class {
-                minify = minifySpy;
-            });
 
-            await execFilter(bundleStyles(), 'foo.css');
+            await execFilter(bundleStyles(
+                /* options */ undefined,
+                {CleanCss: mockCleanCss({minifySpy})},
+            ), 'foo.css');
 
             expect(console.warn).toHaveBeenCalledWith(`
 Got warnings while minifying [src/www/foo.css]:
@@ -91,13 +101,11 @@ Styles are looking very ugly...
                     ],
                 }),
             );
-            spyOn(cleanCssLib, 'getCleanCss').and.returnValue(class {
-                minify = minifySpy;
-            });
 
-            await execFilter(bundleStyles({
-                ignoredWarnings: [ /^Some useless warning.$/ ],
-            }), 'foo.css');
+            await execFilter(bundleStyles(
+                {ignoredWarnings: [ /^Some useless warning.$/ ]},
+                {CleanCss: mockCleanCss({minifySpy})},
+            ), 'foo.css');
 
             expect(console.warn).toHaveBeenCalledWith(`
 Got warnings while minifying [src/www/foo.css]:

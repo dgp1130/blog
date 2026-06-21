@@ -1,15 +1,15 @@
 import * as path from 'path';
 
-import { OptionsOutput as CssOptions } from 'clean-css';
+import type CleanCss from 'clean-css';
+import CleanCssDefault, { OptionsOutput as CssOptions } from 'clean-css';
 
-import { getCleanCss } from '../clean_css.js';
 import { AsyncFilter, asyncFilter } from './utils.js';
 
 /**
  * Generates a filter to concatenate and minify the CSS at the given file paths
  * separated by a newline and with the given options. All files are treated as
  * relative to `src/www/`.
- * 
+ *
  * Usage:
  * ```nunjucks
  * {{ filter css }}
@@ -17,20 +17,24 @@ import { AsyncFilter, asyncFilter } from './utils.js';
  *   hello/world.css
  * {{ endfilter }}
  * ```
- * 
+ *
  * This example reads the files from `src/www/foo/bar.css` and
  * `src/www/hello/world.css`, concatenates them, and minifies the result.
  */
-export function bundleStyles({
-    cleanCssOptions = {},
-    ignoredWarnings = [],
-}: {
-    ignoredWarnings?: RegExp[],
-    cleanCssOptions?: CssOptions,
-} = {}): AsyncFilter {
+export function bundleStyles(
+    {
+        cleanCssOptions = {},
+        ignoredWarnings = [],
+    }: {
+        ignoredWarnings?: RegExp[],
+        cleanCssOptions?: CssOptions,
+    } = {},
+    {
+        CleanCss: CleanCssImpl = CleanCssDefault,
+    }: {CleanCss?: typeof CleanCss} = {},
+): AsyncFilter {
     // Find default export at runtime to be easily mockable for tests.
-    const CleanCss = getCleanCss();
-    const minifier = new CleanCss({
+    const minifier = new CleanCssImpl({
         ...cleanCssOptions,
         returnPromise: true,
     });
