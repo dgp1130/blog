@@ -23,7 +23,8 @@ const defaultPlugins = [
     resolve({ browser: true }),
     ...(!prodMode ? [] : [
         // Production-only plugins.
-        minifyHtmlTemplateLiterals({
+        // @ts-ignore
+        minifyHtmlTemplateLiterals.default({
             options: {
                 minifyOptions: {
                     ...htmlMinifierConfig,
