@@ -172,7 +172,7 @@ export default function(config) {
 
                 // Serve the 404 page to any unresolved path.
                 browserSync.addMiddleware("*", async (_, res) => {
-                    const content = await fs.readFile('_site/404/index.html');
+                    const content = await fs.readFile('dist/404/index.html');
                     res.writeHead(404);
                     res.end(content);
                 });
@@ -183,6 +183,7 @@ export default function(config) {
     return {
         dir: {
             input: 'src/www/',
+            output: 'dist',
 
             // Move _data/ outside input directory so it can be compiled as 11ty
             // code without conflicting with other build targets.

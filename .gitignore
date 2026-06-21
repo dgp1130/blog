@@ -2,7 +2,7 @@
 node_modules/
 
 # Eleventy output directory.
-_site/
+dist/
 
 # Ignore generated JavaScript and sourcemaps.
 src/**/*.js

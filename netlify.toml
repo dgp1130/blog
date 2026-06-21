@@ -6,8 +6,8 @@
 # Don't do anything to build, site should already be built.
 command = "echo \"Do not build in Netlify, run deployment with \\`--no-build\\`.\""
 
-# Root directory of the output is _site/.
-publish = "_site/"
+# Root directory of the output is `dist/`.
+publish = "dist/"
 
 [build.processing]
 # We already optimize assets at build time, so Netlify can't do much more here.
