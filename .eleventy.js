@@ -11,8 +11,8 @@ const Nunjucks = require('nunjucks');
 const syntaxHighlight = require('@11ty/eleventy-plugin-syntaxhighlight');
 const pluginRss = require('@11ty/eleventy-plugin-rss');
 
-const { cleanCssConfig, cleanCssConfigDev } = require('./configs/clean_css');
-const { htmlMinifierConfig } = require('./configs/html_minifier');
+const { cleanCssConfig, cleanCssConfigDev } = require('./configs/clean_css.cjs');
+const { htmlMinifierConfig } = require('./configs/html_minifier.cjs');
 const { injectCsp } = require('./src/11ty/csp');
 const { Environment, getEnv } = require('./src/11ty/environment');
 const { format: formatDate } = require('./src/11ty/filters/dates');
