@@ -2,6 +2,9 @@ packages:
   - '.'
   - 'tools/publish-standard-site-documents'
 
+catalog:
+  typescript: ~5.9.2
+
 # None of these seem to be load bearing.
 allowBuilds:
   "@parcel/watcher": false

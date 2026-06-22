@@ -2,5 +2,14 @@
   "name": "publish-standard-site-documents",
   "version": "0.0.0",
   "private": true,
-  "type": "module"
+  "type": "module",
+  "scripts": {
+    "start": "npm run -s build && node --enable-source-maps dist/index.js",
+    "build": "tsc",
+    "clean": "rm -rf dist/"
+  },
+  "devDependencies": {
+    "@types/node": "^24.13.2",
+    "typescript": "catalog:"
+  }
 }
