@@ -1,3 +1,7 @@
+packages:
+  - '.'
+  - 'tools/publish-standard-site-documents'
+
 # None of these seem to be load bearing.
 allowBuilds:
   "@parcel/watcher": false

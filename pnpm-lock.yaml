@@ -127,6 +127,8 @@ importers:
         specifier: ^3.13.4
         version: 3.25.76
 
+  tools/publish-standard-site-documents: {}
+
 packages:
 
   '@11ty/dependency-tree-esm@2.0.4':
