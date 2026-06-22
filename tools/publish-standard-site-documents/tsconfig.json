@@ -1,5 +1,6 @@
 {
   "extends": "../../tsconfig.base.json",
+  "files": ["src/index.ts"],
   "compilerOptions": {
     // File Layout
     "rootDir": "./src",
@@ -17,7 +18,7 @@
 
     // Stricter Typechecking Options
     "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
+    "exactOptionalPropertyTypes": false, // Disabled for `@atproto/lex` codegen.
 
     // Style Options
     "noImplicitReturns": true,

@@ -3,11 +3,12 @@ packages:
   - 'tools/publish-standard-site-documents'
 
 catalog:
-  typescript: ~5.9.2
+  typescript: ~6.0.3
 
 # None of these seem to be load bearing.
 allowBuilds:
   "@parcel/watcher": false
+  core-js: false
   esbuild: false
   netlify-cli: false
   sharp: false

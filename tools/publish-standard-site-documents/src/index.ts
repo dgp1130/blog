@@ -1,5 +1,7 @@
 import * as fs from 'node:fs/promises';
+import * as path from 'node:path';
 import { AtpAgent } from '@atproto/api';
+import * as Document from './gen/site/standard/document.js';
 
 const DOCUMENT_ROOT = '../../dist/standard-site-documents';
 const ATPROTO_PROVIDER = 'https://bsky.social';
@@ -22,11 +24,23 @@ async function main(): Promise<void> {
 
     // Read and publish all documents.
     const documents = await fs.readdir(DOCUMENT_ROOT);
-    for (const document of documents) {
-        const tid = document.slice(0, -'.json'.length);
-        const rkey = tid;
-        console.log(rkey);
+    for (const docName of documents) {
+        const tid = docName.slice(0, -'.json'.length);
+        const docText =
+            await fs.readFile(path.join(DOCUMENT_ROOT, docName), 'utf8');
+        const docJson = JSON.parse(docText);
+        const document = Document.$build(docJson);
+
+        const res = await agent.com.atproto.repo.putRecord({
+            repo: agent.did as `did:${string}:${string}`,
+            collection: 'site.standard.document',
+            rkey: tid,
+            record: document,
+        });
+        if (!res.success) throw new Error('Publish failed', {cause: res.data});
     }
+
+    console.log(`Published ${documents.length} records successfully!`);
 }
 
 main().catch((err) => {

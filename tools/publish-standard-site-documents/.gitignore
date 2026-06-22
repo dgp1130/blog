@@ -1,0 +1,5 @@
+# Installed atproto lexicons.
+lexicons/
+
+# Generated TS from atproto lexicons.
+src/gen/
