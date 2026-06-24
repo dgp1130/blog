@@ -31,10 +31,12 @@ jobs:
         node_modules/.bin/playwright install chromium
 
     - name: Test
-      run: pnpm test
+      run: pnpm --filter="*" test
 
     - name: Build
-      run: pnpm run build:prod
+      run: |
+        pnpm run build:prod
+        pnpm run --filter="publish-standard-site-documents" build
 
     # Deploys to https://main-preview--dwac.netlify.app/.
     - name: Deploy Main
@@ -61,3 +63,11 @@ jobs:
           -m "Automated prod deployment from GitHub actions."
       env:
         NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_PAT }}
+
+    - name: Publish Standard Site Documents
+      # Only publish the `deploy` branch to prod.
+      if: ${{ github.ref == 'refs/heads/deploy' }}
+      run: |
+        (cd tools/publish-standard-site-documents/ && node --enable-source-maps dist/index.js)
+      env:
+        ATPROTO_PASSWORD: ${{ secrets.ATPROTO_PASSWORD }}
