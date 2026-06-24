@@ -48,6 +48,7 @@ jobs:
       # independent of a deployment alias.
       run: |
         pnpm run -- netlify deploy -s "${{ secrets.NETLIFY_SITE_ID }}" \
+          --filter="dgp1130-blog" \
           --no-build \
           --alias main-preview \
           -m "Automated preview deployment from GitHub actions."
