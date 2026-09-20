@@ -30,8 +30,8 @@ h2 {
 main {
     flex: 1;
     background-color: var(--dwac-color-bg);
-    padding: var(--dwac-base-padding);
-    width: calc(min(100%, 1024px) - (2 * var(--dwac-base-padding)));
+    padding: var(--dwac-base-padding) 0;
+    width: min(calc(100% - (2 * var(--dwac-base-padding))), 1024px);
     margin: 0 auto; /* Center text content. */
 }
 
