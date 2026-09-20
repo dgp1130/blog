@@ -3,15 +3,15 @@
         80
     ],
     "editor.tabSize": 4,
-    "typescript.enablePromptUseWorkspaceTsdk": true,
-    "typescript.tsdk": "./node_modules/typescript/lib",
+    "js/ts.tsdk.promptToUseWorkspaceVersion": true,
+    "js/ts.tsdk.path": "./node_modules/typescript/lib",
     "files.trimFinalNewlines": true,
     "files.insertFinalNewline": true,
-    "cSpell.enableFiletypes": [
-        "!javascript",
-        "!typescript",
-        "md"
-    ],
+    "cSpell.enabledFileTypes": {
+        "javascript": false,
+        "typescript": false,
+        "md": true
+    },
     "[markdown]": {
         "editor.wordWrap": "off",
         "editor.quickSuggestions": {
@@ -70,6 +70,5 @@
         "webm",
         "webp"
     ],
-    "javascript.preferences.quoteStyle": "single",
-    "typescript.preferences.quoteStyle": "single"
+    "js/ts.preferences.quoteStyle": "single"
 }
