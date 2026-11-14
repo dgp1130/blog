@@ -3,7 +3,7 @@ packages:
   - 'tools/publish-standard-site-documents'
 
 catalog:
-  typescript: ~6.0.3
+  typescript: ~7.0.2
 
 # None of these seem to be load bearing.
 allowBuilds:

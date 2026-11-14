@@ -1,7 +1,6 @@
 // @ts-check
 
 import alias from '@rollup/plugin-alias';
-import typescript from '@rollup/plugin-typescript';
 import minifyHtmlTemplateLiterals from 'rollup-plugin-minify-html-literals';
 import terser from '@rollup/plugin-terser';
 import { cleanCssConfig } from './configs/clean_css.js';
@@ -9,10 +8,9 @@ import { htmlMinifierConfig } from './configs/html_minifier.js';
 
 const prodMode = process.env.DWAC_ENV === 'prod';
 
+const tsconfig = 'tsconfig.browser.json';
+
 const defaultPlugins = [
-    typescript({
-        tsconfig: './tsconfig.browser.json',
-    }),
     alias({
         entries: [{
             find: 'lit-html/lib/shady-render.js',
@@ -44,6 +42,7 @@ export default [
             format: 'es',
             sourcemap: true,
         },
+        tsconfig,
         plugins: defaultPlugins,
     },
 
@@ -56,6 +55,7 @@ export default [
             format: 'es',
             sourcemap: true,
         },
+        tsconfig,
         plugins: defaultPlugins,
     },
 
@@ -68,6 +68,7 @@ export default [
             format: 'es',
             sourcemap: true,
         },
+        tsconfig,
         plugins: defaultPlugins,
     },
 
@@ -80,6 +81,7 @@ export default [
             format: 'es',
             sourcemap: true,
         },
+        tsconfig,
         plugins: defaultPlugins,
     },
 ];
