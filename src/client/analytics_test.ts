@@ -18,7 +18,8 @@ describe('analytics', () => {
 
     afterEach(() => {
         vi.useRealTimers();
-        vi.restoreAllMocks();
+        vi.mocked(browserEnv.getLocation).mockRestore();
+        vi.mocked(plausible.trackEvent).mockRestore();
     });
 
     describe('trackScrollDepth()', () => {

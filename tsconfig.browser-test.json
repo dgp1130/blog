@@ -12,10 +12,6 @@
     "compilerOptions": {
         "module": "ESNext",
         "moduleResolution": "bundler",
-        "types": [
-            "@vitest/browser/providers/playwright",
-            "@vitest/browser/matchers"
-        ],
         "experimentalDecorators": true // For lit-element.
     }
 }

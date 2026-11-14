@@ -13,6 +13,8 @@ vi.mock('./components/snackbar', () => ({
 describe('anchors', () => {
     afterEach(() => {
         vi.restoreAllMocks();
+        vi.mocked(browserEnv.getLocation).mockRestore();
+        vi.mocked(snackbar.show).mockRestore();
     });
 
     describe('handleHeaderLinkOnClick()', () => {

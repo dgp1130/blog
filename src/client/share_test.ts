@@ -9,6 +9,7 @@ vi.mock('./browser_env', () => ({
 describe('share', () => {
     afterEach(() => {
         vi.restoreAllMocks();
+        vi.mocked(browserEnv.getLocation).mockRestore();
     });
 
     describe('makeShareable()', () => {
