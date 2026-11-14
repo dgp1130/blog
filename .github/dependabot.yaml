@@ -1,5 +1,0 @@
-version: 2
-updates:
-  - cooldown:
-    # Match `pnpm-workspace.yaml` `minimumReleaseAge` value.
-    default-days: 7
