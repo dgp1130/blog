@@ -1,7 +1,6 @@
 // @ts-check
 
 import alias from '@rollup/plugin-alias';
-import resolve from '@rollup/plugin-node-resolve';
 import typescript from '@rollup/plugin-typescript';
 import minifyHtmlTemplateLiterals from 'rollup-plugin-minify-html-literals';
 import terser from '@rollup/plugin-terser';
@@ -20,7 +19,6 @@ const defaultPlugins = [
             replacement: 'node_modules/lit-html/lit-html.js',
         }],
     }),
-    resolve({ browser: true }),
     ...(!prodMode ? [] : [
         // Production-only plugins.
         // @ts-ignore
