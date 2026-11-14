@@ -14,9 +14,6 @@ allowBuilds:
   sharp: false
   unix-dgram: false
 
-# Disable annoying ass prompt.
-confirmModulesPurge: false
-
 minimumReleaseAge: 10_080 # 7 days
 minimumReleaseAgeExclude:
   - "@jridgewell/resolve-uri@3.1.3"
