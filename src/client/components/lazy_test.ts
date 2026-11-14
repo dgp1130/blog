@@ -1,6 +1,6 @@
 import './lazy'; // Side-effectful import of `<dwac-lazy>`.
 
-import { afterEach, beforeAll, describe, expect, it, vi, Mocked } from 'vitest';
+import { afterEach, beforeAll, describe, expect, it, vi, Mocked, beforeEach } from 'vitest';
 import { Lazy } from './lazy.js';
 
 describe('Lazy', () => {
@@ -24,16 +24,19 @@ describe('Lazy', () => {
     } as unknown as Mocked<IntersectionObserver>;
     let triggerIntersection:
         (...args: Parameters<IntersectionObserverCallback>) => void;
-    beforeAll(() => {
-        vi.spyOn(globalThis, 'IntersectionObserver').mockImplementation((cb) => {
-            triggerIntersection = cb;
-            return mockObserver;
-        });
+    beforeEach(() => {
+        vi.spyOn(globalThis, 'IntersectionObserver')
+            .mockImplementation(function (cb) {
+                triggerIntersection = cb;
+                return mockObserver;
+            });
     });
 
     afterEach(() => {
         lazy?.remove();
         vi.restoreAllMocks();
+        mockObserver.observe.mockRestore();
+        mockObserver.unobserve.mockRestore();
     });
 
     it('is defined', () => {

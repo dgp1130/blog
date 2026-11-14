@@ -18,6 +18,8 @@ allowBuilds:
 confirmModulesPurge: false
 
 minimumReleaseAge: 10_080 # 7 days
+minimumReleaseAgeExclude:
+  - "@jridgewell/resolve-uri@3.1.3"
 
 # Disallow downgrading trust levels in a package (ex. dropping providence).
 trustPolicy: no-downgrade
