@@ -7,17 +7,13 @@ describe('asserts', () => {
     });
 
     describe('assertDefined()', () => {
-        it('narrows the type of the provided element when defined', () => {
-            const foo = ('test' as string|undefined);
+        it('no-ops when given a defined value', () => {
+            expect(() => assertDefined('test')).not.toThrow();
 
-            // @ts-expect-error `foo` is possibly undefined.
-            const possiblyUndefined: string = foo;
-
-            assertDefined(foo);
-
-            // Typescript validates that `foo` must be defined.
-            const str: string = foo;
-            expect(true).toBe(true);
+            // Verify falsey values.
+            expect(() => assertDefined('')).not.toThrow();
+            expect(() => assertDefined(false)).not.toThrow();
+            expect(() => assertDefined(0)).not.toThrow();
         });
 
         it('throws when given an undefined value', () => {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { useContext, getContext, Context } from './context.js';
+import { useContext, getContext } from './context.js';
 import { mockContext } from './context_mock.js';
 
 describe('context', () => {
@@ -77,19 +77,5 @@ describe('context', () => {
         await expect(result).rejects.toBe(error);
 
         expect(() => getContext()).toThrow('No context available.');
-    });
-
-    it('useContext() infers its color from the given callback', () => {
-        // Type only test, only needs to compile, not execute.
-        expect(true).toBe(true);
-        () => {
-            const ctx = {} as Context;
-
-            // Synchronous
-            useContext(ctx, () => 1) satisfies number;
-
-            // Asynchronous
-            useContext(ctx, () => Promise.resolve(1)) satisfies Promise<number>;
-        };
     });
 });

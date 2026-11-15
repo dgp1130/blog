@@ -22,7 +22,9 @@ export default defineConfig({
 
         // Use the correct `tsconfig` file.
         typecheck: {
+            enabled: true,
             tsconfig: './tsconfig.browser-test.json',
+            include: [ 'src/client/**/*_test_d.ts' ],
         },
 
         expect: {

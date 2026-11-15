@@ -9,7 +9,9 @@ export default defineConfig({
 
         // Use the correct `tsconfig` file.
         typecheck: {
+            enabled: true,
             tsconfig: './tsconfig.11ty-test.json',
+            include: ['src/11ty/**/*_test_d.ts'],
         },
 
         // Don't isolate tests because this hurts performance and any safety

@@ -1,6 +1,6 @@
 {
     "extends": "./tsconfig.base.json",
-    "include": [ "src/11ty/**/*_test.ts" ],
+    "include": [ "src/11ty/**/*_test.ts", "src/11ty/**/*_test_d.ts" ],
     "compilerOptions": {
         "types": [ "node" ]
     }
