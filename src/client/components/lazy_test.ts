@@ -1,6 +1,6 @@
 import './lazy'; // Side-effectful import of `<dwac-lazy>`.
 
-import { afterEach, beforeAll, describe, expect, it, vi, Mocked, beforeEach } from 'vitest';
+import { afterEach, describe, expect, it, vi, Mocked, beforeEach } from 'vitest';
 import { Lazy } from './lazy.js';
 
 describe('Lazy', () => {
