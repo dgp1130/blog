@@ -2,9 +2,8 @@
 
 My personal blog, hosted at [https://blog.dwac.dev/](https://blog.dwac.dev/).
 
-<!-- status badges for CI and Netlify. -->
-![CI](https://github.com/dgp1130/blog/workflows/CI/badge.svg?branch=main)
-[![Netlify Status](https://api.netlify.com/api/v1/badges/2911a197-8a53-460c-ad53-016372148b01/deploy-status)](https://app.netlify.com/sites/dwac/deploys)
+<!-- status badges for CI. -->
+[![CI](https://github.com/dgp1130/blog/actions/workflows/ci.yaml/badge.svg)](https://github.com/dgp1130/blog/actions/workflows/ci.yaml)
 
 ## Local Builds
 
