@@ -1,7 +1,6 @@
-import 'jasmine';
-
 import { Marked } from 'marked';
 import * as nunjucks from 'nunjucks';
+import { describe, expect, it } from 'vitest';
 import { useContext } from './context.js';
 import { mockContext } from './context_mock.js';
 import { demoExtension } from './demo.js';
@@ -60,8 +59,7 @@ ${JSON.stringify(config, null, 4)}
 \`\`\`demo
 not a json object
 \`\`\`
-            `.trim()))).toThrowMatching((err) => err.message.includes(
-                'Expected demo body to be a JSON object'));
+            `.trim()))).toThrow('Expected demo body to be a JSON object');
         });
 
         it('throws an error when given a JSON array', () => {

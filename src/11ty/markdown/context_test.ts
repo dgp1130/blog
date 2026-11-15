@@ -1,5 +1,4 @@
-import 'jasmine';
-
+import { describe, expect, it } from 'vitest';
 import { useContext, getContext, Context } from './context.js';
 import { mockContext } from './context_mock.js';
 
@@ -58,7 +57,7 @@ describe('context', () => {
         expect(() => getContext()).not.toThrow();
 
         resolver(1234);
-        await expectAsync(result).toBeResolved(1234);
+        await expect(result).resolves.toBe(1234);
 
         expect(() => getContext()).toThrowError('No context available.');
     });
@@ -75,14 +74,14 @@ describe('context', () => {
         expect(() => getContext()).not.toThrow();
 
         rejector(error);
-        await expectAsync(result).toBeRejectedWith(error);
+        await expect(result).rejects.toBe(error);
 
         expect(() => getContext()).toThrowError('No context available.');
     });
 
     it('useContext() infers its color from the given callback', () => {
         // Type only test, only needs to compile, not execute.
-        expect().nothing();
+        expect(true).toBe(true);
         () => {
             const ctx = {} as Context;
 

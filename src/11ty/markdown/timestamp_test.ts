@@ -1,6 +1,5 @@
-import 'jasmine';
-
 import { Marked } from 'marked';
+import { describe, expect, it } from 'vitest';
 import { useContext } from './context.js';
 import { mockContext } from './context_mock.js';
 import { timestampExtension } from './timestamp.js';

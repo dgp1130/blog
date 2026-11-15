@@ -1,6 +1,5 @@
-import 'jasmine';
-
 import { Marked } from 'marked';
+import { describe, expect, it } from 'vitest';
 import { targetBlankExtension } from './target_blank.js';
 
 describe('target blank', () => {

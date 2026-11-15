@@ -1,8 +1,7 @@
-import 'jasmine';
-
 import { imageSize as imageSizeCb } from 'image-size';
 import { Marked } from 'marked';
 import { promisify } from 'util';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { pictureExtension } from './picture.js';
 import { Context, useContext } from './context.js';
 import { mockContext } from './context_mock.js';
@@ -16,7 +15,7 @@ const MOCK_SIZE = Object.freeze({
 
 describe('picture', () => {
     describe('pictureExtension', () => {
-        const imageSize = jasmine.createSpy('imageSize', imageSizeFn);
+        const imageSize = vi.fn(imageSizeFn);
         function init(): Marked {
             // `pictureExtension` is stateful (has different `loading="lazy"`
             // behavior) for the first image, therefore we need a new extension
@@ -25,7 +24,7 @@ describe('picture', () => {
         }
 
         afterEach(() => {
-            imageSize.calls.reset();
+            imageSize.mockRestore();
         });
 
         async function renderImage(marked: Marked, md: string, ctx?: Context): Promise<string> {
@@ -43,11 +42,9 @@ describe('picture', () => {
         });
 
         it('renders an image with multiple sources as a `<picture />`', async () => {
-            imageSize.and.returnValues(
-                Promise.resolve({ width: 100, height: 100 }),
-                Promise.resolve({ width: 200, height: 200 }),
-                Promise.resolve({ width: 300, height: 300 }),
-            );
+            imageSize.mockResolvedValueOnce({ width: 100, height: 100 })
+                .mockResolvedValueOnce({ width: 200, height: 200 })
+                .mockResolvedValueOnce({ width: 300, height: 300 });
 
             const marked = init();
 
@@ -64,7 +61,7 @@ describe('picture', () => {
         });
 
         it('renders all but the first image lazily', async () => {
-            imageSize.and.resolveTo(MOCK_SIZE);
+            imageSize.mockResolvedValue(MOCK_SIZE);
 
             const marked = init();
 
@@ -92,7 +89,7 @@ describe('picture', () => {
         });
 
         it('resets lazy loading behavior when parsing a new document', async () => {
-            imageSize.and.resolveTo(MOCK_SIZE);
+            imageSize.mockResolvedValue(MOCK_SIZE);
 
             const marked = init();
 
@@ -150,7 +147,7 @@ describe('picture', () => {
         });
 
         it('renders an image with a multiline alt', async () => {
-            imageSize.and.resolveTo(MOCK_SIZE);
+            imageSize.mockResolvedValue(MOCK_SIZE);
 
             const marked = init();
 
@@ -165,12 +162,12 @@ alt text](/foo.webp)(/foo.png)
         it('throws an error when given a source with no alt', async () => {
             const marked = init();
 
-            await expectAsync(renderImage(marked, `![](/foo.png)(/bar.png)`))
-                .toBeRejectedWithError(/No image alt/);
+            await expect(renderImage(marked, `![](/foo.png)(/bar.png)`))
+                .rejects.toThrow('No image alt');
         });
 
         it('escapes alt text with quotes', async () => {
-            imageSize.and.resolveTo(MOCK_SIZE);
+            imageSize.mockResolvedValue(MOCK_SIZE);
 
             const marked = init();
 
@@ -183,7 +180,7 @@ alt text](/foo.webp)(/foo.png)
         });
 
         it('trims leading and trailing alt whitespace', async () => {
-            imageSize.and.resolveTo(MOCK_SIZE);
+            imageSize.mockResolvedValue(MOCK_SIZE);
 
             const marked = init();
 
@@ -200,49 +197,49 @@ with leading and trailing newlines
         });
 
         it('throws an error when given no sources', async () => {
-            imageSize.and.resolveTo(MOCK_SIZE);
+            imageSize.mockResolvedValue(MOCK_SIZE);
 
             const marked = init();
 
-            await expectAsync(renderImage(marked, `![alt]`))
-                .toBeRejectedWithError(/Picture token has zero sources/);
+            await expect(renderImage(marked, `![alt]`))
+                .rejects.toThrow('Picture token has zero sources');
         });
 
         it('throws an error when given a source with an unknown extension', async () => {
-            imageSize.and.resolveTo(MOCK_SIZE);
+            imageSize.mockResolvedValue(MOCK_SIZE);
 
             const marked = init();
 
-            await expectAsync(renderImage(
+            await expect(renderImage(
                 marked,
                 `![alt](/foo.doesnotexist)(/foo.png)`,
-            )).toBeRejected();
+            )).rejects.toThrow();
         });
 
         it('throws an error when given a source without an extension', async () => {
-        imageSize.and.resolveTo(MOCK_SIZE);
-
-        const marked = init();
-
-            await expectAsync(renderImage(
-                marked,
-                `![alt](/foowithoutextension)(/foo.png)`,
-            )).toBeRejected();
-        });
-
-        it('renders custom attributes', async () => {
-            imageSize.and.resolveTo(MOCK_SIZE);
+            imageSize.mockResolvedValue(MOCK_SIZE);
 
             const marked = init();
 
-            expect(await renderImage(
+            await expect(renderImage(
+                marked,
+                `![alt](/foowithoutextension)(/foo.png)`,
+            )).rejects.toThrow();
+        });
+
+        it('renders custom attributes', async () => {
+            imageSize.mockResolvedValue(MOCK_SIZE);
+
+            const marked = init();
+
+            await expect(renderImage(
                 marked,
                 `![alt](/foo.png)(/bar.png){foo="bar"}`,
-            )).toMatch(/<img[^>]*foo="bar"[^>]*>/);
+            )).resolves.toMatch(/<img[^>]*foo="bar"[^>]*>/);
         });
 
         it('renders multiple custom attributes', async () => {
-            imageSize.and.resolveTo(MOCK_SIZE);
+            imageSize.mockResolvedValue(MOCK_SIZE);
 
             const marked = init();
 
@@ -256,16 +253,16 @@ with leading and trailing newlines
         });
 
         it('renders custom attributes even when only one source is used', async () => {
-            imageSize.and.resolveTo(MOCK_SIZE);
+            imageSize.mockResolvedValue(MOCK_SIZE);
 
             const marked = init();
 
-            expect(await renderImage(marked, `![alt](/foo.png){foo="bar"}`))
-                .toMatch(/<img[^>]*foo="bar"[^>]*>/);
+            await expect(renderImage(marked, `![alt](/foo.png){foo="bar"}`))
+                .resolves.toMatch(/<img[^>]*foo="bar"[^>]*>/);
         });
 
         it('renders with size from a relative path', async () => {
-            imageSize.and.resolveTo({ width: 100, height: 200 });
+            imageSize.mockResolvedValue({ width: 100, height: 200 });
 
             const marked = init();
 
@@ -290,7 +287,7 @@ with leading and trailing newlines
         });
 
         it('renders with size from an absolute path', async () => {
-            imageSize.and.resolveTo({ width: 100, height: 200 });
+            imageSize.mockResolvedValue({ width: 100, height: 200 });
 
             const marked = init();
 
@@ -312,7 +309,7 @@ with leading and trailing newlines
         it('throws an error when given a relative path outside the root directory', async () => {
             const marked = init();
 
-            await expectAsync(renderImage(
+            await expect(renderImage(
                 marked,
                 '![alt](../../../../../../../foo.png){foo="bar"}',
                 mockContext({
@@ -323,7 +320,7 @@ with leading and trailing newlines
                     },
                     webRoot: 'src/www',
                 }),
-            )).toBeRejectedWithError(/outside the root directory/);
+            )).rejects.toThrow('outside the root directory');
 
             expect(imageSize).not.toHaveBeenCalled();
         });
@@ -331,10 +328,10 @@ with leading and trailing newlines
         it('throws an error when given an absolute path outside the root directory', async () => {
             const marked = init();
 
-            await expectAsync(renderImage(
+            await expect(renderImage(
                 marked,
                 '![alt](/../foo.png){foo="bar"}',
-            )).toBeRejectedWithError(/outside the root directory/);
+            )).rejects.toThrow('outside the root directory');
 
             expect(imageSize).not.toHaveBeenCalled();
         });
@@ -356,47 +353,47 @@ with leading and trailing newlines
         it('throws when `image-size` throws', async () => {
             const error = new Error('Negative-sized image?!');
 
-            imageSize.and.rejectWith(error);
+            imageSize.mockRejectedValue(error);
 
             const marked = init();
 
-            await expectAsync(renderImage(
+            await expect(renderImage(
                 marked,
                 '![alt](./foo.jpg){foo="bar"}',
-            )).toBeRejectedWith(error);
+            )).rejects.toBe(error);
         });
 
         it('throws when `image-size` returns `undefined`', async () => {
-            imageSize.and.resolveTo(undefined);
+            imageSize.mockResolvedValue(undefined);
 
             const marked = init();
 
-            await expectAsync(renderImage(
+            await expect(renderImage(
                 marked,
                 '![alt](./foo.jpg){foo="bar"}',
-            )).toBeRejectedWithError(/Could not extract dimensions/);
+            )).rejects.toThrow('Could not extract dimensions');
         });
 
         it('throws when `width` is `undefined`', async () => {
-            imageSize.and.resolveTo({ width: undefined, height: 100 });
+            imageSize.mockResolvedValue({ width: undefined, height: 100 });
 
             const marked = init();
 
-            await expectAsync(renderImage(
+            await expect(renderImage(
                 marked,
                 '![alt](./foo.jpg){foo="bar"}',
-            )).toBeRejectedWithError(/Missing width/);
+            )).rejects.toThrow('Missing width');
         });
 
         it('throws when `height` is `undefined`', async () => {
-            imageSize.and.resolveTo({ width: 100, height: undefined });
+            imageSize.mockResolvedValue({ width: 100, height: undefined });
 
             const marked = init();
 
-            await expectAsync(renderImage(
+            await expect(renderImage(
                 marked,
                 '![alt](./foo.jpg){foo="bar"}',
-            )).toBeRejectedWithError(/Missing.*height/);
+            )).rejects.toThrow(/Missing.*height/);
         });
     });
 });

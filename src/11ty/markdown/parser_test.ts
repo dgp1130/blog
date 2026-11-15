@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { Parser } from './parser.js';
 
 describe('parser', () => {

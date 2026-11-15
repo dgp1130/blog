@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { injectCsp } from './csp.js';
 
 describe('csp', () => {

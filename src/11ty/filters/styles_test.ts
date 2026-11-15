@@ -1,10 +1,14 @@
 import CleanCss, { MinifierOutput, MinifierPromise, OptionsOutput } from 'clean-css';
+import { describe, expect, it, vi } from 'vitest';
 import { execFilter } from '../testing/filters.js';
 import { bundleStyles } from './styles.js';
 
+type CleanCssCtor = (options?: OptionsOutput) => MinifierOutput;
+type CleanCssMinify = MinifierPromise['minify'];
+
 function mockCleanCss({constructorSpy, minifySpy}: {
-    constructorSpy?: jasmine.Spy<(options?: OptionsOutput) => MinifierOutput>,
-    minifySpy?: jasmine.Spy<MinifierOutput['minify'] & MinifierPromise['minify']>,
+    constructorSpy?: CleanCssCtor,
+    minifySpy?: CleanCssMinify,
 } = {}): typeof CleanCss {
     // @ts-ignore CleanCss constructor is weird and not worth fighting.
     return class CleanCssMock extends CleanCss {
@@ -20,14 +24,14 @@ function mockCleanCss({constructorSpy, minifySpy}: {
 describe('styles', () => {
     describe('minifyStyles', () => {
         it('minifies the given CSS files', async () => {
-            const constructorSpy = jasmine.createSpy('CleanCss Constructor');
-            const minifySpy = jasmine.createSpy('minify').and.returnValue(
-                Promise.resolve({
+            const constructorSpy = vi.fn<CleanCssCtor>(CleanCss as any);
+            const minifySpy = vi.fn<CleanCssMinify>(CleanCss.prototype.minify)
+                .mockResolvedValue({
                     styles: '/* minified! */',
                     errors: [],
                     warnings: [],
-                }),
-            );
+                    stats: {} as any,
+                });
 
             // @ts-ignore CleanCss constructor is weird and not worth fighting.
             const minifyFilter = bundleStyles({
@@ -52,32 +56,33 @@ describe('styles', () => {
         });
 
         it('rethrows minification errors', async () => {
-            const minifySpy = jasmine.createSpy('minify').and.returnValue(
-                Promise.resolve({
-                    errors: [ 'Styles are too ugly to minify.' ],
-                    warnings: [],
-                }),
-            );
+            const minifySpy = vi.fn<CleanCssMinify>().mockResolvedValue({
+                styles: '',
+                errors: [ 'Styles are too ugly to minify.' ],
+                warnings: [],
+                stats: {} as any,
+            });
 
             const minifyFilter = bundleStyles(
                 /* options */ undefined,
                 {CleanCss: mockCleanCss({minifySpy})},
             );
-            await expectAsync(execFilter(minifyFilter, 'foo.css'))
-                    .toBeRejectedWithError(Error, `
+            await expect(execFilter(minifyFilter, 'foo.css'))
+                    .rejects.toThrow(`
 Failed to minify [src/www/foo.css]:
 Styles are too ugly to minify.
                     `.trim());
         });
 
         it('logs minification warnings', async () => {
-            spyOn(console, 'warn');
-            const minifySpy = jasmine.createSpy('minify').and.returnValue(
-                Promise.resolve({
-                    errors: [],
-                    warnings: [ 'Styles are looking very ugly...' ],
-                }),
-            );
+            vi.spyOn(console, 'warn').mockImplementation(() => {});
+            const minifySpy = vi.fn<CleanCssMinify>(CleanCss.prototype.minify)
+                    .mockResolvedValue({
+                        styles: '',
+                        errors: [],
+                        warnings: [ 'Styles are looking very ugly...' ],
+                        stats: {} as any,
+                    });
 
             await execFilter(bundleStyles(
                 /* options */ undefined,
@@ -91,16 +96,17 @@ Styles are looking very ugly...
         });
 
         it('ignores undesired warnings', async () => {
-            spyOn(console, 'warn');
-            const minifySpy = jasmine.createSpy('minify').and.returnValue(
-                Promise.resolve({
+            vi.spyOn(console, 'warn').mockImplementation(() => {});
+            const minifySpy = vi.fn<CleanCssMinify>(CleanCss.prototype.minify)
+                .mockResolvedValue({
+                    styles: '',
                     errors: [],
                     warnings: [
                         'Styles are looking very ugly...',
                         'Some useless warning.',
                     ],
-                }),
-            );
+                    stats: {} as any,
+                });
 
             await execFilter(bundleStyles(
                 {ignoredWarnings: [ /^Some useless warning.$/ ]},

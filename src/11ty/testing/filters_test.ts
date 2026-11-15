@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { execFilter } from './filters.js';
 import { FilterCallback } from '../filters/utils.js';
 
@@ -19,7 +20,7 @@ describe('filters', () => {
 
             const result = await execFilter(
                     testFilter as Filter, 'first', 'second');
-            
+
             expect(result).toBe('firstsecond');
         });
 
@@ -30,8 +31,8 @@ describe('filters', () => {
                 callback(err);
             }
 
-            await expectAsync(execFilter(testFilter as Filter, 'unused arg'))
-                    .toBeRejectedWith(err);
+            await expect(execFilter(testFilter as Filter, 'unused arg'))
+                    .rejects.toBe(err);
         });
 
         it('executes the given filter and rejects on a thrown error',
@@ -41,8 +42,8 @@ describe('filters', () => {
                 throw err;
             }
 
-            await expectAsync(execFilter(testFilter, 'unused arg'))
-                    .toBeRejectedWith(err);
+            await expect(execFilter(testFilter, 'unused arg'))
+                    .rejects.toBe(err);
         });
     });
 });

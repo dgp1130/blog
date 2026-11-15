@@ -1,6 +1,5 @@
-import 'jasmine';
-
 import { Marked } from 'marked';
+import { describe, expect, it } from 'vitest';
 import { inlineHtmlExtension } from './inline_html.js';
 
 describe('inline-html', () => {

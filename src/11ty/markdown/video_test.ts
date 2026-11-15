@@ -1,7 +1,6 @@
-import 'jasmine';
-
 import { Marked } from 'marked';
 import * as nunjucks from 'nunjucks';
+import { describe, expect, it } from 'vitest';
 import { getVideoMimeType } from '../mime_types.js';
 import { useContext } from './context.js';
 import { mockContext } from './context_mock.js';
@@ -137,8 +136,7 @@ ${JSON.stringify(config, null, 4)}
 \`\`\`video
 not a json object
 \`\`\`
-            `.trim()))).toThrowMatching((err) => err.message.includes(
-                'Expected video body to be a JSON object'));
+            `.trim()))).toThrow('Expected video body to be a JSON object');
         });
 
         it('throws an error when given a JSON array', () => {

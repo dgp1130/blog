@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { short } from './git.js';
 
 describe('git', () => {

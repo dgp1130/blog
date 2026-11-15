@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { execFilter } from '../testing/filters.js';
 import { asyncFilter } from './utils.js';
 
@@ -17,7 +18,7 @@ describe('utils', () => {
             const err = new Error('Pipe is clogged!');
             const filter = asyncFilter(async () => { throw err; });
 
-            await expectAsync(execFilter(filter, 'test')).toBeRejectedWith(err);
+            await expect(execFilter(filter, 'test')).rejects.toBe(err);
         });
 
         it('calls back with an error when not given enough arguments',
@@ -25,8 +26,8 @@ describe('utils', () => {
             const filter = asyncFilter(async (input) => input + 1);
 
             // Filter is executed incorrectly with no arguments.
-            await expectAsync(execFilter(filter))
-                    .toBeRejectedWithError(/Expected at least two arguments/g);
+            await expect(execFilter(filter)).rejects.toThrow(
+                    /Expected at least two arguments/g);
         });
 
         it('throws an error when not given a callback as the last argument',

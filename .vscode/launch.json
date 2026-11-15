@@ -6,15 +6,21 @@
     "configurations": [
         {
             "name": "11ty Build",
-            "command": "pnpm run build",
+            "type": "node",
             "request": "launch",
-            "type": "node-terminal"
+            "runtimeExecutable": "pnpm",
+            "runtimeArgs": ["run", "--silent", "build"],
+            "console": "internalConsole",
+            "outputCapture": "std"
         },
         {
             "name": "11ty Test",
-            "command": "pnpm test",
+            "type": "node",
             "request": "launch",
-            "type": "node-terminal"
+            "runtimeExecutable": "sh",
+            "runtimeArgs": ["-c", "pnpm run --silent clean && pnpm run --silent test:11ty"],
+            "console": "internalConsole",
+            "outputCapture": "std"
         }
     ]
 }

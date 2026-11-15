@@ -1,7 +1,6 @@
-import 'jasmine';
-
 import { Marked } from 'marked';
 import * as nunjucks from 'nunjucks';
+import { describe, expect, it } from 'vitest';
 import { getImageMimeType } from '../mime_types.js';
 import { useContext } from './context.js';
 import { mockContext } from './context_mock.js';
@@ -75,10 +74,10 @@ ${JSON.stringify(config, null, 4)}
 \`\`\`tweet
 not a json object
 \`\`\`
-            `.trim()))).toThrowMatching((err) => err.message.includes(`
+            `.trim()))).toThrow(`
 Expected tweet body to be a JSON object, but got:
 not a json object
-            `.trim()));
+            `.trim());
         });
 
         it('throws an error when given a JSON array', () => {

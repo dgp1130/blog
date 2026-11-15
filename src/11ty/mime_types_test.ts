@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { getImageMimeType, getVideoMimeType } from './mime_types.js';
 
 describe('mime_types', () => {
