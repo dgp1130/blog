@@ -111,7 +111,7 @@ describe('Lazy', () => {
         } as unknown as IntersectionObserverEntry;
 
         expect(() => triggerIntersection([ entry ], mockObserver))
-            .toThrowError('Expected exactly one `<template />` child (excluding `<noscript />`).');
+            .toThrow('Expected exactly one `<template />` child (excluding `<noscript />`).');
     });
 
     it('throws an error when there are no children.', () => {
@@ -123,7 +123,7 @@ describe('Lazy', () => {
         } as unknown as IntersectionObserverEntry;
 
         expect(() => triggerIntersection([ entry ], mockObserver))
-            .toThrowError('Expected exactly one `<template />` child (excluding `<noscript />`).');
+            .toThrow('Expected exactly one `<template />` child (excluding `<noscript />`).');
     });
 
     it('throws an error when there is exactly one child which is not a `<template />`', () => {
@@ -137,7 +137,7 @@ describe('Lazy', () => {
         } as unknown as IntersectionObserverEntry;
 
         expect(() => triggerIntersection([ entry ], mockObserver))
-            .toThrowError('Expected exactly one `<template />` child (excluding `<noscript />`).');
+            .toThrow('Expected exactly one `<template />` child (excluding `<noscript />`).');
     });
 
     it('allows extra `<noscript />` children', () => {

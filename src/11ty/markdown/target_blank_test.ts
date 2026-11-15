@@ -30,7 +30,7 @@ describe('target blank', () => {
 
         it('throws an error when rendering a link with no href', () => {
             expect(() => marked.parse(`[foo]()`))
-                .toThrowError(/No href for link with text: foo/);
+                .toThrow(/No href for link with text: foo/);
         });
     });
 });

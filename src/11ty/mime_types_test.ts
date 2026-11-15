@@ -13,14 +13,14 @@ describe('mime_types', () => {
         });
 
         it('throws an error for a unknown extension', () => {
-            expect(() => getImageMimeType('/foo.doesnotexist')).toThrowError(
+            expect(() => getImageMimeType('/foo.doesnotexist')).toThrow(
                 'No known image MIME type for file extension `doesnotexist`'
                 + ' from path `/foo.doesnotexist`.',
             );
         });
 
         it('throws an error when given a path with no extension', () => {
-            expect(() => getImageMimeType('/foowithoutextension')).toThrowError(
+            expect(() => getImageMimeType('/foowithoutextension')).toThrow(
                 'Failed to extract extension from path: `/foowithoutextension`.');
         });
     });
@@ -32,14 +32,14 @@ describe('mime_types', () => {
         });
 
         it('throws an error for an unknown extension', () => {
-            expect(() => getVideoMimeType('/foo.doesnotexist')).toThrowError(
+            expect(() => getVideoMimeType('/foo.doesnotexist')).toThrow(
                 'No known video MIME type for file extension `doesnotexist`'
                 + ' from path `/foo.doesnotexist`.',
             );
         });
 
         it('throws an error when given a path with no extension', () => {
-            expect(() => getVideoMimeType('/foowithoutextension')).toThrowError(
+            expect(() => getVideoMimeType('/foowithoutextension')).toThrow(
                 'Failed to extract extension from path: `/foowithoutextension`.');
         });
     });

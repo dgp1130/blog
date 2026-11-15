@@ -12,7 +12,7 @@ describe('parser', () => {
 
             it('throws an error when the given string is not matched', () => {
                 const parser = Parser.of('hello world');
-                expect(() => parser.expect('world')).toThrowError();
+                expect(() => parser.expect('world')).toThrow();
             });
         });
 
@@ -38,7 +38,7 @@ describe('parser', () => {
 
             it('throws an error when the given string is not matched', () => {
                 const parser = Parser.of('hello world');
-                expect(() => parser.until('foo')).toThrowError();
+                expect(() => parser.until('foo')).toThrow();
             });
         });
 

@@ -12,7 +12,7 @@ describe('context', () => {
     it('getContext() throws when no context is available', () => {
         // Never called `useContext()`.
         expect(() => getContext())
-            .toThrowError('No context available.');
+            .toThrow('No context available.');
     });
 
     it('useContext() throws when context is already set', () => {
@@ -21,7 +21,7 @@ describe('context', () => {
                 // Cannot `useContext()` within another `useContext()`.
                 useContext(mockContext(), () => {});
             });
-        }).toThrowError('Attempting to set context when one already exists.');
+        }).toThrow('Attempting to set context when one already exists.');
     });
 
     it('useContext() clears the context after the callback completes', () => {
@@ -31,7 +31,7 @@ describe('context', () => {
 
         // Calling `getContext()` *after* `useContext()` has finished.
         expect(() => getContext())
-            .toThrowError('No context available.');
+            .toThrow('No context available.');
     });
 
     it('useContext() clears the context even when the callback throws', () => {
@@ -39,11 +39,11 @@ describe('context', () => {
             useContext(mockContext(), () => {
                 throw new Error('Oh noes!');
             });
-        }).toThrowError('Oh noes!');
+        }).toThrow('Oh noes!');
 
         // Context should be cleaned up after the callback threw.
         expect(() => getContext())
-            .toThrowError('No context available.');
+            .toThrow('No context available.');
     });
 
     it('useContext() waits for the returned `Promise` to resolve', async () => {
@@ -59,7 +59,7 @@ describe('context', () => {
         resolver(1234);
         await expect(result).resolves.toBe(1234);
 
-        expect(() => getContext()).toThrowError('No context available.');
+        expect(() => getContext()).toThrow('No context available.');
     });
 
     it('useContext() cleans up context when the returned `Promise` rejects', async () => {
@@ -76,7 +76,7 @@ describe('context', () => {
         rejector(error);
         await expect(result).rejects.toBe(error);
 
-        expect(() => getContext()).toThrowError('No context available.');
+        expect(() => getContext()).toThrow('No context available.');
     });
 
     it('useContext() infers its color from the given callback', () => {

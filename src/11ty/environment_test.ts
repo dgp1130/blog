@@ -24,6 +24,6 @@ describe('environment', () => {
 
     it('throws an error when given an invalid process env', () => {
         process.env['DWAC_ENV'] = 'not an environment';
-        expect(() => getEnv()).toThrowError(/Unknown environment/);
+        expect(() => getEnv()).toThrow(/Unknown environment/);
     });
 });

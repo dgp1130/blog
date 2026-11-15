@@ -63,30 +63,30 @@ not a json object
         });
 
         it('throws an error when given a JSON array', () => {
-            expect(() => renderDemo([])).toThrowError(parseErrorRegex);
+            expect(() => renderDemo([])).toThrow(parseErrorRegex);
         });
 
         it('throws an error for a malformed `src`', () => {
             expect(() => renderDemo({ ...goldenConfig, src: undefined }))
-                .toThrowError(parseErrorRegex);
+                .toThrow(parseErrorRegex);
             expect(() => renderDemo({ ...goldenConfig, src: null }))
-                .toThrowError(parseErrorRegex);
+                .toThrow(parseErrorRegex);
             expect(() => renderDemo({ ...goldenConfig, src: 1234 }))
-                .toThrowError(parseErrorRegex);
+                .toThrow(parseErrorRegex);
         });
 
         it('throws an error for a malformed `title`', () => {
             expect(() => renderDemo({ ...goldenConfig, title: undefined }))
-                .toThrowError(parseErrorRegex);
+                .toThrow(parseErrorRegex);
             expect(() => renderDemo({ ...goldenConfig, title: null }))
-                .toThrowError(parseErrorRegex);
+                .toThrow(parseErrorRegex);
             expect(() => renderDemo({ ...goldenConfig, title: 1234 }))
-                .toThrowError(parseErrorRegex);
+                .toThrow(parseErrorRegex);
         });
 
         it('throws an error for an extra property', () => {
             expect(() => renderDemo({ ...goldenConfig, foo: 'bar' }))
-                .toThrowError(parseErrorRegex);
+                .toThrow(parseErrorRegex);
         });
 
         it('ignores non-demo code blocks', () => {
@@ -104,7 +104,7 @@ not a json object
 \`\`\`demo
 ${JSON.stringify(goldenConfig, null, 4)}
 \`\`\`
-            `.trim())).toThrowError(/No context available\./);
+            `.trim())).toThrow(/No context available\./);
         });
     });
 });

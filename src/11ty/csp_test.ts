@@ -288,7 +288,7 @@ describe('csp', () => {
                 <html>
                     <body></body>
                 </html>
-            `)).toThrowError(/Failed to parse `<head>` tag./);
+            `)).toThrow(/Failed to parse `<head>` tag./);
         });
     });
 });

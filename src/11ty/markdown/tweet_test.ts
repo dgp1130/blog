@@ -81,103 +81,103 @@ not a json object
         });
 
         it('throws an error when given a JSON array', () => {
-            expect(() => renderTweet([])).toThrowError(parseErrorRegex);
+            expect(() => renderTweet([])).toThrow(parseErrorRegex);
         });
 
         it('throws an error for a malformed `url`', () => {
             expect(() => renderTweet({ ...goldenConfig, url: undefined }))
-                .toThrowError(parseErrorRegex);
+                .toThrow(parseErrorRegex);
             expect(() => renderTweet({ ...goldenConfig, url: null }))
-                .toThrowError(parseErrorRegex);
+                .toThrow(parseErrorRegex);
             expect(() => renderTweet({ ...goldenConfig, url: 1234 }))
-                .toThrowError(parseErrorRegex);
+                .toThrow(parseErrorRegex);
             expect(() => renderTweet({ ...goldenConfig, url: 'not a URL' }))
-                .toThrowError(parseErrorRegex);
+                .toThrow(parseErrorRegex);
         });
 
         it('throws an error for a malformed `author`', () => {
             expect(() => renderTweet({ ...goldenConfig, author: undefined }))
-                .toThrowError(parseErrorRegex);
+                .toThrow(parseErrorRegex);
             expect(() => renderTweet({ ...goldenConfig, author: null }))
-                .toThrowError(parseErrorRegex);
+                .toThrow(parseErrorRegex);
             expect(() => renderTweet({ ...goldenConfig, author: 12345 }))
-                .toThrowError(parseErrorRegex);
+                .toThrow(parseErrorRegex);
         });
 
         it('throws an error for a malformed `username`', () => {
             expect(() => renderTweet({ ...goldenConfig, username: undefined }))
-                .toThrowError(parseErrorRegex);
+                .toThrow(parseErrorRegex);
             expect(() => renderTweet({ ...goldenConfig, username: null }))
-                .toThrowError(parseErrorRegex);
+                .toThrow(parseErrorRegex);
             expect(() => renderTweet({ ...goldenConfig, username: 12345 }))
-                .toThrowError(parseErrorRegex);
+                .toThrow(parseErrorRegex);
         });
 
         it('throws an error for malformed `avatars`', () => {
             expect(() => renderTweet({ ...goldenConfig, avatars: undefined }))
-                .toThrowError(parseErrorRegex);
+                .toThrow(parseErrorRegex);
             expect(() => renderTweet({ ...goldenConfig, avatars: null }))
-                .toThrowError(parseErrorRegex);
+                .toThrow(parseErrorRegex);
             expect(() => renderTweet({ ...goldenConfig, avatars: 12345 }))
-                .toThrowError(parseErrorRegex);
+                .toThrow(parseErrorRegex);
             expect(() => renderTweet({ ...goldenConfig, avatars: [ 12345 ] }))
-                .toThrowError(parseErrorRegex);
+                .toThrow(parseErrorRegex);
             expect(() => renderTweet({ ...goldenConfig, avatars: [ ] }))
-                .toThrowError(/At least one avatar is required\./);
+                .toThrow(/At least one avatar is required\./);
         });
 
         it('throws an error for malformed `avatarDimensions`', () => {
             expect(() => renderTweet({
                 ...goldenConfig,
                 avatarDimensions: undefined,
-            })).toThrowError(parseErrorRegex);
+            })).toThrow(parseErrorRegex);
             expect(() => renderTweet({
                 ...goldenConfig,
                 avatarDimensions: null,
-            })).toThrowError(parseErrorRegex);
+            })).toThrow(parseErrorRegex);
             expect(() => renderTweet({
                 ...goldenConfig,
                 avatarDimensions: 12345,
-            })).toThrowError(parseErrorRegex);
+            })).toThrow(parseErrorRegex);
             expect(() => renderTweet({
                 ...goldenConfig,
                 avatarDimensions: [ ],
-            })).toThrowError(parseErrorRegex);
+            })).toThrow(parseErrorRegex);
             expect(() => renderTweet({
                 ...goldenConfig,
                 avatarDimensions: [ 12345 ],
-            })).toThrowError(parseErrorRegex);
+            })).toThrow(parseErrorRegex);
             expect(() => renderTweet({
                 ...goldenConfig,
                 avatarDimensions: [ 1, 2, 3 ],
-            })).toThrowError(parseErrorRegex);
+            })).toThrow(parseErrorRegex);
         });
 
         it('throws an error for a malformed `timestamp`', () => {
             expect(() => renderTweet({ ...goldenConfig, timestamp: undefined }))
-                .toThrowError(parseErrorRegex);
+                .toThrow(parseErrorRegex);
             expect(() => renderTweet({ ...goldenConfig, timestamp: null }))
-                .toThrowError(parseErrorRegex);
+                .toThrow(parseErrorRegex);
             expect(() => renderTweet({ ...goldenConfig, timestamp: 12345 }))
-                .toThrowError(parseErrorRegex);
+                .toThrow(parseErrorRegex);
             expect(() => renderTweet({
                 ...goldenConfig,
                 timestamp: 'not a timestamp',
-            })).toThrowError(parseErrorRegex);
+            })).toThrow(parseErrorRegex);
         });
 
         it('throws an error for a malformed `content`', () => {
             expect(() => renderTweet({ ...goldenConfig, content: undefined }))
-                .toThrowError(parseErrorRegex);
+                .toThrow(parseErrorRegex);
             expect(() => renderTweet({ ...goldenConfig, content: null }))
-                .toThrowError(parseErrorRegex);
+                .toThrow(parseErrorRegex);
             expect(() => renderTweet({ ...goldenConfig, content: 12345 }))
-                .toThrowError(parseErrorRegex);
+                .toThrow(parseErrorRegex);
         });
 
         it('throws an error for an extra property', () => {
             expect(() => renderTweet({ ...goldenConfig, foo: 'bar' }))
-                .toThrowError(parseErrorRegex);
+                .toThrow(parseErrorRegex);
         });
 
         it('ignores non-tweet code blocks', () => {
@@ -195,7 +195,7 @@ not a json object
 \`\`\`tweet
 ${JSON.stringify(goldenConfig, null, 4)}
 \`\`\`
-            `.trim())).toThrowError(/No context available\./);
+            `.trim())).toThrow(/No context available\./);
         });
     });
 });

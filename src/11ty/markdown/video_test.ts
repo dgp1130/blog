@@ -140,58 +140,58 @@ not a json object
         });
 
         it('throws an error when given a JSON array', () => {
-            expect(() => renderVideo([])).toThrowError(parseErrorRegex);
+            expect(() => renderVideo([])).toThrow(parseErrorRegex);
         });
 
         it('throws an error for a malformed `type`', () => {
             expect(() => renderVideo({ ...goldenConfig, type: undefined }))
-                .toThrowError(parseErrorRegex);
+                .toThrow(parseErrorRegex);
             expect(() => renderVideo({ ...goldenConfig, type: null }))
-                .toThrowError(parseErrorRegex);
+                .toThrow(parseErrorRegex);
             expect(() => renderVideo({ ...goldenConfig, type: 1234 }))
-                .toThrowError(parseErrorRegex);
+                .toThrow(parseErrorRegex);
             expect(() => renderVideo({ ...goldenConfig, type: 'not a type' }))
-                .toThrowError(parseErrorRegex);
+                .toThrow(parseErrorRegex);
         });
 
         it('throws an error for a malformed `urls`', () => {
             expect(() => renderVideo({ ...goldenConfig, urls: undefined }))
-                .toThrowError(parseErrorRegex);
+                .toThrow(parseErrorRegex);
             expect(() => renderVideo({ ...goldenConfig, urls: null }))
-                .toThrowError(parseErrorRegex);
+                .toThrow(parseErrorRegex);
             expect(() => renderVideo({ ...goldenConfig, urls: 1234 }))
-                .toThrowError(parseErrorRegex);
+                .toThrow(parseErrorRegex);
             expect(() => renderVideo({ ...goldenConfig, urls: [ 1234 ] }))
-                .toThrowError(parseErrorRegex);
+                .toThrow(parseErrorRegex);
             expect(() => renderVideo({ ...goldenConfig, urls: [ ] }))
-                .toThrowError(/At least one URL is required./);
+                .toThrow(/At least one URL is required./);
         });
 
         it('throws an error for malformed `size`', () => {
             expect(() => renderVideo({ ...goldenConfig, size: undefined }))
-                .toThrowError(parseErrorRegex);
+                .toThrow(parseErrorRegex);
             expect(() => renderVideo({ ...goldenConfig, size: null }))
-                .toThrowError(parseErrorRegex);
+                .toThrow(parseErrorRegex);
             expect(() => renderVideo({ ...goldenConfig, size: 12345 }))
-                .toThrowError(parseErrorRegex);
+                .toThrow(parseErrorRegex);
             expect(() => renderVideo({ ...goldenConfig, size: [ ] }))
-                .toThrowError(parseErrorRegex);
+                .toThrow(parseErrorRegex);
             expect(() => renderVideo({ ...goldenConfig, size: [ 12345 ] }))
-                .toThrowError(parseErrorRegex);
+                .toThrow(parseErrorRegex);
             expect(() => renderVideo({ ...goldenConfig, size: [ 1, 2, 3 ] }))
-                .toThrowError(parseErrorRegex);
+                .toThrow(parseErrorRegex);
         });
 
         it('throws an error for malformed `audible`', () => {
             expect(() => renderVideo({ ...goldenConfig, audible: null }))
-                .toThrowError(parseErrorRegex);
+                .toThrow(parseErrorRegex);
             expect(() => renderVideo({ ...goldenConfig, audible: 'test' }))
-                .toThrowError(parseErrorRegex);
+                .toThrow(parseErrorRegex);
         });
 
         it('throws an error for an extra property', () => {
             expect(() => renderVideo({ ...goldenConfig, foo: 'bar' }))
-                .toThrowError(parseErrorRegex);
+                .toThrow(parseErrorRegex);
         });
 
         it('ignores non-video code blocks', () => {
@@ -209,7 +209,7 @@ not a json object
 \`\`\`video
 ${JSON.stringify(goldenConfig, null, 4)}
 \`\`\`
-            `.trim())).toThrowError(/No context available\./);
+            `.trim())).toThrow(/No context available\./);
         });
     });
 });

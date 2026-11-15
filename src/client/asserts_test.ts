@@ -22,12 +22,12 @@ describe('asserts', () => {
 
         it('throws when given an undefined value', () => {
             expect(() => assertDefined(undefined))
-                    .toThrowError('Value not defined.');
+                    .toThrow('Value not defined.');
         });
 
         it('throws when given an undefined value with the given label', () => {
             expect(() => assertDefined(undefined, 'Foo'))
-                    .toThrowError('Foo not defined.');
+                    .toThrow('Foo not defined.');
         });
     });
 });

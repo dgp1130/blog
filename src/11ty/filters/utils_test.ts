@@ -35,7 +35,7 @@ describe('utils', () => {
             const filter = asyncFilter(async (input) => input + 1);
 
             expect(() => filter('foo', 'bar'))
-                    .toThrowError(/Last argument is not a callback function/);
+                    .toThrow(/Last argument is not a callback function/);
         });
     });
 });

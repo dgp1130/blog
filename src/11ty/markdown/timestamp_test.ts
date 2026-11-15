@@ -58,7 +58,7 @@ describe('timestamp', () => {
             expect(() => marked.parse(`
 \`\`\`timestamp
 \`\`\`
-            `.trim())).toThrowError(/No context available\./);
+            `.trim())).toThrow(/No context available\./);
         });
     });
 });
