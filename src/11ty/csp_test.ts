@@ -12,7 +12,7 @@ describe('csp', () => {
                 </html>
             `));
 
-            expect(csp).toBe(`object-src 'none';`);
+            expect(csp).toBe(`object-src 'none'; require-trusted-types-for 'script';`);
         });
 
         it('hashes inline <script /> tags', () => {
@@ -32,7 +32,7 @@ describe('csp', () => {
 
             // All JavaScript tags should be hashed. `application/x-other` is
             // not JavaScript by MIME type and should **not** be included.
-            expect(csp).toBe(`script-src 'sha256-5d34NEinNl1U1YeOFHTka8dTqARzL8+ETrmCJOaj5ZI=' 'sha256-QWTfWzCIE/oRx2c0Kop7Gc3AmbSFCLRt0DNf0mrUyCg=' 'sha256-ToLbmSfoSC+QpKNHjHHDuUHYqToDYeJau6UVYJMaC68=' 'sha256-q3H+UaiJ2s+2C6FQ2ZCmmLcY5ZKXaYrG/4h8lwUYX1s='; object-src 'none';`);
+            expect(csp).toBe(`script-src 'sha256-5d34NEinNl1U1YeOFHTka8dTqARzL8+ETrmCJOaj5ZI=' 'sha256-QWTfWzCIE/oRx2c0Kop7Gc3AmbSFCLRt0DNf0mrUyCg=' 'sha256-ToLbmSfoSC+QpKNHjHHDuUHYqToDYeJau6UVYJMaC68=' 'sha256-q3H+UaiJ2s+2C6FQ2ZCmmLcY5ZKXaYrG/4h8lwUYX1s='; object-src 'none'; require-trusted-types-for 'script';`);
         });
 
         it('allowlists self-hosted, relative URL scripts', () => {
@@ -46,7 +46,7 @@ describe('csp', () => {
                 </html>
             `));
 
-            expect(csp).toBe(`script-src 'self'; object-src 'none';`);
+            expect(csp).toBe(`script-src 'self'; object-src 'none'; require-trusted-types-for 'script';`);
         });
 
         it('allowlists self-hosted, absolute path URL scripts', () => {
@@ -60,7 +60,7 @@ describe('csp', () => {
                 </html>
             `));
 
-            expect(csp).toBe(`script-src 'self'; object-src 'none';`);
+            expect(csp).toBe(`script-src 'self'; object-src 'none'; require-trusted-types-for 'script';`);
         });
 
         it('deduplicates multiple `self` script sources', () => {
@@ -76,7 +76,7 @@ describe('csp', () => {
             `));
 
             // Only one 'self' should be included.
-            expect(csp).toBe(`script-src 'self'; object-src 'none';`);
+            expect(csp).toBe(`script-src 'self'; object-src 'none'; require-trusted-types-for 'script';`);
         });
 
         it('allowlists foreign domain script sources', () => {
@@ -92,7 +92,7 @@ describe('csp', () => {
                 </html>
             `));
 
-            expect(csp).toBe(`script-src http://example1.com/js https://example2.com/js http://example3.com:8080/js; object-src 'none';`);
+            expect(csp).toBe(`script-src http://example1.com/js https://example2.com/js http://example3.com:8080/js; object-src 'none'; require-trusted-types-for 'script';`);
         });
 
         it('hashes inline <style /> sources', () => {
@@ -106,7 +106,7 @@ describe('csp', () => {
                 </html>
             `));
 
-            expect(csp).toBe(`style-src 'sha256-5gDzvFAxDTqq9+8IbIV1n6QT8rTTzWFgoqVBG94Zwl0='; object-src 'none';`);
+            expect(csp).toBe(`style-src 'sha256-5gDzvFAxDTqq9+8IbIV1n6QT8rTTzWFgoqVBG94Zwl0='; object-src 'none'; require-trusted-types-for 'script';`);
         });
 
         it('allowlists self-hosted, relative URL style sources', () => {
@@ -120,7 +120,7 @@ describe('csp', () => {
                 </html>
             `));
 
-            expect(csp).toBe(`style-src 'self'; object-src 'none';`);
+            expect(csp).toBe(`style-src 'self'; object-src 'none'; require-trusted-types-for 'script';`);
         });
 
         it('allowlists self-hosted, absolute path URL style sources', () => {
@@ -134,7 +134,7 @@ describe('csp', () => {
                 </html>
             `));
 
-            expect(csp).toBe(`style-src 'self'; object-src 'none';`);
+            expect(csp).toBe(`style-src 'self'; object-src 'none'; require-trusted-types-for 'script';`);
         });
 
         it('deduplicates multiple `self` style sources', () => {
@@ -149,7 +149,7 @@ describe('csp', () => {
                 </html>
             `));
 
-            expect(csp).toBe(`style-src 'self'; object-src 'none';`);
+            expect(csp).toBe(`style-src 'self'; object-src 'none'; require-trusted-types-for 'script';`);
         });
 
         it('allowlists foreign domain style sources', () => {
@@ -165,7 +165,7 @@ describe('csp', () => {
                 </html>
             `));
 
-            expect(csp).toBe(`style-src http://example1.com/css https://example2.com/css http://example3.com:8080/css; object-src 'none';`);
+            expect(csp).toBe(`style-src http://example1.com/css https://example2.com/css http://example3.com:8080/css; object-src 'none'; require-trusted-types-for 'script';`);
         });
 
         it('allowlists protocol style sources', () => {
@@ -177,7 +177,7 @@ describe('csp', () => {
                 </html>
             `, { styleSrc: ['http:', 'https:'] }));
 
-            expect(csp).toBe(`style-src http: https:; object-src 'none';`);
+            expect(csp).toBe(`style-src http: https:; object-src 'none'; require-trusted-types-for 'script';`);
         });
 
         it('appends provided style sources', () => {
@@ -191,7 +191,7 @@ describe('csp', () => {
                 </html>
             `, { styleSrc: ['http://example1.com/css', `'sha256-abc123'`] }));
 
-            expect(csp).toBe(`style-src http://example1.com/css 'sha256-abc123' http://example2.com/css; object-src 'none';`)
+            expect(csp).toBe(`style-src http://example1.com/css 'sha256-abc123' http://example2.com/css; object-src 'none'; require-trusted-types-for 'script';`)
         });
 
         it('skips style extraction when `extractStyles` is `false`', () => {
@@ -205,7 +205,7 @@ describe('csp', () => {
                 </html>
             `, { styleSrc: [`'unsafe-inline'`], extractStyles: false }));
 
-            expect(csp).toBe(`style-src 'unsafe-inline'; object-src 'none';`);
+            expect(csp).toBe(`style-src 'unsafe-inline'; object-src 'none'; require-trusted-types-for 'script';`);
         });
 
         it('allowlists self-hosted, relative URL image sources', () => {
@@ -219,7 +219,7 @@ describe('csp', () => {
                 </html>
             `));
 
-            expect(csp).toBe(`img-src 'self'; object-src 'none';`);
+            expect(csp).toBe(`img-src 'self'; object-src 'none'; require-trusted-types-for 'script';`);
         });
 
         it('allowlists self-hosted, absolute path URL image sources', () => {
@@ -233,7 +233,7 @@ describe('csp', () => {
                 </html>
             `));
 
-            expect(csp).toBe(`img-src 'self'; object-src 'none';`);
+            expect(csp).toBe(`img-src 'self'; object-src 'none'; require-trusted-types-for 'script';`);
         });
 
         it('deduplicates multiple `self` image sources', () => {
@@ -248,7 +248,7 @@ describe('csp', () => {
                 </html>
             `));
 
-            expect(csp).toBe(`img-src 'self'; object-src 'none';`);
+            expect(csp).toBe(`img-src 'self'; object-src 'none'; require-trusted-types-for 'script';`);
         });
 
         it('allowlists foreign domain image sources', () => {
@@ -264,7 +264,7 @@ describe('csp', () => {
                 </html>
             `));
 
-            expect(csp).toBe(`img-src http://example1.com/css https://example2.com/css http://example3.com:8080/css; object-src 'none';`);
+            expect(csp).toBe(`img-src http://example1.com/css https://example2.com/css http://example3.com:8080/css; object-src 'none'; require-trusted-types-for 'script';`);
         });
 
         it('injects the policy as the first child of <head />', () => {
