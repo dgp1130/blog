@@ -1,8 +1,8 @@
 {
-  "name": "dgp1130-blog",
+  "name": "devel-without-a-cause-blog",
   "version": "0.0.0",
   "private": true,
-  "description": "Personal blog for https://github.com/dgp1130.",
+  "description": "Source code for personal blog at https://blog.dwac.dev/.",
   "type": "module",
   "scripts": {
     "start": "node --run clean && node --run build:11ty && node --run build:browser && node --run 11ty -- --serve",
