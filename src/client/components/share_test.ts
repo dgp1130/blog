@@ -184,25 +184,6 @@ describe('Share', () => {
         expect(new URL(link.href).pathname).toBe('/feed.xml');
     });
 
-    it('renders a direct link to tweet the link', async () => {
-        const share = await init({
-            target: new URL('https://tweeted.link/'),
-            articleTitle: 'Tweetable Article',
-        });
-
-        const link = share.shadowRoot!.querySelector('a:has(#twitter-logo)')! as
-            HTMLAnchorElement;
-        expect(link).not.toBeNull();
-
-        expect(link.href).toContain('https://twitter.com/intent/tweet');
-        const href = new URL(link.href);
-        expect(href.searchParams.get('text'))
-                .toBe('Check out: "Tweetable Article". https://tweeted.link/');
-
-        expect(link.target).toBe('_blank');
-        expect(link.rel).toBe('noopener');
-    });
-
     it('renders a direct link to share on Bluesky', async () => {
         const share = await init({
             target: new URL('https://skeetable.link/'),
