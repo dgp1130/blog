@@ -34,10 +34,10 @@ to = "/404/"
 status = 404
 
 [[headers]]
-# Set Feature-Policy header to be as restrictive as possible.
+# Set Permissions-Policy header to be as restrictive as possible.
 for = "*"
 [headers.values]
-Feature-Policy = "autoplay 'none'; camera 'none'; display-capture 'none'; encrypted-media 'none'; fullscreen 'none'; geolocation 'none'; gyroscope 'none'; microphone 'none'; midi 'none'; payment 'none'; publickey-credentials-get 'none'; sync-xhr 'none'; usb 'none'; xr-spatial-tracking 'none';"
+Permissions-Policy = "autoplay 'none'; camera 'none'; display-capture 'none'; encrypted-media 'none'; fullscreen 'none'; geolocation 'none'; gyroscope 'none'; microphone 'none'; midi 'none'; payment 'none'; publickey-credentials-get 'none'; sync-xhr 'none'; usb 'none'; xr-spatial-tracking 'none';"
 
 # Set standard.site content type.
 [[headers]]
