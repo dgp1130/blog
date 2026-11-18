@@ -60,6 +60,7 @@ export function injectCsp(html: string, {
         ]))),
         genDirective('img-src', Array.from(normalize(images))),
         genDirective('object-src', [`'none'`]),
+        genDirective('require-trusted-types-for', [`'script'`]),
     ].filter((directive) => Boolean(directive)).join(' ');
 
     // Inject the CSP into the HTML.
