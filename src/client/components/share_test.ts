@@ -202,4 +202,23 @@ describe('Share', () => {
         expect(link.target).toBe('_blank');
         expect(link.rel).toBe('noopener');
     });
+
+    it('renders a direct link to share on Bluesky', async () => {
+        const share = await init({
+            target: new URL('https://skeetable.link/'),
+            articleTitle: 'Skeetable Article',
+        });
+
+        const link = share.shadowRoot!.querySelector('a#bsky')! as
+            HTMLAnchorElement;
+        expect(link).not.toBeNull();
+
+        expect(link.href).toContain('https://bsky.app/intent/compose');
+        const href = new URL(link.href);
+        expect(href.searchParams.get('text')).toBe(
+                'Check out: "Skeetable Article". https://skeetable.link/');
+
+        expect(link.target).toBe('_blank');
+        expect(link.rel).toBe('noopener');
+    });
 });
