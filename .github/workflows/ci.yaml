@@ -47,7 +47,7 @@ jobs:
       # independent of a deployment alias.
       run: |
         pnpm run -- netlify deploy -s "${{ secrets.NETLIFY_SITE_ID }}" \
-          --filter="dgp1130-blog" \
+          --filter="devel-without-a-cause-blog" \
           --no-build \
           --alias main-preview \
           -m "Automated preview deployment from GitHub actions."
@@ -59,7 +59,7 @@ jobs:
       if: ${{ github.ref == 'refs/heads/deploy' }}
       run: |
         pnpm run -- netlify deploy -s "${{ secrets.NETLIFY_SITE_ID }}" --prod \
-          --filter="dgp1130-blog" \
+          --filter="devel-without-a-cause-blog" \
           --no-build \
           -m "Automated prod deployment from GitHub actions."
       env:
